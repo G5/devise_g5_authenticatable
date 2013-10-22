@@ -8,9 +8,11 @@ Gem::Specification.new do |spec|
   spec.version       = DeviseG5Authenticatable::VERSION
   spec.authors       = ["maeve"]
   spec.email         = ["maeve.revels@getg5.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Devise extension for G5 authentication service}
+  spec.summary       = %q{Extension to devise that adds support for authenticating
+                          to G5 via OAuth 2.0, as well as remotely managing
+                          credentials in G5's authentication API.}
+  spec.homepage      = "https://github.com/g5search/devise_g5_authenticatable"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
