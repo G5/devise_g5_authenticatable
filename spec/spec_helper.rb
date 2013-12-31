@@ -1,7 +1,13 @@
 # Configure Rails Environment
 ENV['RAILS_ENV'] = 'test'
 
+# Load dummy app
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
+
+require 'rspec/rails'
+require 'capybara/poltergeist'
+
+require 'pry'
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
