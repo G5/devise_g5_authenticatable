@@ -20,6 +20,19 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "devise", "~> 3.0"
+
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec-rails", "~> 2.14"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "capybara"
+  spec.add_development_dependency "poltergeist"
+  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "codeclimate-test-reporter"
+  spec.add_development_dependency "webmock"
+
+  spec.add_development_dependency "rails", "3.2.15"
+  spec.add_development_dependency "jquery-rails"
+  spec.add_development_dependency "sqlite3"
 end
