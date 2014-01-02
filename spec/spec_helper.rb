@@ -3,6 +3,9 @@ SimpleCov.start do
   add_filter '/spec'
 end
 
+require 'codeclimate-test-reporter'
+CodeClimate::TestReporter.start
+
 # Load rails dummy application
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)

@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "capybara"
   spec.add_development_dependency "poltergeist"
   spec.add_development_dependency "simplecov"
-
+  spec.add_development_dependency "codeclimate-test-reporter"
   spec.add_development_dependency "rails", "3.2.15"
   spec.add_development_dependency "jquery-rails"
   spec.add_development_dependency "sqlite3"
