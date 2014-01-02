@@ -1,3 +1,5 @@
+# Setup for test coverage instrumentation (e.g. simplecov, codeclimate)
+# MUST happen before any other code is loaded
 require 'simplecov'
 SimpleCov.start do
   add_filter '/spec'
@@ -6,6 +8,8 @@ end
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
+require 'pry'
+
 # Load rails dummy application
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
@@ -13,7 +17,7 @@ require File.expand_path('../dummy/config/environment.rb',  __FILE__)
 require 'rspec/rails'
 require 'capybara/poltergeist'
 
-require 'pry'
+require 'webmock/rspec'
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
@@ -28,4 +32,6 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  config.after(:suite) { WebMock.disable! }
 end
