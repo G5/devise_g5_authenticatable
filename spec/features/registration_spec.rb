@@ -19,9 +19,9 @@ describe 'User registration' do
       expect { register_user }.to change { User.count }.by(1)
     end
 
-    it 'should display a success message' do
+    it 'should redirect to the root path' do
       register_user
-      expect(page).to have_content('success')
+      expect(current_path).to eq(root_path)
     end
   end
 
@@ -34,8 +34,7 @@ describe 'User registration' do
 
     it 'should display an error message' do
       register_user
-      # TODO: test for more specific error message
-      expect(page).to have_content('error')
+      expect(page).to have_content("Password doesn't match confirmation")
     end
   end
 
@@ -48,8 +47,7 @@ describe 'User registration' do
 
     it 'should display an error message' do
       register_user
-      # TODO: test for more specific error message
-      expect(page).to have_content('error')
+      expect(page).to have_content("Email can't be blank")
     end
   end
 
@@ -63,8 +61,7 @@ describe 'User registration' do
 
     it 'should display an error message' do
       register_user
-      # TODO: test for more specific error message
-      expect(page).to have_content('error')
+      expect(page).to have_content('Email has already been taken')
     end
   end
 end
