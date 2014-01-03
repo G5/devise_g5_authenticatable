@@ -5,7 +5,8 @@ module Devise
 
       included do
         attr_accessor :password, :password_confirmation
-        attr_accessible :email, :password, :password_confirmation
+        attr_accessible :email, :password, :password_confirmation,
+                        :provider, :uid
       end
     end
   end

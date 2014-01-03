@@ -5,6 +5,7 @@ describe Devise::Models::G5Authenticatable do
 
   let(:model_class) { User }
   let(:model) { model_class.new(attributes) }
+
   let(:attributes) do
     {email: email,
      password: password,
@@ -18,6 +19,9 @@ describe Devise::Models::G5Authenticatable do
   it { should allow_mass_assignment_of(:email) }
   it { should allow_mass_assignment_of(:password) }
   it { should allow_mass_assignment_of(:password_confirmation) }
+  it { should allow_mass_assignment_of(:provider) }
+  it { should allow_mass_assignment_of(:uid) }
+  it { should_not allow_mass_assignment_of(:g5_access_token) }
 
   describe '#save!' do
     subject(:save_model) { model.save! }
