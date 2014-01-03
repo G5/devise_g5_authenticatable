@@ -4,8 +4,8 @@ module Devise
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :email
-        attr_accessible :email
+        attr_accessor :password
+        attr_accessible :email, :password
       end
     end
   end
