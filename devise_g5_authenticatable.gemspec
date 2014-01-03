@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "codeclimate-test-reporter"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "shoulda-matchers"
+  spec.add_development_dependency "factory_girl_rails", "~> 4.3"
 
   # Dependencies for the dummy test app
   spec.add_development_dependency "rails", "3.2.15"

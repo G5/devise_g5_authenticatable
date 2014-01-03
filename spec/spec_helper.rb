@@ -16,12 +16,16 @@ require 'rspec/rails'
 require 'capybara/rspec'
 require 'webmock/rspec'
 require 'shoulda-matchers'
+require 'factory_girl_rails'
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
+  config.include FactoryGirl::Syntax::Methods
+
   config.use_transactional_fixtures = true
+
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
