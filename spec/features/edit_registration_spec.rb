@@ -67,13 +67,40 @@ describe 'Editing a user registration' do
     end
 
     context 'when the auth server returns an error' do
-      it 'should display an error message'
-      it 'should not update the email locally'
+      include_context 'OAuth2::Error'
+
+      it 'should display an error message' do
+        update_user
+        expect(page).to have_content(error_message)
+      end
+
+      it 'should not update the email locally' do
+        update_user
+        user.reload
+        expect(user.email).to_not eq(email)
+      end
     end
   end
 
   context 'when current password is invalid' do
-    it 'should not update the credentials on the auth server'
-    it 'should not update the email locally'
+    include_context 'OAuth2::Error'
+    let(:error_message) { 'invalid_resource_owner' }
+    before { allow(auth_client).to receive(:me).and_raise(oauth_error) }
+
+    it 'should display an error message' do
+      update_user
+      expect(page).to have_content('Current password is invalid')
+    end
+
+    it 'should not update the credentials on the auth server' do
+      expect(auth_client).to_not receive(:update_user)
+      update_user
+    end
+
+    it 'should not update the email locally' do
+      update_user
+      user.reload
+      expect(user.email).to_not eq(email)
+    end
   end
 end
