@@ -12,9 +12,10 @@ module Devise
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :password, :password_confirmation, :current_password
+        attr_accessor :password, :password_confirmation, :current_password,
+                      :updated_by
         attr_accessible :email, :password, :password_confirmation,
-                        :current_password, :provider, :uid
+                        :current_password, :provider, :uid, :updated_by
       end
     end
   end
