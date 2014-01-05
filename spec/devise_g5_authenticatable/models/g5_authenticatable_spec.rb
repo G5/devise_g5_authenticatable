@@ -206,4 +206,64 @@ describe Devise::Models::G5Authenticatable do
       end
     end
   end
+
+  describe '#clean_up_passwords' do
+    subject(:clean_up_passwords) { model.clean_up_passwords }
+    let(:model) do
+      create(:user, password: password,
+                    password_confirmation: password)
+    end
+
+    let(:password) { 'foobarbaz' }
+
+    it 'should change the password to nil' do
+      expect { clean_up_passwords }.to change { model.password }.
+        from(password).to(nil)
+    end
+
+    it 'should change the password_confirmation to nil' do
+      expect { clean_up_passwords }.to change { model.password_confirmation }.
+        from(password).to(nil)
+    end
+  end
+
+  describe '#valid_password?' do
+    subject(:valid_password?) { model.valid_password?(password) }
+
+    let(:model) { create(:user) }
+    let(:password) { 'foobarbaz' }
+
+    let(:password_validator) { double(:password_validator, valid_password?: valid) }
+    before do
+      allow(Devise::G5::AuthPasswordValidator).to receive(:new).and_return(password_validator)
+    end
+
+    context 'when password is valid' do
+      let(:valid) { true }
+
+      it 'should return true' do
+        expect(valid_password?).to be_true
+      end
+
+      it 'should check the password against the auth server' do
+        expect(password_validator).to receive(:valid_password?).
+          with(model, password).and_return(true)
+        valid_password?
+      end
+    end
+
+    context 'when password is invalid' do
+      let(:valid) { false }
+
+      it 'should return false' do
+        expect(valid_password?).to be_false
+      end
+
+      it 'should check the password against the auth server' do
+        expect(password_validator).to receive(:valid_password?).
+          with(model, password).and_return(false)
+        valid_password?
+      end
+    end
+  end
 end

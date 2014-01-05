@@ -20,6 +20,14 @@ module Devise
         attr_accessible :email, :password, :password_confirmation,
                         :current_password, :provider, :uid, :updated_by
       end
+
+      def clean_up_passwords
+        self.password = self.password_confirmation = self.current_password = nil
+      end
+
+      def valid_password?(password_to_check)
+        Devise::G5::AuthPasswordValidator.new.valid_password?(self, password_to_check)
+      end
     end
   end
 end
