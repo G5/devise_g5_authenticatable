@@ -79,7 +79,7 @@ describe Devise::Models::G5Authenticatable do
     let(:updated_email) { 'update@email.com' }
 
     let(:auth_updater) { double(:auth_user_updater, update: true) }
-    before { allow(AuthUserUpdater).to receive(:new).and_return(auth_updater) }
+    before { allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_updater) }
 
     let(:password_validator) { double(:auth_password_validator) }
     before do

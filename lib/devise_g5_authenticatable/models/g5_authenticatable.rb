@@ -1,3 +1,5 @@
+require 'devise_g5_authenticatable/g5/auth_user_updater'
+
 module Devise
   module Models
     # Authenticatable module, responsible for remote credential management
