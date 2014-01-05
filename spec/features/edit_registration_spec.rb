@@ -5,7 +5,8 @@ describe 'Editing a user registration' do
 
   let(:user) { create(:user) }
 
-  let(:auth_client) { double(update_user: auth_user, me: auth_user) }
+  let(:auth_client) { double(:auth_client, update_user: auth_user, me: auth_user) }
+
   let(:auth_user) { double(:auth_user, id: user.uid, email: user.email) }
   before do
     allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
@@ -23,8 +24,6 @@ describe 'Editing a user registration' do
   let(:password) { '' }
   let(:password_confirmation) { password }
   let(:current_password) { user.password }
-
-  let(:auth_client) { double(:auth_client, update_user: nil) }
 
   context 'when current password is valid' do
     context 'when password is blank' do

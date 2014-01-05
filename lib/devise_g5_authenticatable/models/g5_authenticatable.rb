@@ -28,6 +28,23 @@ module Devise
       def valid_password?(password_to_check)
         Devise::G5::AuthPasswordValidator.new.valid_password?(self, password_to_check)
       end
+
+      def update_with_password(params)
+        updated_attributes = params.reject { |k,v| k =~ /password/ && v.blank? }
+        current_password = updated_attributes.delete(:current_password)
+
+        if valid = valid_password?(current_password)
+          valid = update_attributes(updated_attributes)
+        elsif current_password.blank?
+          errors.add(:current_password, :blank)
+        else
+          errors.add(:current_password, :invalid)
+        end
+
+        clean_up_passwords
+
+        valid
+      end
     end
   end
 end
