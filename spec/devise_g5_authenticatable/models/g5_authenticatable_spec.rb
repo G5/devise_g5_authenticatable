@@ -83,7 +83,7 @@ describe Devise::Models::G5Authenticatable do
 
     let(:password_validator) { double(:auth_password_validator) }
     before do
-      allow(AuthPasswordValidator).to receive(:new).
+      allow(Devise::G5::AuthPasswordValidator).to receive(:new).
         and_return(password_validator)
     end
 
