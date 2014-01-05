@@ -28,13 +28,13 @@ describe 'Editing a user registration' do
 
   context 'when current password is valid' do
     context 'when password is blank' do
-      xit 'should update the email locally' do
+      it 'should update the email locally' do
         update_user
         user.reload
         expect(user.email).to eq(email)
       end
 
-      xit 'should update the email on the auth server' do
+      it 'should update the email on the auth server' do
         expect(auth_client).to receive(:update_user).with({id: user.uid, email: email})
         update_user
       end
@@ -43,7 +43,7 @@ describe 'Editing a user registration' do
     context 'when password is updated' do
       let(:password) { 'a brand new password' }
 
-      xit 'should update the password on the auth server' do
+      it 'should update the password on the auth server' do
         expect(auth_client).to receive(:update_user).with({id: user.uid,
                                                            email: email,
                                                            password: password,
@@ -55,12 +55,12 @@ describe 'Editing a user registration' do
     context 'when email is blank' do
       let(:email) { '' }
 
-      xit 'should display an error message' do
+      it 'should display an error message' do
         update_user
         expect(page).to have_content("Email can't be blank")
       end
 
-      xit 'should not update the credentials on the auth server' do
+      it 'should not update the credentials on the auth server' do
         expect(auth_client).to_not receive(:update_user)
         update_user
       end
@@ -69,12 +69,12 @@ describe 'Editing a user registration' do
     context 'when the auth server returns an error' do
       include_context 'OAuth2::Error'
 
-      xit 'should display an error message' do
+      it 'should display an error message' do
         update_user
         expect(page).to have_content(error_message)
       end
 
-      xit 'should not update the email locally' do
+      it 'should not update the email locally' do
         update_user
         user.reload
         expect(user.email).to_not eq(email)
@@ -87,17 +87,17 @@ describe 'Editing a user registration' do
     let(:error_message) { 'invalid_resource_owner' }
     before { allow(auth_client).to receive(:me).and_raise(oauth_error) }
 
-    xit 'should display an error message' do
+    it 'should display an error message' do
       update_user
       expect(page).to have_content('Current password is invalid')
     end
 
-    xit 'should not update the credentials on the auth server' do
+    it 'should not update the credentials on the auth server' do
       expect(auth_client).to_not receive(:update_user)
       update_user
     end
 
-    xit 'should not update the email locally' do
+    it 'should not update the email locally' do
       update_user
       user.reload
       expect(user.email).to_not eq(email)
