@@ -17,46 +17,193 @@ describe Devise::Models::G5Authenticatable do
   it { should allow_mass_assignment_of(:updated_by) }
 
   describe '#save!' do
-    subject(:save_model) { model.save! }
+    subject(:save) { model.save! }
 
-    let(:attributes) do
-      {email: email,
-      password: password,
-      password_confirmation: password_confirmation,
-      current_password: current_password,
-      updated_by: updated_by}
+    context 'when model is new' do
+      let(:attributes) do
+        {email: email,
+         password: password,
+         password_confirmation: password_confirmation,
+         provider: provider,
+         uid: uid,
+         current_password: current_password,
+         updated_by: updated_by}
+      end
+
+      let(:email) { 'test.email@test.host' }
+      let(:password) { 'my_secret' }
+      let(:password_confirmation) { password }
+      let(:current_password) { 'my_current_password' }
+      let(:provider) {}
+      let(:uid) {}
+      let(:updated_by) { model_class.new }
+
+      let(:auth_user_creator) { double(:auth_user_creator, create: auth_user) }
+      let(:auth_user) { double(:auth_user, id: auth_id) }
+      let(:auth_id) { 1 }
+
+      before do
+        allow(Devise::G5::AuthUserCreator).to receive(:new).and_return(auth_user_creator)
+      end
+
+      context 'when there is already a uid on the model' do
+        let(:uid) { '42' }
+        let(:provider) { 'g5' }
+
+        it 'should not create an auth user' do
+          expect(auth_user_creator).to_not receive(:create)
+          save
+        end
+
+        it 'should set the existing uid' do
+          save
+          expect(model.uid).to eq(uid)
+        end
+
+        it 'should set the existing provider' do
+          save
+          expect(model.provider).to eq(provider)
+        end
+      end
+
+      context 'when model is valid' do
+        it 'should persist the email' do
+          save
+          expect(model_class.find(model.id).email).to eq(email)
+        end
+
+        it 'should not persist the password' do
+          save
+          expect(model_class.find(model.id).password).to be_nil
+        end
+
+        it 'should not persist the password_confirmation' do
+          save
+          expect(model_class.find(model.id).password_confirmation).to be_nil
+        end
+
+        it 'should not persist the current_password' do
+          save
+          expect(model_class.find(model.id).current_password).to be_nil
+        end
+
+        it 'should not persist updated by' do
+          save
+          expect(model_class.find(model.id).updated_by).to be_nil
+        end
+
+        it 'should create an auth user' do
+          expect(auth_user_creator).to receive(:create).
+            with(model).and_return(auth_user)
+          save
+        end
+
+        it 'should assign the auth uid' do
+          save
+          expect(model.uid).to eq(auth_id.to_s)
+        end
+
+        it 'should assign the auth provider' do
+          save
+          expect(model.provider).to eq('g5')
+        end
+      end
+
+      context 'when there is an error creating the auth user' do
+        before do
+          allow(auth_user_creator).to receive(:create).and_raise(error)
+        end
+
+        context 'with OAuth2::Error' do
+          let(:error) { OAuth2::Error.new(response) }
+          let(:response) do
+            double(:response, :parsed => error_hash,
+                              :body => error_body,
+                              :error= => nil)
+          end
+
+          let(:error_hash) do
+            { 'error' => error_code,
+              'error_description' => error_description }
+          end
+
+          let(:error_code) { "Email can't be blank" }
+          let(:error_description) { 'Validation failed' }
+          let(:error_body) { 'problems' }
+
+          it 'should raise a RecordNotSaved error with the OAuth error code' do
+            expect { create_user }. to raise_error(ActiveRecord::RecordNotSaved, error_code)
+          end
+        end
+
+        context 'with some other error' do
+          let(:error) { StandardError.new(error_message) }
+          let(:error_message) { 'problems' }
+
+          it 'should raise a RecordNotSaved error' do
+            expect { create_user }.to raise_error(ActiveRecord::RecordNotSaved, error_message)
+          end
+        end
+      end
     end
 
-    let(:email) { 'test.email@test.host' }
-    let(:password) { 'my_secret' }
-    let(:password_confirmation) { password }
-    let(:current_password) { 'my_current_password' }
-    let(:updated_by) { User.new }
+    context 'when model is updated' do
+      let(:model) { create(:user) }
 
-    context 'when model is valid' do
-      it 'should persist the email' do
-        save_model
-        expect(model_class.find(model.id).email).to eq(email)
+      let(:auth_user_updater) { double(:user_updater, update: auth_user) }
+      let(:auth_user) { double(:auth_user, id: auth_id) }
+      let(:auth_id) { 'remote-auth-id-42' }
+      before do
+        allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_user_updater)
       end
 
-      it 'should not persist the password' do
-        save_model
-        expect(model_class.find(model.id).password).to be_nil
+      context 'when the password changes' do
+        before do
+          model.password = new_password
+          model.password_confirmation = new_password
+        end
+
+        let(:new_password) { 'blahblahblah' }
+
+        context 'with successful auth user update' do
+          it 'should raise no errors' do
+            expect { save }.to_not raise_error
+          end
+        end
+
+        context 'with unsuccessful auth user update' do
+          before do
+            allow(auth_user_updater).to receive(:update).and_raise(error_message)
+          end
+          let(:error_message) { 'problems' }
+
+          it 'should raise an error' do
+            expect { save }.to raise_error
+          end
+        end
       end
 
-      it 'should not persist the password_confirmation' do
-        save_model
-        expect(model_class.find(model.id).password_confirmation).to be_nil
-      end
+      context 'when the password is not set' do
+        before do
+          model.password = nil
+          model.password_confirmation = nil
+        end
 
-      it 'should not persist the current_password' do
-        save_model
-        expect(model_class.find(model.id).current_password).to be_nil
-      end
+        context 'when the email changes' do
+          before { model.email = 'something_new@test.com' }
 
-      it 'should not persist updated by' do
-        save_model
-        expect(model_class.find(model.id).updated_by).to be_nil
+          it 'should update the auth user' do
+            expect(auth_user_updater).to receive(:update)
+            save
+          end
+        end
+
+        context 'when the email does not change' do
+          it 'should not update the auth user' do
+            expect(auth_user_updater).to_not receive(:update)
+            save
+          end
+        end
       end
     end
   end
