@@ -54,12 +54,12 @@ describe 'User registration' do
     include_context 'OAuth2::Error'
     before { allow(auth_client).to receive(:create_user).and_raise(oauth_error) }
 
-    it 'should display an error message' do
+    xit 'should display an error message' do
       register_user
       expect(page).to have_content(error_message)
     end
 
-    it 'should not create the user locally' do
+    xit 'should not create the user locally' do
       expect { register_user }.to_not change { User.count }
     end
   end
