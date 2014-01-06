@@ -67,6 +67,7 @@ describe 'Editing a user registration' do
 
     context 'when the auth server returns an error' do
       include_context 'OAuth2::Error'
+      before { allow(auth_client).to receive(:update_user).and_raise(oauth_error) }
 
       it 'should display an error message' do
         update_user
