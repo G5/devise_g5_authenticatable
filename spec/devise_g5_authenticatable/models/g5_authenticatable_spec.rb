@@ -107,6 +107,14 @@ describe Devise::Models::G5Authenticatable do
           save
           expect(model.provider).to eq('g5')
         end
+
+        it 'should clear the password' do
+          expect { save }.to change { model.password }.to(nil)
+        end
+
+        it 'should clear the password_confirmation' do
+          expect { save }.to change { model.password_confirmation }.to(nil)
+        end
       end
 
       context 'when there is an error creating the auth user' do
@@ -168,6 +176,19 @@ describe Devise::Models::G5Authenticatable do
         context 'with successful auth user update' do
           it 'should raise no errors' do
             expect { save }.to_not raise_error
+          end
+
+          it 'should update the auth user' do
+            expect(auth_user_updater).to receive(:update)
+            save
+          end
+
+          it 'should clear the password' do
+            expect { save }.to change { model.password }.to(nil)
+          end
+
+          it 'should clear the password_confirmation' do
+            expect { save }.to change { model.password_confirmation }.to(nil)
           end
         end
 
@@ -244,11 +265,13 @@ describe Devise::Models::G5Authenticatable do
           end
 
           it 'should clear the user password' do
-            expect { update_with_password }.to change { model.password }.to(nil)
+            update_with_password
+            expect(model.password).to be_nil
           end
 
           it 'should clear the user password_confirmation' do
-            expect { update_with_password }.to change { model.password_confirmation }.to(nil)
+            update_with_password
+            expect(model.password_confirmation).to be_nil
           end
 
           it 'should update the credentials in the auth server' do
@@ -357,8 +380,8 @@ describe Devise::Models::G5Authenticatable do
   describe '#clean_up_passwords' do
     subject(:clean_up_passwords) { model.clean_up_passwords }
     let(:model) do
-      create(:user, password: password,
-                    password_confirmation: password)
+      build_stubbed(:user, password: password,
+                           password_confirmation: password)
     end
 
     let(:password) { 'foobarbaz' }

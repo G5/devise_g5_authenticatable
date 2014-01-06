@@ -40,6 +40,8 @@ module Devise
         rescue StandardError => e
           logger.error("Couldn't save user credentials because: #{e}")
           raise ActiveRecord::RecordNotSaved.new(e.message)
+        ensure
+          clean_up_passwords
         end
       end
 

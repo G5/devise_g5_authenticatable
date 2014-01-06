@@ -1,28 +1,28 @@
 require 'spec_helper'
 
 describe Devise::G5::AuthUserUpdater do
-  describe "#update" do
-    subject(:update) { updater.update(user) }
-    let(:updater) { described_class.new }
+  let(:updater) { described_class.new }
 
-    let(:g5_client) { double(:g5_client, update_user: auth_user) }
-    let(:auth_user) { {id: auth_user_id, email: email_address} }
-    let(:auth_user_id) { 1 }
-    let(:email_address) { 'foo@bar.com' }
+  let(:auth_client) { double(:g5_authentication_client, update_user: auth_user) }
+  let(:auth_user) { double(:auth_user, id: model.uid, email: model.email) }
+  before do
+    allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
+  end
 
-    before { G5AuthenticationClient::Client.stub(new: g5_client) }
+  let(:model) { build_stubbed(:user, updated_by: updated_by) }
 
-    let(:user) do
-      build_stubbed(:user, email: email_address,
-                           uid: reputation_user_uid,
-                           updated_by: updated_by,
-                           password: password,
-                           password_confirmation: password_confirmation)
+  describe '#update' do
+    subject(:update) { updater.update(model) }
+
+    before do
+      model.email = updated_email
+      model.password = updated_password
+      model.password_confirmation = updated_password_confirmation
     end
 
-    let(:reputation_user_uid) { "#{auth_user_id}" }
-    let(:password) { 'foobar' }
-    let(:password_confirmation) { 'notamatch' }
+    let(:updated_email) { 'updated.email@test.host' }
+    let(:updated_password) { 'updated_secret' }
+    let(:updated_password_confirmation) { 'updated_secret_confirm' }
 
     context 'when user has been updated_by another user' do
       let(:updated_by) { build_stubbed(:user) }
@@ -30,35 +30,41 @@ describe Devise::G5::AuthUserUpdater do
       context 'when user update is successful' do
         it 'should use the token for updated_by to call g5 auth' do
           expect(G5AuthenticationClient::Client).to receive(:new).
-            with(access_token: updated_by.g5_access_token)
+            with(access_token: updated_by.g5_access_token).
+            and_return(auth_client)
           update
         end
 
         it 'should update the email' do
-          expect(g5_client).to receive(:update_user).
-            with(hash_including(email: email_address))
+          expect(auth_client).to receive(:update_user).
+            with(hash_including(email: updated_email)).
+            and_return(auth_user)
           update
         end
 
         it 'should update the password' do
-          expect(g5_client).to receive(:update_user).
-            with(hash_including(password: password))
+          expect(auth_client).to receive(:update_user).
+            with(hash_including(password: updated_password)).
+            and_return(auth_user)
           update
         end
 
         it 'should update the password_confirmation' do
-          expect(g5_client).to receive(:update_user).
-            with(hash_including(password_confirmation: password_confirmation))
+          expect(auth_client).to receive(:update_user).
+            with(hash_including(password_confirmation: updated_password_confirmation)).
+            and_return(auth_user)
           update
         end
 
         it 'should return the updated user' do
-          expect(update).to include(id: auth_user_id, email: email_address)
+          expect(update).to eq(auth_user)
         end
       end
 
       context 'when user update is unsuccessful' do
-        before { g5_client.stub(:update_user).and_raise('Error!') }
+        before do
+          allow(auth_client).to receive(:update_user).and_raise('Error!')
+        end
 
         it 'should raise an exception' do
           expect { update }.to raise_error
@@ -71,7 +77,7 @@ describe Devise::G5::AuthUserUpdater do
 
       it 'should use the user token to call g5 auth' do
         expect(G5AuthenticationClient::Client).to receive(:new).
-          with(access_token: user.g5_access_token)
+          with(access_token: model.g5_access_token)
         update
       end
     end
