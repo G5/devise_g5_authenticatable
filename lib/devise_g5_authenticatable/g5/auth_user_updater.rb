@@ -14,7 +14,7 @@ module Devise
       end
 
       def auth_user_args(user)
-        {id: user.uid.to_i,
+        {id: user.uid,
          email: user.email,
          password: user.password,
          password_confirmation: user.password_confirmation}

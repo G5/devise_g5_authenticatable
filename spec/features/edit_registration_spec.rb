@@ -34,7 +34,10 @@ describe 'Editing a user registration' do
       end
 
       it 'should update the email on the auth server' do
-        expect(auth_client).to receive(:update_user).with({id: user.uid, email: email})
+        expect(auth_client).to receive(:update_user).with({id: user.uid,
+                                                           email: email,
+                                                           password: nil,
+                                                           password_confirmation: nil})
         update_user
       end
     end

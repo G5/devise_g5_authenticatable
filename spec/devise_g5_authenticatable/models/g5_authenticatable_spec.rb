@@ -132,7 +132,7 @@ describe Devise::Models::G5Authenticatable do
           let(:error_body) { 'problems' }
 
           it 'should raise a RecordNotSaved error with the OAuth error code' do
-            expect { create_user }. to raise_error(ActiveRecord::RecordNotSaved, error_code)
+            expect { save }. to raise_error(ActiveRecord::RecordNotSaved, error_code)
           end
         end
 
@@ -141,7 +141,7 @@ describe Devise::Models::G5Authenticatable do
           let(:error_message) { 'problems' }
 
           it 'should raise a RecordNotSaved error' do
-            expect { create_user }.to raise_error(ActiveRecord::RecordNotSaved, error_message)
+            expect { save }.to raise_error(ActiveRecord::RecordNotSaved, error_message)
           end
         end
       end

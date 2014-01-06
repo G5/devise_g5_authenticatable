@@ -18,6 +18,29 @@ module Devise
                       :updated_by
         attr_accessible :email, :password, :password_confirmation,
                         :current_password, :provider, :uid, :updated_by
+
+        before_save :auth_user
+      end
+
+      def auth_user
+        begin
+          # TODO: more of this logic can be moved into
+          # AuthUserCreator and AuthUserUpdater
+          if new_record? && uid.nil?
+            user=Devise::G5::AuthUserCreator.new.create(self)
+            self.uid=user.id.to_s
+            self.provider = 'g5'
+          elsif !new_record? && email &&
+                (email_changed? || !password.blank?)
+            Devise::G5::AuthUserUpdater.new.update(self)
+          end
+        rescue OAuth2::Error => e
+          logger.error("Couldn't save user credentials because: #{e}")
+          raise ActiveRecord::RecordNotSaved.new(e.code)
+        rescue StandardError => e
+          logger.error("Couldn't save user credentials because: #{e}")
+          raise ActiveRecord::RecordNotSaved.new(e.message)
+        end
       end
 
       def clean_up_passwords
