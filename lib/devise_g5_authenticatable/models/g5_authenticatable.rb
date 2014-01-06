@@ -24,16 +24,8 @@ module Devise
 
       def auth_user
         begin
-          # TODO: more of this logic can be moved into
-          # AuthUserCreator and AuthUserUpdater
-          if new_record? && uid.nil?
-            user=Devise::G5::AuthUserCreator.new.create(self)
-            self.uid=user.id.to_s
-            self.provider = 'g5'
-          elsif !new_record? && email &&
-                (email_changed? || !password.blank?)
-            Devise::G5::AuthUserUpdater.new.update(self)
-          end
+          ensure_auth_user
+          update_auth_user
         rescue OAuth2::Error => e
           logger.error("Couldn't save user credentials because: #{e}")
           raise ActiveRecord::RecordNotSaved.new(e.code)
@@ -65,9 +57,24 @@ module Devise
           errors.add(:current_password, :invalid)
         end
 
-        clean_up_passwords
-
         valid
+      end
+
+      private
+      def ensure_auth_user
+        if new_record? && uid.nil?
+          auth_user = Devise::G5::AuthUserCreator.new.create(self)
+          self.uid = auth_user.id.to_s
+          self.provider = 'g5'
+          clean_up_passwords
+        end
+      end
+
+      def update_auth_user
+        if !new_record? && email &&
+           (email_changed? || !password.blank?)
+          Devise::G5::AuthUserUpdater.new.update(self)
+        end
       end
     end
   end
