@@ -46,26 +46,6 @@ describe Devise::Models::G5Authenticatable do
         allow(Devise::G5::AuthUserCreator).to receive(:new).and_return(auth_user_creator)
       end
 
-      context 'when there is already a uid on the model' do
-        let(:uid) { '42' }
-        let(:provider) { 'g5' }
-
-        it 'should not create an auth user' do
-          expect(auth_user_creator).to_not receive(:create)
-          save
-        end
-
-        it 'should set the existing uid' do
-          save
-          expect(model.uid).to eq(uid)
-        end
-
-        it 'should set the existing provider' do
-          save
-          expect(model.provider).to eq(provider)
-        end
-      end
-
       context 'when model is valid' do
         it 'should persist the email' do
           save
@@ -93,27 +73,8 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'should create an auth user' do
-          expect(auth_user_creator).to receive(:create).
-            with(model).and_return(auth_user)
+          expect(auth_user_creator).to receive(:create).with(model)
           save
-        end
-
-        it 'should assign the auth uid' do
-          save
-          expect(model.uid).to eq(auth_id.to_s)
-        end
-
-        it 'should assign the auth provider' do
-          save
-          expect(model.provider).to eq('g5')
-        end
-
-        it 'should clear the password' do
-          expect { save }.to change { model.password }.to(nil)
-        end
-
-        it 'should clear the password_confirmation' do
-          expect { save }.to change { model.password_confirmation }.to(nil)
         end
       end
 

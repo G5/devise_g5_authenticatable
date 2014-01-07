@@ -24,7 +24,7 @@ module Devise
 
       def auth_user
         begin
-          ensure_auth_user
+          G5::AuthUserCreator.new.create(self) if new_record?
           update_auth_user
         rescue OAuth2::Error => e
           logger.error("Couldn't save user credentials because: #{e}")
@@ -61,15 +61,6 @@ module Devise
       end
 
       private
-      def ensure_auth_user
-        if new_record? && uid.nil?
-          auth_user = Devise::G5::AuthUserCreator.new.create(self)
-          self.uid = auth_user.id.to_s
-          self.provider = 'g5'
-          clean_up_passwords
-        end
-      end
-
       def update_auth_user
         if !new_record? && email &&
            (email_changed? || !password.blank?)
