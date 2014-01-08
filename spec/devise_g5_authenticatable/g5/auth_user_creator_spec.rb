@@ -6,8 +6,15 @@ describe Devise::G5::AuthUserCreator do
   describe '#create' do
     subject(:create) { creator.create }
 
-    let(:model) { build_stubbed(:user, updated_by: updated_by) }
+    let(:model) do
+      build_stubbed(:user, password: password,
+                           password_confirmation: password_confirmation,
+                           updated_by: updated_by)
+    end
+
     let(:updated_by) {}
+    let(:password) { 'new password' }
+    let(:password_confirmation) { 'new password confirmation' }
 
     let(:auth_client) { double(:g5_authentication_client, create_user: auth_user) }
     let(:auth_user) { double(:auth_user, id: uid, email: model.email) }
@@ -22,40 +29,34 @@ describe Devise::G5::AuthUserCreator do
       context 'when updated by an existing user' do
         let(:updated_by) { build_stubbed(:user) }
 
+        before { create }
+
         it 'should use the token for updated_by user to call g5 auth' do
-          expect(G5AuthenticationClient::Client).to receive(:new).
-            with(access_token: updated_by.g5_access_token).
-            and_return(auth_client)
-          create
+          expect(G5AuthenticationClient::Client).to have_received(:new).
+            with(access_token: updated_by.g5_access_token)
         end
 
         it 'should create a new auth user with the correct email' do
-          expect(auth_client).to receive(:create_user).
-            with(hash_including(email: model.email)).
-            and_return(auth_user)
-          create
+          expect(auth_client).to have_received(:create_user).
+            with(hash_including(email: model.email))
         end
 
         it 'should create a new auth user with the correct password' do
-          expect(auth_client).to receive(:create_user).
-            with(hash_including(password: model.password)).
-            and_return(auth_user)
-          create
+          expect(auth_client).to have_received(:create_user).
+            with(hash_including(password: password))
         end
 
         it 'should create a new auth user with the correct password confirmation' do
-          expect(auth_client).to receive(:create_user).
-            with(hash_including(password_confirmation: model.password_confirmation)).
-            and_return(auth_user)
-          create
+          expect(auth_client).to have_received(:create_user).
+            with(hash_including(password_confirmation: password_confirmation))
         end
 
         it 'should reset the password' do
-          expect { create }.to change { model.password }.to(nil)
+          expect(model.password).to be_nil
         end
 
         it 'should reset the password_confirmation' do
-          expect { create }.to change { model.password_confirmation }.to(nil)
+          expect(model.password_confirmation).to be_nil
         end
       end
 
@@ -70,33 +71,29 @@ describe Devise::G5::AuthUserCreator do
       end
 
       context 'when not updated by an existing user' do
-        # TODO: this is dumb - the user token will always be nil because they don't
-        # exist in the auth server yet. Be smarter. (Raise an error? Try the client
-        # credentials grant type?)
+        before { create }
+
         it 'should use the user token to call g5 auth' do
-          expect(G5AuthenticationClient::Client).to receive(:new).
+          expect(G5AuthenticationClient::Client).to have_received(:new).
             with(access_token: model.g5_access_token)
-          create
         end
       end
     end
 
     context 'when new model already has a uid' do
       before { model.uid = 'remote-user-42' }
+      before { create }
 
       it 'should not create a user' do
-        expect(auth_client).to_not receive(:create_user)
-        create
+        expect(auth_client).to_not have_received(:create_user)
       end
 
       it 'should not reset the password' do
-        expect { create }.to_not change { model.password }
-        expect(model.password).to_not be_empty
+        expect(model.password).to_not be_blank
       end
 
       it 'should not reset the password_confirmation' do
-        expect { create }.to_not change { model.password_confirmation }
-        expect(model.password_confirmation).to_not be_empty
+        expect(model.password_confirmation).to_not be_blank
       end
     end
   end

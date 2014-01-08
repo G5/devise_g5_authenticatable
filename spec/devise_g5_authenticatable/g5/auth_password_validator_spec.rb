@@ -22,23 +22,20 @@ describe Devise::G5::AuthPasswordValidator do
     end
 
     context 'with valid password' do
+      before { valid_password? }
+
       it 'should initialize auth client with the username' do
-        expect(G5AuthenticationClient::Client).to receive(:new).
-          with(hash_including(username: model.email)).
-          and_return(auth_client)
-        valid_password?
+        expect(G5AuthenticationClient::Client).to have_received(:new).
+          with(hash_including(username: model.email))
       end
 
       it 'should initialize auth client with the password' do
-        expect(G5AuthenticationClient::Client).to receive(:new).
-          with(hash_including(password: password)).
-          and_return(auth_client)
-        valid_password?
+        expect(G5AuthenticationClient::Client).to have_received(:new).
+          with(hash_including(password: password))
       end
 
       it 'should retrieve the auth user associated with these credentials' do
-        expect(auth_client).to receive(:me).and_return(auth_user)
-        valid_password?
+        expect(auth_client).to have_received(:me)
       end
 
       it 'should return true' do

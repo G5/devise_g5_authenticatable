@@ -17,51 +17,39 @@ describe Devise::G5::AuthUserUpdater do
 
     context 'when email and password are unchanged' do
       before { model.password = nil }
+      before { update }
 
       it 'should not update the auth service' do
-        expect(auth_client).to_not receive(:update_user)
-        update
-      end
-
-      it 'should not reset the password' do
-        expect { update }.to_not change { model.password }
-      end
-
-      it 'should not reset the password_confirmation' do
-        expect { update }.to_not change { model.password_confirmation }
+        expect(auth_client).to_not have_received(:update_user)
       end
     end
 
     context 'when email has changed' do
       before { model.email = updated_email }
-
       let(:updated_email) { 'updated.email@test.host' }
+
 
       context 'when user has been updated by another user' do
         let(:updated_by) { create(:user) }
 
         context 'when auth user update is successful' do
+          before { update }
+
           it 'should use the token for updated_by to call g5 auth' do
-            expect(G5AuthenticationClient::Client).to receive(:new).
-              with(access_token: updated_by.g5_access_token).
-              and_return(auth_client)
-            update
+            expect(G5AuthenticationClient::Client).to have_received(:new).
+              with(access_token: updated_by.g5_access_token)
           end
 
           it 'should update the email' do
-            expect(auth_client).to receive(:update_user).
-              with(hash_including(email: updated_email)).
-              and_return(auth_user)
-            update
+            expect(auth_client).to have_received(:update_user).
+              with(hash_including(email: updated_email))
           end
 
           it 'should reset the password' do
-            update
             expect(model.password).to be_nil
           end
 
           it 'should reset the password confirmation' do
-            update
             expect(model.password_confirmation).to be_nil
           end
 
@@ -82,10 +70,11 @@ describe Devise::G5::AuthUserUpdater do
       end
 
       context 'when user has not been updated by another user' do
+        before { update }
+
         it 'should use the user token to call g5 auth' do
-          expect(G5AuthenticationClient::Client).to receive(:new).
+          expect(G5AuthenticationClient::Client).to have_received(:new).
             with(access_token: model.g5_access_token)
-          update
         end
       end
     end
@@ -99,26 +88,25 @@ describe Devise::G5::AuthUserUpdater do
       let(:updated_password) { 'my_new_secret' }
       let(:updated_password_confirmation) { 'not a match' }
 
+      before { update }
+
       it 'should update the password' do
-        expect(auth_client).to receive(:update_user).
-          with(hash_including(password: updated_password)).
-          and_return(auth_user)
+        expect(auth_client).to have_received(:update_user).
+          with(hash_including(password: updated_password))
         update
       end
 
       it 'should update the password_confirmation' do
-        expect(auth_client).to receive(:update_user).
-          with(hash_including(password_confirmation: updated_password_confirmation)).
-          and_return(auth_user)
-        update
+        expect(auth_client).to have_received(:update_user).
+          with(hash_including(password_confirmation: updated_password_confirmation))
       end
 
       it 'should reset the password' do
-        expect { update }.to change { model.password }.to(nil)
+        expect(model.password).to be_nil
       end
 
       it 'should reset the password confirmation' do
-        expect { update }.to change { model.password_confirmation }.to(nil)
+        expect(model.password_confirmation).to be_nil
       end
     end
   end

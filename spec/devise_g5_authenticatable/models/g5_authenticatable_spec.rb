@@ -47,39 +47,34 @@ describe Devise::Models::G5Authenticatable do
       end
 
       context 'when model is valid' do
+        before { save }
+
         it 'should persist the email' do
-          save
           expect(model_class.find(model.id).email).to eq(email)
         end
 
         it 'should not persist the password' do
-          save
           expect(model_class.find(model.id).password).to be_nil
         end
 
         it 'should not persist the password_confirmation' do
-          save
           expect(model_class.find(model.id).password_confirmation).to be_nil
         end
 
         it 'should not persist the current_password' do
-          save
           expect(model_class.find(model.id).current_password).to be_nil
         end
 
         it 'should not persist updated by' do
-          save
           expect(model_class.find(model.id).updated_by).to be_nil
         end
 
         it 'should initialize a service class for creating auth users' do
-          expect(Devise::G5::AuthUserCreator).to receive(:new).with(model).and_return(auth_user_creator)
-          save
+          expect(Devise::G5::AuthUserCreator).to have_received(:new).with(model)
         end
 
         it 'should create an auth user' do
-          expect(auth_user_creator).to receive(:create)
-          save
+          expect(auth_user_creator).to have_received(:create)
         end
       end
 
@@ -132,18 +127,14 @@ describe Devise::Models::G5Authenticatable do
       end
 
       context 'with successful auth user update' do
-        it 'should raise no errors' do
-          expect { save }.to_not raise_error
-        end
+        before { save }
 
         it 'should initialize the auth user updater' do
-          expect(Devise::G5::AuthUserUpdater).to receive(:new).with(model).and_return(auth_user_updater)
-          save
+          expect(Devise::G5::AuthUserUpdater).to have_received(:new).with(model)
         end
 
         it 'should update the auth user' do
-          expect(auth_user_updater).to receive(:update)
-          save
+          expect(auth_user_updater).to have_received(:update)
         end
       end
 
@@ -189,23 +180,23 @@ describe Devise::Models::G5Authenticatable do
     context 'with valid current password' do
       before { allow(password_validator).to receive(:valid_password?).and_return(true) }
 
+      before { update_with_password }
+
       context 'with valid input' do
         it 'should return true' do
           expect(update_with_password).to be_true
         end
 
         it 'should initialize the auth user updater' do
-          expect(Devise::G5::AuthUserUpdater).to receive(:new).with(model).and_return(auth_updater)
-          update_with_password
+          expect(Devise::G5::AuthUserUpdater).to have_received(:new).with(model)
         end
 
         it 'should update the credentials in the auth server' do
-          expect(auth_updater).to receive(:update)
-          update_with_password
+          expect(auth_updater).to have_received(:update)
         end
 
         it 'should update the email on the local model' do
-          expect { update_with_password }.to change { model.email }.to(updated_email)
+          expect(model.email).to eq(updated_email)
         end
       end
 
@@ -217,18 +208,19 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'should not update the credentials on the auth server' do
-          expect(auth_updater).to_not receive(:update)
-          update_with_password
+          expect(auth_updater).to_not have_received(:update)
         end
 
         it 'should add an error to the email attribute' do
-          expect { update_with_password }.to change { model.errors[:email].count }.to(1)
+          expect(model.errors[:email].count).to eq(1)
         end
       end
     end
 
     context 'with invalid current password' do
       before { allow(password_validator).to receive(:valid_password?).and_return(false) }
+
+      before { update_with_password }
 
       context 'when current password is missing' do
         let(:current_password) { '' }
@@ -238,13 +230,11 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'should set an error on the current_password attribute' do
-          update_with_password
           expect(model.errors[:current_password]).to include("can't be blank")
         end
 
         it 'should not update user credentials in the remote server' do
-          expect(auth_updater).to_not receive(:update)
-          update_with_password
+          expect(auth_updater).to_not have_received(:update)
         end
       end
 
@@ -256,13 +246,11 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'should set an error on the current_password attribute' do
-          update_with_password
           expect(model.errors[:current_password]).to include('is invalid')
         end
 
         it 'should not update user credentials in the remote server' do
-          expect(auth_updater).to_not receive(:update)
-          update_with_password
+          expect(auth_updater).to_not have_received(:update)
         end
       end
     end
@@ -299,6 +287,8 @@ describe Devise::Models::G5Authenticatable do
       allow(Devise::G5::AuthPasswordValidator).to receive(:new).and_return(password_validator)
     end
 
+    before { valid_password? }
+
     context 'when password is valid' do
       let(:valid) { true }
 
@@ -307,15 +297,11 @@ describe Devise::Models::G5Authenticatable do
       end
 
       it 'should initialize the validator with the model' do
-        expect(Devise::G5::AuthPasswordValidator).to receive(:new).
-          with(model).and_return(password_validator)
-        valid_password?
+        expect(Devise::G5::AuthPasswordValidator).to have_received(:new).with(model)
       end
 
       it 'should check the password against the auth server' do
-        expect(password_validator).to receive(:valid_password?).
-          with(password).and_return(true)
-        valid_password?
+        expect(password_validator).to have_received(:valid_password?).with(password)
       end
     end
 
@@ -327,15 +313,11 @@ describe Devise::Models::G5Authenticatable do
       end
 
       it 'should initialize the validator with the model' do
-        expect(Devise::G5::AuthPasswordValidator).to receive(:new).
-          with(model).and_return(password_validator)
-        valid_password?
+        expect(Devise::G5::AuthPasswordValidator).to have_received(:new).with(model)
       end
 
       it 'should check the password against the auth server' do
-        expect(password_validator).to receive(:valid_password?).
-          with(password).and_return(false)
-        valid_password?
+        expect(password_validator).to have_received(:valid_password?).with(password)
       end
     end
   end
