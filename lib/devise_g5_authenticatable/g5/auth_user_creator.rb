@@ -3,33 +3,42 @@ require 'g5_authentication_client'
 module Devise
   module G5
     class AuthUserCreator
-      def create(user)
-        create_auth_user(user) unless auth_user_exists?(user)
+      attr_reader :model
+
+      def initialize(authenticatable_model)
+        @model = authenticatable_model
+      end
+
+      def create
+        create_auth_user unless auth_user_exists?
       end
 
       private
-      def create_auth_user(user)
-        auth_user = client(user).create_user(auth_user_args(user))
-        set_auth_attributes(user, auth_user)
+      def create_auth_user
+        auth_user = auth_client.create_user(auth_user_args)
+        set_auth_attributes(auth_user)
         auth_user
       end
 
-      def auth_user_exists?(user)
-        !(user.uid.nil? || user.uid.empty?)
+      def auth_user_exists?
+        !model.uid.blank?
       end
 
-      def client(user)
-        updated_by = user.updated_by || user
+      def auth_client
         G5AuthenticationClient::Client.new(access_token: updated_by.g5_access_token)
       end
 
-      def auth_user_args(user)
-        {email: user.email,
-         password: user.password,
-         password_confirmation: user.password_confirmation}
+      def updated_by
+        model.updated_by || model
       end
 
-      def set_auth_attributes(model, auth_user)
+      def auth_user_args
+        {email: model.email,
+         password: model.password,
+         password_confirmation: model.password_confirmation}
+      end
+
+      def set_auth_attributes(auth_user)
         model.provider = 'g5'
         model.uid = auth_user.id
         model.clean_up_passwords

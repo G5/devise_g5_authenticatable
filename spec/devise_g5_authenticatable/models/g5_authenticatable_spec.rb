@@ -72,8 +72,13 @@ describe Devise::Models::G5Authenticatable do
           expect(model_class.find(model.id).updated_by).to be_nil
         end
 
+        it 'should initialize a service class for creating auth users' do
+          expect(Devise::G5::AuthUserCreator).to receive(:new).with(model).and_return(auth_user_creator)
+          save
+        end
+
         it 'should create an auth user' do
-          expect(auth_user_creator).to receive(:create).with(model)
+          expect(auth_user_creator).to receive(:create)
           save
         end
       end

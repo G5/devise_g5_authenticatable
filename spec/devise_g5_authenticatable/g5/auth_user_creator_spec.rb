@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Devise::G5::AuthUserCreator do
-  let(:creator) { described_class.new }
+  let(:creator) { described_class.new(model) }
 
   describe '#create' do
-    subject(:create) { creator.create(model) }
+    subject(:create) { creator.create }
 
     let(:model) { build_stubbed(:user, updated_by: updated_by) }
     let(:updated_by) {}

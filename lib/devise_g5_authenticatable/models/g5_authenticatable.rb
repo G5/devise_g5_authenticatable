@@ -25,7 +25,7 @@ module Devise
       def auth_user
         begin
           if new_record?
-            G5::AuthUserCreator.new.create(self)
+            G5::AuthUserCreator.new(self).create
           else
             G5::AuthUserUpdater.new.update(self)
           end
