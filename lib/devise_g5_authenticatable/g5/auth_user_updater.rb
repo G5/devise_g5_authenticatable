@@ -3,31 +3,40 @@ require 'g5_authentication_client'
 module Devise
   module G5
     class AuthUserUpdater
-      def update(user)
-        update_auth_user(user) if credentials_changed?(user)
+      attr_reader :model
+
+      def initialize(authenticatable_model)
+        @model = authenticatable_model
+      end
+
+      def update
+        update_auth_user if credentials_changed?
       end
 
       private
-      def update_auth_user(user)
-        auth_user = client(user).update_user(auth_user_args(user))
-        user.clean_up_passwords
+      def update_auth_user
+        auth_user = auth_client.update_user(auth_user_args)
+        model.clean_up_passwords
         auth_user
       end
 
-      def credentials_changed?(user)
-        user.email_changed? || !user.password.blank?
+      def credentials_changed?
+        model.email_changed? || !model.password.blank?
       end
 
-      def client(user)
-        updated_by_user = user.updated_by || user
-        G5AuthenticationClient::Client.new(access_token: updated_by_user.g5_access_token)
+      def auth_client
+        G5AuthenticationClient::Client.new(access_token: updated_by.g5_access_token)
       end
 
-      def auth_user_args(user)
-        {id: user.uid,
-         email: user.email,
-         password: user.password,
-         password_confirmation: user.password_confirmation}
+      def updated_by
+        model.updated_by || model
+      end
+
+      def auth_user_args
+        {id: model.uid,
+         email: model.email,
+         password: model.password,
+         password_confirmation: model.password_confirmation}
       end
     end
   end

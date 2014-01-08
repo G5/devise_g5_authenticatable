@@ -136,6 +136,11 @@ describe Devise::Models::G5Authenticatable do
           expect { save }.to_not raise_error
         end
 
+        it 'should initialize the auth user updater' do
+          expect(Devise::G5::AuthUserUpdater).to receive(:new).with(model).and_return(auth_user_updater)
+          save
+        end
+
         it 'should update the auth user' do
           expect(auth_user_updater).to receive(:update)
           save
@@ -189,8 +194,13 @@ describe Devise::Models::G5Authenticatable do
           expect(update_with_password).to be_true
         end
 
+        it 'should initialize the auth user updater' do
+          expect(Devise::G5::AuthUserUpdater).to receive(:new).with(model).and_return(auth_updater)
+          update_with_password
+        end
+
         it 'should update the credentials in the auth server' do
-          expect(auth_updater).to receive(:update).with(model)
+          expect(auth_updater).to receive(:update)
           update_with_password
         end
 

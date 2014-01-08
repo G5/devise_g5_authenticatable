@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Devise::G5::AuthUserUpdater do
-  let(:updater) { described_class.new }
+  let(:updater) { described_class.new(model) }
 
   let(:auth_client) { double(:g5_authentication_client, update_user: auth_user) }
   let(:auth_user) { double(:auth_user, id: model.uid, email: model.email) }
@@ -13,7 +13,7 @@ describe Devise::G5::AuthUserUpdater do
   let(:updated_by) {}
 
   describe '#update' do
-    subject(:update) { updater.update(model) }
+    subject(:update) { updater.update }
 
     context 'when email and password are unchanged' do
       before { model.password = nil }

@@ -27,7 +27,7 @@ module Devise
           if new_record?
             G5::AuthUserCreator.new(self).create
           else
-            G5::AuthUserUpdater.new.update(self)
+            G5::AuthUserUpdater.new(self).update
           end
         rescue OAuth2::Error => e
           logger.error("Couldn't save user credentials because: #{e}")
