@@ -4,13 +4,23 @@ module Devise
   module G5
     class AuthUserUpdater
       def update(user)
-        updated_by_user = user.updated_by || user
-        client(updated_by_user).update_user(auth_user_args(user))
+        update_auth_user(user) if credentials_changed?(user)
       end
 
       private
+      def update_auth_user(user)
+        auth_user = client(user).update_user(auth_user_args(user))
+        user.clean_up_passwords
+        auth_user
+      end
+
+      def credentials_changed?(user)
+        user.email_changed? || !user.password.blank?
+      end
+
       def client(user)
-        G5AuthenticationClient::Client.new(access_token: user.g5_access_token)
+        updated_by_user = user.updated_by || user
+        G5AuthenticationClient::Client.new(access_token: updated_by_user.g5_access_token)
       end
 
       def auth_user_args(user)

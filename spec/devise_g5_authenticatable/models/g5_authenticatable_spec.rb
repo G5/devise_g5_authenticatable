@@ -126,65 +126,25 @@ describe Devise::Models::G5Authenticatable do
         allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_user_updater)
       end
 
-      context 'when the password changes' do
-        before do
-          model.password = new_password
-          model.password_confirmation = new_password
+      context 'with successful auth user update' do
+        it 'should raise no errors' do
+          expect { save }.to_not raise_error
         end
 
-        let(:new_password) { 'blahblahblah' }
-
-        context 'with successful auth user update' do
-          it 'should raise no errors' do
-            expect { save }.to_not raise_error
-          end
-
-          it 'should update the auth user' do
-            expect(auth_user_updater).to receive(:update)
-            save
-          end
-
-          it 'should clear the password' do
-            expect { save }.to change { model.password }.to(nil)
-          end
-
-          it 'should clear the password_confirmation' do
-            expect { save }.to change { model.password_confirmation }.to(nil)
-          end
-        end
-
-        context 'with unsuccessful auth user update' do
-          before do
-            allow(auth_user_updater).to receive(:update).and_raise(error_message)
-          end
-          let(:error_message) { 'problems' }
-
-          it 'should raise an error' do
-            expect { save }.to raise_error
-          end
+        it 'should update the auth user' do
+          expect(auth_user_updater).to receive(:update)
+          save
         end
       end
 
-      context 'when the password is not set' do
+      context 'with unsuccessful auth user update' do
         before do
-          model.password = nil
-          model.password_confirmation = nil
+          allow(auth_user_updater).to receive(:update).and_raise(error_message)
         end
+        let(:error_message) { 'problems' }
 
-        context 'when the email changes' do
-          before { model.email = 'something_new@test.com' }
-
-          it 'should update the auth user' do
-            expect(auth_user_updater).to receive(:update)
-            save
-          end
-        end
-
-        context 'when the email does not change' do
-          it 'should not update the auth user' do
-            expect(auth_user_updater).to_not receive(:update)
-            save
-          end
+        it 'should raise an error' do
+          expect { save }.to raise_error
         end
       end
     end
@@ -219,80 +179,35 @@ describe Devise::Models::G5Authenticatable do
     context 'with valid current password' do
       before { allow(password_validator).to receive(:valid_password?).and_return(true) }
 
-      context 'with updated password' do
-        context 'with valid input' do
-          it 'should return true' do
-            expect(update_with_password).to be_true
-          end
-
-          it 'should clear the user password' do
-            update_with_password
-            expect(model.password).to be_nil
-          end
-
-          it 'should clear the user password_confirmation' do
-            update_with_password
-            expect(model.password_confirmation).to be_nil
-          end
-
-          it 'should update the credentials in the auth server' do
-            expect(auth_updater).to receive(:update).with(model)
-            update_with_password
-          end
-
-          it 'should update the email on the local model' do
-            expect { update_with_password }.to change { model.email }.to(updated_email)
-          end
+      context 'with valid input' do
+        it 'should return true' do
+          expect(update_with_password).to be_true
         end
 
-        context 'with invalid email' do
-          let(:updated_email) { '' }
+        it 'should update the credentials in the auth server' do
+          expect(auth_updater).to receive(:update).with(model)
+          update_with_password
+        end
 
-          it 'should return false' do
-            expect(update_with_password).to be_false
-          end
-
-          it 'should not update the credentials on the auth server' do
-            expect(auth_updater).to_not receive(:update)
-            update_with_password
-          end
-
-          it 'should add an error to the email attribute' do
-            expect { update_with_password }.to change { model.errors[:email].count }.to(1)
-          end
+        it 'should update the email on the local model' do
+          expect { update_with_password }.to change { model.email }.to(updated_email)
         end
       end
 
-      context 'without updated password' do
-        let(:updated_password) { '' }
-        before { model.clean_up_passwords }
+      context 'when there is a validation error' do
+        let(:updated_email) { '' }
 
-        context 'with updated email' do
-          it 'should return true' do
-            expect(update_with_password).to be_true
-          end
-
-          it 'should update the credentials on the auth server' do
-            expect(auth_updater).to receive(:update).with(model)
-            update_with_password
-          end
-
-          it 'should update the email on the local model' do
-            expect { update_with_password }.to change { model.email }.to(updated_email)
-          end
+        it 'should return false' do
+          expect(update_with_password).to be_false
         end
 
-        context 'with unchanged email' do
-          let(:updated_email) { model.email }
+        it 'should not update the credentials on the auth server' do
+          expect(auth_updater).to_not receive(:update)
+          update_with_password
+        end
 
-          it 'should return true' do
-            expect(update_with_password).to be_true
-          end
-
-          it 'should not update the credentials in the auth server' do
-            expect(auth_updater).to_not receive(:update)
-            update_with_password
-          end
+        it 'should add an error to the email attribute' do
+          expect { update_with_password }.to change { model.errors[:email].count }.to(1)
         end
       end
     end
