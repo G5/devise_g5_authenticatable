@@ -1,16 +1,17 @@
 require 'spec_helper'
 
 describe Devise::G5::AuthPasswordValidator do
-  let(:validator) { described_class.new }
+  let(:validator) { described_class.new(model) }
+
+  let(:model) { build_stubbed(:user) }
 
   describe '#valid_password?' do
-    subject(:valid_password?) { validator.valid_password?(user, password) }
+    subject(:valid_password?) { validator.valid_password?(password) }
 
-    let(:user) { build_stubbed(:user) }
     let(:password) { 'password to check' }
 
     let(:auth_client) { double(:g5_authentication_client, me: auth_user) }
-    let(:auth_user) { double(:auth_user, uid: user.uid, email: user.email) }
+    let(:auth_user) { double(:auth_user, uid: model.uid, email: model.email) }
 
     let(:oauth_error) { OAuth2::Error.new(response) }
     let(:response) { double(:oauth_response, parsed: oauth_error_hash).as_null_object }
@@ -23,7 +24,7 @@ describe Devise::G5::AuthPasswordValidator do
     context 'with valid password' do
       it 'should initialize auth client with the username' do
         expect(G5AuthenticationClient::Client).to receive(:new).
-          with(hash_including(username: user.email)).
+          with(hash_including(username: model.email)).
           and_return(auth_client)
         valid_password?
       end

@@ -3,9 +3,15 @@ require 'g5_authentication_client'
 module Devise
   module G5
     class AuthPasswordValidator
-      def valid_password?(user, password)
+      attr_reader :model
+
+      def initialize(authenticatable_model)
+        @model = authenticatable_model
+      end
+
+      def valid_password?(password)
         begin
-          auth_user = auth_client(user.email, password).me
+          auth_user = auth_client(password).me
         rescue OAuth2::Error => error
           raise unless error.code == 'invalid_resource_owner'
         rescue RuntimeError => error
@@ -16,8 +22,8 @@ module Devise
       end
 
       private
-      def auth_client(username, password)
-        G5AuthenticationClient::Client.new(username: username, password: password)
+      def auth_client(password)
+        G5AuthenticationClient::Client.new(username: model.email, password: password)
       end
     end
   end

@@ -306,9 +306,15 @@ describe Devise::Models::G5Authenticatable do
         expect(valid_password?).to be_true
       end
 
+      it 'should initialize the validator with the model' do
+        expect(Devise::G5::AuthPasswordValidator).to receive(:new).
+          with(model).and_return(password_validator)
+        valid_password?
+      end
+
       it 'should check the password against the auth server' do
         expect(password_validator).to receive(:valid_password?).
-          with(model, password).and_return(true)
+          with(password).and_return(true)
         valid_password?
       end
     end
@@ -320,9 +326,15 @@ describe Devise::Models::G5Authenticatable do
         expect(valid_password?).to be_false
       end
 
+      it 'should initialize the validator with the model' do
+        expect(Devise::G5::AuthPasswordValidator).to receive(:new).
+          with(model).and_return(password_validator)
+        valid_password?
+      end
+
       it 'should check the password against the auth server' do
         expect(password_validator).to receive(:valid_password?).
-          with(model, password).and_return(false)
+          with(password).and_return(false)
         valid_password?
       end
     end

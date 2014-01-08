@@ -43,7 +43,8 @@ module Devise
       end
 
       def valid_password?(password_to_check)
-        Devise::G5::AuthPasswordValidator.new.valid_password?(self, password_to_check)
+        validator = Devise::G5::AuthPasswordValidator.new(self)
+        validator.valid_password?(password_to_check)
       end
 
       def update_with_password(params)
