@@ -11,13 +11,25 @@ describe DeviseG5Authenticatable::UrlHelpers do
     context 'with user resource' do
       let(:resource_or_scope) { build_stubbed(:user) }
 
-      it { should == '/users/auth/g5' }
+      it { should == user_g5_authorize_path }
+    end
+
+    context 'with admin resource' do
+      let(:resource_or_scope) { build_stubbed(:admin) }
+
+      it { should == admin_g5_authorize_path }
     end
 
     context 'with user scope' do
       let(:resource_or_scope) { :user }
 
-      it { should == '/users/auth/g5' }
+      it { should == user_g5_authorize_path }
+    end
+
+    context 'with admin scope' do
+      let(:resource_or_scope) { :admin }
+
+      it { should == admin_g5_authorize_path }
     end
   end
 
@@ -27,25 +39,25 @@ describe DeviseG5Authenticatable::UrlHelpers do
     context 'with user resource' do
       let(:resource_or_scope) { build_stubbed(:user) }
 
-      it { should == '/users/auth/g5/callback' }
+      it { should == user_g5_callback_path }
+    end
+
+    context 'with admin resource' do
+      let(:resource_or_scope) { build_stubbed(:admin) }
+
+      it { should == admin_g5_callback_path }
     end
 
     context 'with user scope' do
       let(:resource_or_scope) { :user }
 
-      it { should == '/users/auth/g5/callback' }
+      it { should == user_g5_callback_path }
     end
-  end
 
-  describe '#user_g5_authorize_path' do
-    subject(:authorize_path) { controller.user_g5_authorize_path }
+    context 'with admin scope' do
+      let(:resource_or_scope) { :admin }
 
-    it { should == '/users/auth/g5' }
-  end
-
-  describe '#user_g5_callback_path' do
-    subject(:callback_path) { controller.user_g5_callback_path }
-
-    it { should == '/users/auth/g5/callback' }
+      it { should == admin_g5_callback_path }
+    end
   end
 end

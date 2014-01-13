@@ -12,23 +12,23 @@ describe 'Sessions controller' do
                                                    action: 'destroy')
     end
 
-    it 'should route GET /admin_area/sign_in' do
+    it 'should route GET /registered/admins/sign_in' do
       expect(get '/registered/admins/sign_in').to route_to(controller: 'custom_sessions',
                                                     action: 'new')
     end
 
-    it 'should route GET /admin_area/sign_out' do
+    it 'should route GET /registered/admins/sign_out' do
       expect(delete '/registered/admins/sign_out').to route_to(controller: 'custom_sessions',
                                                         action: 'destroy')
     end
   end
 
   describe 'url helpers' do
-    it 'should route new_user_session_path' do
+    it 'should generate new_user_session_path' do
       expect(new_user_session_path).to eq('/users/sign_in')
     end
 
-    it 'should route destroy_user_session_path' do
+    it 'should generate destroy_user_session_path' do
       expect(destroy_user_session_path).to eq('/users/sign_out')
     end
 
