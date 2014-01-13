@@ -1,0 +1,2 @@
+class CustomSessionsController < ApplicationController
+end
