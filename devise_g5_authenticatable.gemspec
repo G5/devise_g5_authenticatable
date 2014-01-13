@@ -21,17 +21,20 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "devise", "~> 3.0"
+  spec.add_runtime_dependency "g5_authentication_client"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec-rails", "~> 2.14"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "capybara"
-  spec.add_development_dependency "poltergeist"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "codeclimate-test-reporter"
   spec.add_development_dependency "webmock"
+  spec.add_development_dependency "shoulda-matchers"
+  spec.add_development_dependency "factory_girl_rails", "~> 4.3"
 
+  # Dependencies for the dummy test app
   spec.add_development_dependency "rails", "3.2.15"
   spec.add_development_dependency "jquery-rails"
   spec.add_development_dependency "sqlite3"
