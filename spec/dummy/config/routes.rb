@@ -1,11 +1,6 @@
 Dummy::Application.routes.draw do
   devise_for :users
 
-  devise_scope :users do
-    get 'sign_in', :to => 'devise/sessions#new', :as => :new_session
-    get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_session
-  end
-
   root to: 'home#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.
