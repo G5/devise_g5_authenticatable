@@ -1,13 +1,15 @@
 require 'spec_helper'
 
 describe Devise::G5SessionsController do
-  before { request.env['devise.mapping'] = Devise.mappings[:user] }
+  before { request.env['devise.mapping'] = Devise.mappings[scope] }
+
+  let(:scope) { :user }
 
   describe '#new' do
-    subject(:get_new) { get :new }
+    subject(:new_session) { get :new }
 
     it 'should redirect to the g5 authorize path' do
-      get_new
+      new_session
       expect(response).to redirect_to(user_g5_authorize_path)
     end
   end
@@ -22,6 +24,100 @@ describe Devise::G5SessionsController do
   end
 
   describe '#create' do
+    subject(:create_session) { post :create }
+
+    let(:auth_hash) do
+      OmniAuth::AuthHash.new({
+        provider: 'g5',
+        uid: '45',
+        info: {name: 'Foo Bar',
+               email: 'foo@bar.com'},
+        credentials: {token: 'abc123'}
+      })
+    end
+    before { request.env['omniauth.auth'] = auth_hash }
+
+    context 'when local model exists' do
+      let(:model) do
+        stub_model(model_class, provider: auth_hash.provider,
+                         uid: auth_hash.uid,
+                         email: auth_hash.email,
+                         g5_access_token: auth_hash.credentials.token,
+                         save!: true,
+                         update_g5_credentials: true,
+                         email_changed?: false)
+      end
+      before { model_class.stub(find_and_update_for_g5_oauth: model) }
+
+      context 'with user scope' do
+        let(:model_class) { User }
+        let(:scope) { :user }
+
+        it 'should find the user and update the oauth credentials' do
+          User.should_receive(:find_and_update_for_g5_oauth).with(auth_hash).and_return(model)
+          create_session
+        end
+
+        it 'should set the flash message' do
+          create_session
+          expect(flash[:notice]).to eq('Signed in successfully.')
+        end
+
+        it 'should sign in the user' do
+          expect { create_session }.to change { controller.current_user }.from(nil).to(model)
+        end
+
+        it 'should redirect the user' do
+          create_session
+          expect(response).to be_a_redirect
+        end
+      end
+
+      context 'with admin scope' do
+        let(:model_class) { Admin }
+        let(:scope) { :admin }
+
+        it 'should find the admin and update the oauth credentials' do
+          Admin.should_receive(:find_and_update_for_g5_oauth).with(auth_hash).and_return(model)
+          create_session
+        end
+
+        it 'should sign in the admin' do
+          expect { create_session }.to change { controller.current_admin }.from(nil).to(model)
+        end
+      end
+    end
+
+    context 'when local model does not exist' do
+      before { model_class.stub(find_and_update_for_g5_oauth: nil) }
+
+      context 'with user scope' do
+        let(:scope) { :user }
+        let(:model_class) { User }
+
+        it 'should set the flash message' do
+          create_session
+          expect(flash[:error]).to eq('You must sign up before continuing.')
+        end
+
+        it 'should not sign in a user' do
+          expect { create_session }.to_not change { controller.current_user }
+        end
+
+        it 'should redirect to the user registration path' do
+          expect(create_session).to redirect_to(new_user_registration_path)
+        end
+      end
+
+      context 'with admin scope' do
+        let(:scope) { :admin }
+        let(:model_class) { Admin }
+
+        it 'should redirect to the admin registration path' do
+          expect(create_session).to redirect_to(new_admin_registration_path)
+        end
+      end
+    end
   end
 
   describe '#failure' do

@@ -1,0 +1,5 @@
+en:
+  devise:
+    g5_sessions:
+      signed_in: 'Signed in successfully.'
+      not_found: 'You must sign up before continuing.'
