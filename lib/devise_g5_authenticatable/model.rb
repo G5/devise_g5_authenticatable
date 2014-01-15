@@ -61,6 +61,30 @@ module Devise
 
         valid
       end
+
+      def update_g5_credentials(oauth_data)
+        self.g5_access_token = oauth_data.credentials.token
+      end
+
+      def revoke_g5_credentials!
+        self.g5_access_token = nil
+        save!
+      end
+
+      module ClassMethods
+        def find_for_g5_oauth(oauth_data)
+          find_by_provider_and_uid(oauth_data.provider, oauth_data.uid)
+        end
+
+        def find_and_update_for_g5_oauth(oauth_data)
+          resource = find_for_g5_oauth(oauth_data)
+          if resource
+            resource.update_g5_credentials(oauth_data)
+            resource.save!
+          end
+          resource
+        end
+      end
     end
   end
 end
