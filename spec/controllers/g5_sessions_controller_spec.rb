@@ -6,14 +6,18 @@ describe Devise::G5SessionsController do
   describe '#new' do
     subject(:get_new) { get :new }
 
-    it 'should return a 404 to trigger OmniAuth' do
-      get_new
-      expect(response).to be_not_found
-    end
-
     it 'should redirect to the g5 authorize path' do
       get_new
-      expect(response.body).to eq('Not found. Authentication passthru.')
+      expect(response).to redirect_to(user_g5_authorize_path)
+    end
+  end
+
+  describe '#passthru' do
+    subject(:passthru) { get :passthru }
+
+    it 'should return a 404' do
+      passthru
+      expect(response).to be_not_found
     end
   end
 

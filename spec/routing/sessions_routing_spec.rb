@@ -15,12 +15,12 @@ describe 'Sessions controller' do
 
       it 'should route GET /users/auth/g5' do
         expect(get '/users/auth/g5').to route_to(controller: 'devise/g5_sessions',
-                                                 action: 'new')
+                                                 action: 'passthru')
       end
 
       it 'should route POST /users/auth/g5' do
         expect(post '/users/auth/g5').to route_to(controller: 'devise/g5_sessions',
-                                                  action: 'new')
+                                                  action: 'passthru')
       end
 
       it 'should route GET /users/auth/g5/callback' do
@@ -47,12 +47,12 @@ describe 'Sessions controller' do
 
       it 'should route GET /registered/admins/auth/g5' do
         expect(get '/registered/admins/auth/g5').to route_to(controller: 'custom_sessions',
-                                                             action: 'new')
+                                                             action: 'passthru')
       end
 
       it 'should route POST /registered/admins/auth/g5' do
         expect(post '/registered/admins/auth/g5').to route_to(controller: 'custom_sessions',
-                                                             action: 'new')
+                                                             action: 'passthru')
       end
 
       it 'should route GET /registered/admins/auth/g5/callback' do
