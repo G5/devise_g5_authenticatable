@@ -10,7 +10,7 @@ module ActionDispatch::Routing
 
       match 'auth/g5',
         controller: controllers[:g5_sessions],
-        action: 'passthru',
+        action: 'omniauth_passthru',
         as: :g5_authorize,
         via: [:get, :post]
 

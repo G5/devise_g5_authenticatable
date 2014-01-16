@@ -1,23 +1,22 @@
 module Devise
-  class G5SessionsController < Devise::OmniauthCallbacksController
+  class G5SessionsController < DeviseController
     def new
-      redirect_to user_g5_authorize_path
+      redirect_to g5_authorize_path(resource_name)
+    end
+
+    def omniauth_passthru
+      render status: 404, text: 'Authentication passthru.'
     end
 
     def create
       self.resource = resource_class.find_and_update_for_g5_oauth(auth_data)
-
-      if resource.present?
-        sign_in_resource
-      else
-        register_resource
-      end
+      resource ? sign_in_resource : register_resource
     end
 
     def destroy
       signed_in_resource.revoke_g5_credentials!
-      sign_out_resource
-      redirect_to auth_client.sign_out_url(after_sign_out_redirect_url)
+      local_sign_out
+      remote_sign_out
     end
 
     protected
@@ -35,12 +34,14 @@ module Devise
       redirect_to(new_registration_path(resource_name))
     end
 
-    def sign_out_resource
+    def local_sign_out
       Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
     end
 
-    def after_sign_out_redirect_url
-      "#{request.base_url}#{after_sign_out_path_for(resource_name)}"
+    def remote_sign_out
+      redirect_url =  URI.join(request.base_url,
+                               after_sign_out_path_for(resource_name))
+      redirect_to auth_client.sign_out_url(redirect_url.to_s)
     end
 
     def auth_client

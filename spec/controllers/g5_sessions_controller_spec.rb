@@ -2,24 +2,31 @@ require 'spec_helper'
 
 describe Devise::G5SessionsController do
   before { request.env['devise.mapping'] = Devise.mappings[scope] }
-
   let(:scope) { :user }
 
   describe '#new' do
     subject(:new_session) { get :new }
 
-    it 'should redirect to the g5 authorize path' do
-      new_session
-      expect(response).to redirect_to(user_g5_authorize_path)
+    context 'with user scope' do
+      it 'should redirect to the scoped authorize path' do
+        expect(new_session).to redirect_to(user_g5_authorize_path)
+      end
+    end
+
+    context 'with admin scope' do
+      let(:scope) { :admin }
+
+      it 'should redirect to the scoped authorize path' do
+        expect(new_session).to redirect_to(admin_g5_authorize_path)
+      end
     end
   end
 
-  describe '#passthru' do
-    subject(:passthru) { get :passthru }
+  describe '#omniauth_passthru' do
+    subject(:passthru) { get :omniauth_passthru }
 
     it 'should return a 404' do
-      passthru
-      expect(response).to be_not_found
+      expect(passthru).to be_not_found
     end
   end
 
@@ -118,9 +125,6 @@ describe Devise::G5SessionsController do
         end
       end
     end
-  end
-
-  describe '#failure' do
   end
 
   describe '#destroy' do
