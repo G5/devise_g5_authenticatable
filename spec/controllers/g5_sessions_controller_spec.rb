@@ -132,32 +132,48 @@ describe Devise::G5SessionsController do
       allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
     end
 
-    let(:user) { create(:user) }
+    let(:model) { create(scope) }
 
     before do
-      sign_in user
-      allow(user).to receive(:revoke_g5_credentials!)
+      sign_in(scope, model)
+      allow(model).to receive(:revoke_g5_credentials!)
     end
 
-    xit 'should sign out the user locally' do
-      destroy_session
-      expect(controller.current_user).to be_nil
+    context 'with user scope' do
+      let(:scope) { :user }
+
+      it 'should sign out the user locally' do
+        expect { destroy_session }.to change { controller.current_user }.to(nil)
+      end
+
+      it 'should construct the sign out URL with the correct redirect URL' do
+        expect(auth_client).to receive(:sign_out_url).
+          with(root_url).
+          and_return(auth_sign_out_url)
+        destroy_session
+      end
+
+      it 'should redirect to the auth server to sign out globally' do
+        expect(destroy_session).to redirect_to(auth_sign_out_url)
+      end
+
+      it 'should revoke the g5 access token' do
+        expect(controller.current_user).to receive(:revoke_g5_credentials!)
+        destroy_session
+      end
     end
 
-    xit 'should construct the sign out URL with the correct redirect URL' do
-      expect(auth_client).to receive(:sign_out_url).
-        with(root_url).
-        and_return(auth_sign_out_url)
-      destroy_session
-    end
+    context 'with admin scope' do
+      let(:scope) { :admin }
 
-    xit 'should redirect to the auth server to sign out globally' do
-      expect(destroy_session).to redirect_to(auth_sign_out_url)
-    end
+      it 'should sign out the admin locally' do
+        expect { destroy_session }.to change { controller.current_admin }.to(nil)
+      end
 
-    xit 'should revoke the g5 access token' do
-      expect(controller.current_user).to receive(:revoke_g5_credentials!)
-      destroy_session
+      it 'should revoke the g5 access token' do
+        expect(controller.current_admin).to receive(:revoke_g5_credentials!)
+        destroy_session
+      end
     end
   end
 end
