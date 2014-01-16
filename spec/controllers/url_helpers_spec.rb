@@ -60,4 +60,88 @@ describe DeviseG5Authenticatable::UrlHelpers do
       it { should == admin_g5_callback_path }
     end
   end
+
+  describe '#new_session_path' do
+    subject(:new_session_path) { controller.new_session_path(resource_or_scope) }
+
+    context 'with user resource' do
+      let(:resource_or_scope) { build_stubbed(:user) }
+
+      it { should == new_user_session_path }
+    end
+
+    context 'with admin resource' do
+      let(:resource_or_scope) { build_stubbed(:admin) }
+
+      it { should == new_admin_session_path }
+    end
+
+    context 'with user scope' do
+      let(:resource_or_scope) { :user }
+
+      it { should == new_user_session_path }
+    end
+
+    context 'with admin scope' do
+      let(:resource_or_scope) { :admin }
+
+      it { should == new_admin_session_path }
+    end
+  end
+
+  describe '#create_session_path' do
+    subject(:create_session_path) { controller.create_session_path(resource_or_scope) }
+
+    context 'with user resource' do
+      let(:resource_or_scope) { build_stubbed(:user) }
+
+      it { should == create_user_session_path }
+    end
+
+    context 'with admin resource' do
+      let(:resource_or_scope) { build_stubbed(:admin) }
+
+      it { should == create_admin_session_path }
+    end
+
+    context 'with user scope' do
+      let(:resource_or_scope) { :user }
+
+      it { should == create_user_session_path }
+    end
+
+    context 'with admin scope' do
+      let(:resource_or_scope) { :admin }
+
+      it { should == create_admin_session_path }
+    end
+  end
+
+  describe '#destroy_session_path' do
+    subject(:new_session_path) { controller.destroy_session_path(resource_or_scope) }
+
+    context 'with user resource' do
+      let(:resource_or_scope) { build_stubbed(:user) }
+
+      it { should == destroy_user_session_path }
+    end
+
+    context 'with admin resource' do
+      let(:resource_or_scope) { build_stubbed(:admin) }
+
+      it { should == destroy_admin_session_path }
+    end
+
+    context 'with user scope' do
+      let(:resource_or_scope) { :user }
+
+      it { should == destroy_user_session_path }
+    end
+
+    context 'with admin scope' do
+      let(:resource_or_scope) { :admin }
+
+      it { should == destroy_admin_session_path }
+    end
+  end
 end
