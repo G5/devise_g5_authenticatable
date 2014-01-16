@@ -4,32 +4,32 @@ describe 'Sessions controller' do
   describe 'routing' do
     context 'with user scope' do
       it 'should route GET /users/sign_in' do
-        expect(get '/users/sign_in').to route_to(controller: 'devise/g5_sessions',
+        expect(get '/users/sign_in').to route_to(controller: 'devise/sessions',
                                                  action: 'new')
       end
 
       it 'should route DELETE /users/sign_out' do
-        expect(delete '/users/sign_out').to route_to(controller: 'devise/g5_sessions',
+        expect(delete '/users/sign_out').to route_to(controller: 'devise/sessions',
                                                      action: 'destroy')
       end
 
       it 'should route GET /users/auth/g5' do
-        expect(get '/users/auth/g5').to route_to(controller: 'devise/g5_sessions',
+        expect(get '/users/auth/g5').to route_to(controller: 'devise/sessions',
                                                  action: 'omniauth_passthru')
       end
 
       it 'should route POST /users/auth/g5' do
-        expect(post '/users/auth/g5').to route_to(controller: 'devise/g5_sessions',
+        expect(post '/users/auth/g5').to route_to(controller: 'devise/sessions',
                                                   action: 'omniauth_passthru')
       end
 
       it 'should route GET /users/auth/g5/callback' do
-        expect(get '/users/auth/g5/callback').to route_to(controller: 'devise/g5_sessions',
+        expect(get '/users/auth/g5/callback').to route_to(controller: 'devise/sessions',
                                                           action: 'create')
       end
 
       it 'should route POST /users/auth/g5/callback' do
-        expect(post '/users/auth/g5/callback').to route_to(controller: 'devise/g5_sessions',
+        expect(post '/users/auth/g5/callback').to route_to(controller: 'devise/sessions',
                                                            action: 'create')
       end
     end

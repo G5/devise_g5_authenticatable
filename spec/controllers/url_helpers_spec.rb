@@ -89,34 +89,6 @@ describe DeviseG5Authenticatable::UrlHelpers do
     end
   end
 
-  describe '#create_session_path' do
-    subject(:create_session_path) { controller.create_session_path(resource_or_scope) }
-
-    context 'with user resource' do
-      let(:resource_or_scope) { build_stubbed(:user) }
-
-      it { should == create_user_session_path }
-    end
-
-    context 'with admin resource' do
-      let(:resource_or_scope) { build_stubbed(:admin) }
-
-      it { should == create_admin_session_path }
-    end
-
-    context 'with user scope' do
-      let(:resource_or_scope) { :user }
-
-      it { should == create_user_session_path }
-    end
-
-    context 'with admin scope' do
-      let(:resource_or_scope) { :admin }
-
-      it { should == create_admin_session_path }
-    end
-  end
-
   describe '#destroy_session_path' do
     subject(:new_session_path) { controller.destroy_session_path(resource_or_scope) }
 
@@ -142,6 +114,34 @@ describe DeviseG5Authenticatable::UrlHelpers do
       let(:resource_or_scope) { :admin }
 
       it { should == destroy_admin_session_path }
+    end
+  end
+
+  describe '#session_path' do
+    subject(:session_path) { controller.session_path(resource_or_scope) }
+
+    context 'with user resource' do
+      let(:resource_or_scope) { build_stubbed(:user) }
+
+      it { should == user_session_path }
+    end
+
+    context 'with admin resource' do
+      let(:resource_or_scope) { build_stubbed(:admin) }
+
+      it { should == admin_session_path }
+    end
+
+    context 'with user scope' do
+      let(:resource_or_scope) { :user }
+
+      it { should == user_session_path }
+    end
+
+    context 'with admin scope' do
+      let(:resource_or_scope) { :admin }
+
+      it { should == admin_session_path }
     end
   end
 end

@@ -1,5 +1,5 @@
 module Devise
-  class G5SessionsController < DeviseController
+  class SessionsController < Devise::OmniauthCallbacksController
     def new
       redirect_to g5_authorize_path(resource_name)
     end

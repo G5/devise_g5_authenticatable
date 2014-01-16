@@ -10,6 +10,6 @@ require 'devise_g5_authenticatable/engine'
 
 Devise.add_module(:g5_authenticatable,
                   strategy: false,
-                  route: :g5_authenticatable,
-                  controller: :g5_sessions,
+                  route: {session: [nil, :new, :destroy]},
+                  controller: :sessions,
                   model: 'devise_g5_authenticatable/model')

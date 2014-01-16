@@ -3,7 +3,7 @@ Dummy::Application.routes.draw do
 
   devise_for :admins,
              path_prefix: 'registered',
-             controllers: {g5_sessions: 'custom_sessions'}
+             controllers: {sessions: 'custom_sessions'}
 
   root to: 'home#index'
   # The priority is based upon order of creation:
