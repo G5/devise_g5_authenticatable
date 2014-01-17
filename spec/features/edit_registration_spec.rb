@@ -13,7 +13,7 @@ describe 'Editing a user registration' do
   end
 
   before do
-    visit_path_and_login_with(edit_user_registration_path(user), user)
+    visit_path_and_login_with(edit_user_registration_path, user)
     fill_in 'Email', with: email
     fill_in 'Password', with: password
     fill_in 'Password confirmation', with: password_confirmation
