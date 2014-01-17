@@ -114,6 +114,10 @@ describe Devise::SessionsController do
         it 'should redirect to the user registration path' do
           expect(create_session).to redirect_to(new_user_registration_path)
         end
+
+        it 'should set the auth data on the session' do
+          expect { create_session }.to change { session['omniauth.auth'] }.to(auth_hash)
+        end
       end
 
       context 'with admin scope' do
@@ -122,6 +126,10 @@ describe Devise::SessionsController do
 
         it 'should redirect to the admin registration path' do
           expect(create_session).to redirect_to(new_admin_registration_path)
+        end
+
+        it 'should set the auth data on the session' do
+          expect { create_session }.to change { session['omniauth.auth'] }.to(auth_hash)
         end
       end
     end

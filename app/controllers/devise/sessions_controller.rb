@@ -1,5 +1,5 @@
 module Devise
-  class SessionsController < Devise::OmniauthCallbacksController
+  class SessionsController < DeviseController
     def new
       redirect_to g5_authorize_path(resource_name)
     end
@@ -22,6 +22,7 @@ module Devise
     protected
     def auth_data
       @auth_data ||= request.env['omniauth.auth']
+      session['omniauth.auth'] = @auth_data
     end
 
     def sign_in_resource

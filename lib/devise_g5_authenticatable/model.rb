@@ -84,6 +84,17 @@ module Devise
           end
           resource
         end
+
+        def new_with_session(params, session)
+          defaults = ActiveSupport::HashWithIndifferentAccess.new
+          if auth_data = session && session['omniauth.auth']
+            defaults[:email] = auth_data.info.email
+            defaults[:provider] = auth_data.provider
+            defaults[:uid] = auth_data.uid
+          end
+
+          new(defaults.merge(params))
+        end
       end
     end
   end

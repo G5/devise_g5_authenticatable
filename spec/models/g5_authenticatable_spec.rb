@@ -460,4 +460,63 @@ describe Devise::Models::G5Authenticatable do
       end
     end
   end
+
+  describe '#new_with_session' do
+    subject(:new_with_session) { model_class.new_with_session(params, session) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new({
+        provider: 'g5',
+        uid: '123999',
+        info: {name: 'Foo Bar',
+               email: 'foo@bar.com'},
+        credentials: {token: 'abc123'}
+      })
+    end
+
+    context 'with params' do
+      let(:params) { {'email' => email_param} }
+      let(:email_param) { 'my.email.param@test.host' }
+
+      context 'with session data' do
+        let(:session) { {'omniauth.auth' => auth_data} }
+
+        it { should be_new_record }
+        its(:email) { should == email_param }
+        its(:provider) { should == auth_data.provider }
+        its(:uid) { should == auth_data.uid }
+      end
+
+      context 'without session data' do
+        let(:session) { Hash.new }
+
+        it { should be_new_record }
+        its(:email) { should == email_param }
+        its(:provider) { should be_nil }
+        its(:uid) { should be_nil }
+      end
+    end
+
+    context 'without params' do
+      let(:params) { Hash.new }
+
+      context 'with session data' do
+        let(:session) { {'omniauth.auth' => auth_data} }
+
+        it { should be_new_record }
+        its(:email) { should == auth_data.info[:email] }
+        its(:provider) { should == auth_data.provider }
+        its(:uid) { should == auth_data.uid }
+      end
+
+      context 'without session data' do
+        let(:session) { Hash.new }
+
+        it { should be_new_record }
+        its(:email) { should be_blank }
+        its(:provider) { should be_nil }
+        its(:uid) { should be_nil }
+      end
+    end
+  end
 end
