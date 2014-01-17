@@ -30,7 +30,7 @@ module Devise
     end
 
     def register_resource
-      set_flash_message(:error, :not_found) if is_navigational_format?
+      set_flash_message(:alert, :not_found) if is_navigational_format?
       redirect_to(new_registration_path(resource_name))
     end
 

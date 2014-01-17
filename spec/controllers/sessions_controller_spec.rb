@@ -104,7 +104,7 @@ describe Devise::SessionsController do
 
         it 'should set the flash message' do
           create_session
-          expect(flash[:error]).to eq('You must sign up before continuing.')
+          expect(flash[:alert]).to eq('You must sign up before continuing.')
         end
 
         it 'should not sign in a user' do

@@ -32,6 +32,10 @@ describe 'Sessions controller' do
         expect(post '/users/auth/g5/callback').to route_to(controller: 'devise/sessions',
                                                            action: 'create')
       end
+
+      it 'should set the OmniAuth path prefix' do
+        expect(OmniAuth.config.path_prefix).to eq('/users/auth')
+      end
     end
 
     context 'with admin scope' do
@@ -67,7 +71,7 @@ describe 'Sessions controller' do
     end
   end
 
-  describe 'url helpers' do
+  describe 'generated url helpers' do
     context 'with user scope' do
       it 'should generate new_user_session_path' do
         expect(new_user_session_path).to eq('/users/sign_in')

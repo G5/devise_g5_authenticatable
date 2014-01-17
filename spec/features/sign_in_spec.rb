@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Signing in' do
   context 'when visiting a protected page' do
-    let(:protected_path) { edit_user_registration_path(user) }
+    let(:protected_path) { edit_user_registration_path }
 
     context 'with valid credentials' do
       before do

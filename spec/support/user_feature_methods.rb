@@ -19,8 +19,8 @@ module UserFeatureMethods
 end
 
 RSpec.configure do |config|
-  config.before(:each, type: 'feature') { OmniAuth.config.test_mode = true }
-  config.after(:each, type: 'feature') { OmniAuth.config.test_mode = false }
+  config.before(:each) { OmniAuth.config.test_mode = true }
+  config.after(:each) { OmniAuth.config.test_mode = false }
 
   config.include UserFeatureMethods, type: :feature
 end
