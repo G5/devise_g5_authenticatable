@@ -38,7 +38,7 @@ RSpec.configure do |config|
 
   # The integration tests can be run with:
   # rspec -t type:feature
-  config.filter_run_excluding type: 'feature'
+  # config.filter_run_excluding type: 'feature'
 
   config.after(:suite) { WebMock.disable! }
 end
