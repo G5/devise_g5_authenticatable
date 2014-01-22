@@ -4,6 +4,7 @@ require 'devise'
 
 require 'devise_g5_authenticatable/omniauth'
 require 'devise_g5_authenticatable/routes'
+require 'devise_g5_authenticatable/controllers/helpers'
 require 'devise_g5_authenticatable/controllers/url_helpers'
 
 require 'devise_g5_authenticatable/engine'
