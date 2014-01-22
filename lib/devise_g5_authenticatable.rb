@@ -1,8 +1,8 @@
 require 'devise_g5_authenticatable/version'
 
 require 'devise'
-require 'omniauth-g5'
 
+require 'devise_g5_authenticatable/omniauth'
 require 'devise_g5_authenticatable/routes'
 require 'devise_g5_authenticatable/controllers/url_helpers'
 

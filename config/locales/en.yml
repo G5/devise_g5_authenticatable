@@ -3,3 +3,4 @@ en:
     sessions:
       signed_in: 'Signed in successfully.'
       not_found: 'You must sign up before continuing.'
+      failure: 'Could not authenticate you from %{kind} because "%{reason}".'

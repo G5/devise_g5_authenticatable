@@ -47,8 +47,8 @@ describe 'Signing in' do
 
       let(:user) { create(:user) }
 
-      xit 'should display an error' do
-        expect(page).to have_content('Invalid email or password.')
+      it 'should display an error' do
+        expect(page).to have_content('Invalid credentials')
       end
     end
   end

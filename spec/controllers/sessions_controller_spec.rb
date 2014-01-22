@@ -188,4 +188,69 @@ describe Devise::SessionsController do
       end
     end
   end
+
+  describe '#failure' do
+    subject(:failure) do
+      # We need some trickery here because the failure action is actually rack
+      # rather than rails
+      rack_response = described_class.action(:failure).call(request.env)
+      @response = ActionDispatch::TestResponse.from_response(rack_response.last)
+    end
+
+    before do
+      request.env['omniauth.error'] = error
+      request.env['omniauth.error.strategy'] = omniauth_strategy
+    end
+
+    let(:omniauth_strategy) { double(:omniauth_strategy, name: 'G5') }
+
+    context 'with error_reason' do
+      let(:error) { double(:error, error_reason: reason) }
+      let(:reason) { 'The error reason' }
+
+      it 'should set the flash message' do
+        failure
+        expect(flash[:alert]).to eq("Could not authenticate you from G5 because \"#{reason}\".")
+      end
+
+      it 'should be a redirect' do
+        failure
+        expect(response).to be_a_redirect
+      end
+
+      it 'should redirect to root path' do
+        failure
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'with error string' do
+      let(:error) { double(:error, error: message) }
+      let(:message) { 'The error string' }
+
+      it 'should set the flash message' do
+        failure
+        expect(flash[:alert]).to eq("Could not authenticate you from G5 because \"#{message}\".")
+      end
+
+      it 'should redirect to the root path' do
+        expect(failure).to redirect_to(root_path)
+      end
+    end
+
+    context 'with omniauth error type' do
+      before { request.env['omniauth.error.type'] = :invalid_credentials }
+      let(:humanized_type) { 'Invalid credentials' }
+      let(:error) { Object.new }
+
+      it 'should set the flash message' do
+        failure
+        expect(flash[:alert]).to eq("Could not authenticate you from G5 because \"#{humanized_type}\".")
+      end
+
+      it 'should redirect to the root path' do
+        expect(failure).to redirect_to(root_path)
+      end
+    end
+  end
 end
