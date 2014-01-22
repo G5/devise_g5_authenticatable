@@ -1,5 +1,7 @@
 module Devise
   class SessionsController < Devise::OmniauthCallbacksController
+    prepend_before_filter :require_no_authentication, only: [:new, :create]
+
     def new
       redirect_to g5_authorize_path(resource_name)
     end
