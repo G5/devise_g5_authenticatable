@@ -4,20 +4,19 @@ describe DeviseG5Authenticatable::Helpers do
   controller(ActionController::Base) do
     include Devise::Controllers::Helpers
     include DeviseG5Authenticatable::Helpers
-
-    before_filter :clear_blank_passwords, only: :index
-
-    def index
-      render status: 200, text: 'Clear passwords'
-    end
   end
-
-  before { request.env['devise.mapping'] = Devise.mappings[scope] }
-  let(:scope) { :user }
 
   describe '#clear_blank_passwords' do
     subject(:clear_passwords) { get :index, password_params }
     before { clear_passwords }
+
+    controller do
+      before_filter :clear_blank_passwords, only: :index
+
+      def index
+        render status: 200, text: 'Index'
+      end
+    end
 
     context 'when password params are populated' do
       let(:password_params) do
@@ -30,6 +29,8 @@ describe DeviseG5Authenticatable::Helpers do
           }
         }
       end
+
+      let(:scope) { :user }
 
       let(:password) { 'some_secret' }
       let(:password_confirmation) { 'some_other_secret' }
@@ -186,7 +187,79 @@ describe DeviseG5Authenticatable::Helpers do
       let(:password_params) { Hash.new }
 
       it 'should not change any params' do
-        expect(controller.params[scope]).to be_nil
+        expect(controller.params[:user]).to be_nil
+      end
+    end
+  end
+
+  describe '#set_updated_by_user' do
+    subject(:set_updated_by_user) { post :create, user_params }
+
+    controller do
+      define_helpers(:user)
+      define_helpers(:admin)
+
+      before_filter :set_updated_by_user, only: :create
+
+      def create
+        render status: 200, text: 'Create'
+      end
+    end
+
+    before { sign_in :user, current_user }
+    let(:current_user) { create(:user) }
+
+    before { set_updated_by_user }
+
+    context 'when there is a user param' do
+      let(:user_params) { {user: attributes_for(:user)} }
+
+      it 'should set the user updated_by' do
+        expect(controller.params[:user][:updated_by]).to eq(current_user)
+      end
+    end
+
+    context 'when there is no user param' do
+      let(:user_params) { Hash.new }
+
+      it 'should set the updated_by' do
+        expect(controller.params[:updated_by]).to eq(current_user)
+      end
+    end
+  end
+
+  describe '#set_updated_by_admin' do
+    subject(:set_updated_by_admin) { post :create, admin_params }
+
+    controller do
+      define_helpers(:user)
+      define_helpers(:admin)
+
+      before_filter :set_updated_by_admin, only: :create
+
+      def create
+        render status: 200, text: 'Create'
+      end
+    end
+
+    before { sign_in :admin, current_admin }
+    let(:current_admin) { create(:admin) }
+
+    before { set_updated_by_admin }
+
+    context 'when there is an admin param' do
+      let(:admin_params) { {admin: attributes_for(:admin)} }
+
+      it 'should set the admin updated_by' do
+        expect(controller.params[:admin][:updated_by]).to eq(current_admin)
+      end
+    end
+
+    context 'when there is no admin param' do
+      let(:admin_params) { Hash.new }
+
+      it 'should set the updated_by' do
+        expect(controller.params[:updated_by]).to eq(current_admin)
       end
     end
   end

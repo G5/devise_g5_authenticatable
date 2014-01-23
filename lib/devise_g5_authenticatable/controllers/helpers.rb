@@ -1,5 +1,7 @@
 module DeviseG5Authenticatable
   module Helpers
+    extend ActiveSupport::Concern
+
     protected
     def clear_blank_passwords
       Devise.mappings.keys.each do |scope|
@@ -15,6 +17,17 @@ module DeviseG5Authenticatable
 
     def clear_blank_param(scope, param_name)
       params[scope].delete(param_name) if params[scope][param_name].blank?
+    end
+
+    module ClassMethods
+      def define_helpers(mapping)
+        class_eval <<-METHODS, __FILE__, __LINE__ + 1
+          def set_updated_by_#{mapping}
+            resource_params = params[:#{mapping}] || params
+            resource_params[:updated_by] = current_#{mapping}
+          end
+        METHODS
+      end
     end
   end
 end
