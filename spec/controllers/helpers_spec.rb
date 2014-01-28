@@ -263,4 +263,33 @@ describe DeviseG5Authenticatable::Helpers do
       end
     end
   end
+
+  describe '#handle_resource_error' do
+    subject(:action_with_error) { post :create }
+
+    before { request.env['devise.mapping'] = Devise.mappings[:user] }
+
+    controller(DeviseController) do
+      rescue_from ActiveRecord::RecordNotSaved, with: :handle_resource_error
+
+      def create
+        self.resource = resource_class.new
+        raise ActiveRecord::RecordNotSaved.new('my_error')
+      end
+    end
+
+    before { action_with_error }
+
+    it 'should be successful' do
+      expect(response).to be_success
+    end
+
+    it 'should set the base error on the resource' do
+      expect(controller.resource.errors[:base]).to eq(['my_error'])
+    end
+
+    it 'should render the model creation form' do
+      expect(response).to render_template('anonymous/new')
+    end
+  end
 end

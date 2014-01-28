@@ -1,3 +1,23 @@
+module Devise
+  class Mapping
+    alias :original_initialize :initialize
+
+    def initialize(name, options)
+      set_default_g5_controllers(options)
+      original_initialize(name, options)
+    end
+
+    private
+    def set_default_g5_controllers(options)
+      options[:controllers] ||= {}
+      options[:controllers].reverse_merge!({
+        registrations: 'devise_g5_authenticatable/registrations'
+      })
+      options
+    end
+  end
+end
+
 module ActionDispatch::Routing
   class Mapper
     protected
