@@ -39,13 +39,13 @@ describe 'Sessions controller' do
     end
 
     context 'with admin scope' do
-      it 'should route GET /registered/admins/sign_in' do
-        expect(get '/registered/admins/sign_in').to route_to(controller: 'custom_sessions',
+      it 'should route GET /registered/admins/custom_sign_in' do
+        expect(get '/registered/admins/custom_sign_in').to route_to(controller: 'custom_sessions',
                                                       action: 'new')
       end
 
-      it 'should route DELETE /registered/admins/sign_out' do
-        expect(delete '/registered/admins/sign_out').to route_to(controller: 'custom_sessions',
+      it 'should route DELETE /registered/admins/custom_sign_out' do
+        expect(delete '/registered/admins/custom_sign_out').to route_to(controller: 'custom_sessions',
                                                           action: 'destroy')
       end
 
@@ -92,11 +92,11 @@ describe 'Sessions controller' do
 
     context 'with admin scope' do
       it 'should route new_admin_session_path' do
-        expect(new_admin_session_path).to eq('/registered/admins/sign_in')
+        expect(new_admin_session_path).to eq('/registered/admins/custom_sign_in')
       end
 
       it 'should route destroy_admin_session_path' do
-        expect(destroy_admin_session_path).to eq('/registered/admins/sign_out')
+        expect(destroy_admin_session_path).to eq('/registered/admins/custom_sign_out')
       end
 
       it 'should generate admin_g5_authorize_path' do

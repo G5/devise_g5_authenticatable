@@ -5,7 +5,9 @@ Dummy::Application.routes.draw do
              path_prefix: 'registered',
              controllers: {sessions: 'custom_sessions',
                            registrations: 'custom_registrations'},
-             path_names: {sign_up: 'custom_sign_up',
+             path_names: {sign_in: 'custom_sign_in',
+                          sign_out: 'custom_sign_out',
+                          sign_up: 'custom_sign_up',
                           cancel: 'custom_cancel'}
 
   root to: 'home#index'
