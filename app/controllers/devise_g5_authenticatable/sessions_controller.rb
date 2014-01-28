@@ -1,4 +1,4 @@
-module Devise
+module DeviseG5Authenticatable
   class SessionsController < Devise::OmniauthCallbacksController
     prepend_before_filter :require_no_authentication, only: [:new, :create]
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Devise::SessionsController do
+describe DeviseG5Authenticatable::SessionsController do
   before { request.env['devise.mapping'] = Devise.mappings[scope] }
   let(:scope) { :user }
 

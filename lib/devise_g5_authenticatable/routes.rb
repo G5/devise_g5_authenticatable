@@ -11,7 +11,8 @@ module Devise
     def set_default_g5_controllers(options)
       options[:controllers] ||= {}
       options[:controllers].reverse_merge!({
-        registrations: 'devise_g5_authenticatable/registrations'
+        registrations: 'devise_g5_authenticatable/registrations',
+        sessions: 'devise_g5_authenticatable/sessions'
       })
       options
     end
