@@ -51,12 +51,14 @@ Or install it yourself as:
    For non-production environments, this redirect URI does not have to
    be publicly accessible, but it must be accessible from the browser
    where you will be testing (so using something like
-   `http://localhost:3000/users/auth/g5/callback` is fine if your browser
+   http://localhost:3000/users/auth/g5/callback is fine if your browser
    and client application server are both local).
 6. For a trusted G5 application, check the "Auto-authorize?" checkbox. This
    skips the OAuth authorization step where the user is prompted to explicitly
    authorize the client application to access the user's data.
 7. Click "Submit" to obtain the client application's credentials.
+
+### Environment variables
 
 Once you have your OAuth 2.0 credentials, you'll need to set the following
 environment variables for your client application:
