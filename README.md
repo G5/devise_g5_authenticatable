@@ -1,8 +1,5 @@
 # Devise G5 Authenticatable
 
-[![Build Status](https://circleci.com/gh/g5search/devise_g5_authenticatable.png
-)](https://circleci.com/gh/g5search/devise_g5_authenticatable)
-
 Devise G5 Authenticatable extends devise to provide an
 [OAuth 2.0](http://oauth.net/2)-based authentication strategy and remote 
 credential management via [G5 Auth](https://github.com/g5search/g5-authentication).
