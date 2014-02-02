@@ -17,7 +17,10 @@ G5 users.
 
 ## Requirements
 
-* [Devise](https://github.com/plataformatec/devise) ~> 3.1
+* [Rails](https://github.com/rails/rails) >= 3.2
+* [Devise](https://github.com/plataformatec/devise) ~> 3.0
+* [G5 Authentication Client](https://github.com/g5search/g5_authentication_client)
+* [G5 OmniAuth Strategy](https://github.com/g5search/omniauth-g5)
 
 ## Installation
 
@@ -35,11 +38,79 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Registering your OAuth application
+
+1. Visit the auth server admin console:
+  * For development, visit https://dev-auth.g5search.com/admin
+  * For production, visit https://auth.g5search.com/admin
+2. Login as the default admin (for credentials, see
+   Brian Ricker or Chris Kraybill).
+3. Click "New Application"
+4. Enter a name that recognizably identifies your application.
+5. Enter the redirect URI where the auth server should redirect
+   after the user successfully authenticates. It will generally be
+   of the form `http://<apphost>/<devise_path>/auth/g5/callback`.
+
+   For non-production environments, this redirect URI does not have to
+   be publicly accessible, but it must be accessible from the browser 
+   where you will be testing (so using something like 
+   `http://localhost:3000/users/auth/g5/callback` is fine if your browser
+   and client application server are both local).
+6. For a trusted G5 application, check the "Auto-authorize?" checkbox. This
+   skips the OAuth authorization step where the user is prompted to explicitly
+   authorize the client application to access the user's data.
+7. Click "Submit" to obtain the client application's credentials.
+
+Once you have your OAuth 2.0 credentials, you'll need to set the following 
+environment variables for your client application:
+
+* `G5_AUTH_CLIENT_ID` - the OAuth 2.0 application ID from the auth server
+* `G5_AUTH_CLIENT_SECRET` - the OAuth 2.0 application secret from the auth server
+* `G5_AUTH_REDIRECT_URI` - the OAuth 2.0 redirect URI registered with the auth server
+* `G5_AUTH_ENDPOINT` - the endpoint URLfor the G5 auth server
+
+### Configuration
+
+In `config/initializers/devise.rb`, add the following:
+
+```ruby
+Devise.setup do |config|
+  # ...
+  config.omniauth :g5, ENV['G5_AUTH_CLIENT_ID'], ENV['G5_AUTH_CLIENT_SECRET'],
+              client_options: {site: ENV['G5_AUTH_ENDPOINT']}
+end
+```
+
+Create `config/initializers/g5_auth.rb` with the following:
+
+```ruby
+G5AuthenticationClient.configure do |defaults|
+  defaults.client_id = ENV['G5_AUTH_CLIENT_ID']
+  defaults.client_secret = ENV['G5_AUTH_CLIENT_SECRET']
+  defaults.redirect_uri = ENV['G5_AUTH_REDIRECT_URI']
+  defaults.endpoint = ENV['G5_AUTH_ENDPOINT']
+end
+```
+
+### Including the module
+
+In your User model (or whatever model you've configured for use with devise):
+
+```ruby
+class User < ActiveRecord::Base
+  devise :g5_authenticatable # plus whatever other devise modules you'd like
+end
+```
+
+### Routing
+
+TODO
+
+### Helpers
+
+TODO
 
 ## Examples
-
-TODO: Write examples here
 
 Currently, the best source of example code is in the [test Rails application](spec/dummy) used for integration testing.
 
