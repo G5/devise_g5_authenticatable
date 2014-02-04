@@ -11,7 +11,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140103191601) do
+ActiveRecord::Schema.define(:version => 20140113233821) do
+
+  create_table "admins", :force => true do |t|
+    t.string   "email",              :default => "", :null => false
+    t.integer  "sign_in_count",      :default => 0,  :null => false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "g5_access_token"
+  end
+
+  add_index "admins", ["email"], :name => "index_admins_on_email", :unique => true
+  add_index "admins", ["provider", "uid"], :name => "index_admins_on_provider_and_uid", :unique => true
 
   create_table "users", :force => true do |t|
     t.integer  "sign_in_count",      :default => 0,  :null => false

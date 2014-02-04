@@ -36,5 +36,9 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
+  # The integration tests can be run with:
+  # rspec -t type:feature
+  # config.filter_run_excluding type: 'feature'
+
   config.after(:suite) { WebMock.disable! }
 end

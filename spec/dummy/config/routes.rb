@@ -1,10 +1,14 @@
 Dummy::Application.routes.draw do
   devise_for :users
 
-  devise_scope :users do
-    get 'sign_in', :to => 'devise/sessions#new', :as => :new_session
-    get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_session
-  end
+  devise_for :admins,
+             path_prefix: 'registered',
+             controllers: {sessions: 'custom_sessions',
+                           registrations: 'custom_registrations'},
+             path_names: {sign_in: 'custom_sign_in',
+                          sign_out: 'custom_sign_out',
+                          sign_up: 'custom_sign_up',
+                          cancel: 'custom_cancel'}
 
   root to: 'home#index'
   # The priority is based upon order of creation:

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Editing a user registration' do
-  subject(:update_user) { click_button 'Update' }
+  subject(:update_registration) { click_button 'Update' }
 
   let(:user) { create(:user) }
 
@@ -13,7 +13,7 @@ describe 'Editing a user registration' do
   end
 
   before do
-    visit_path_and_login_with(edit_user_registration_path(user), user)
+    visit_path_and_login_with(edit_user_registration_path, user)
     fill_in 'Email', with: email
     fill_in 'Password', with: password
     fill_in 'Password confirmation', with: password_confirmation
@@ -28,7 +28,7 @@ describe 'Editing a user registration' do
   context 'when current password is valid' do
     context 'when password is blank' do
       it 'should update the email locally' do
-        update_user
+        update_registration
         user.reload
         expect(user.email).to eq(email)
       end
@@ -38,7 +38,7 @@ describe 'Editing a user registration' do
                                                            email: email,
                                                            password: nil,
                                                            password_confirmation: nil})
-        update_user
+        update_registration
       end
     end
 
@@ -50,7 +50,7 @@ describe 'Editing a user registration' do
                                                            email: email,
                                                            password: password,
                                                            password_confirmation: password_confirmation})
-        update_user
+        update_registration
       end
     end
 
@@ -58,13 +58,13 @@ describe 'Editing a user registration' do
       let(:email) { '' }
 
       it 'should display an error message' do
-        update_user
+        update_registration
         expect(page).to have_content("Email can't be blank")
       end
 
       it 'should not update the credentials on the auth server' do
         expect(auth_client).to_not receive(:update_user)
-        update_user
+        update_registration
       end
     end
 
@@ -72,13 +72,13 @@ describe 'Editing a user registration' do
       include_context 'OAuth2::Error'
       before { allow(auth_client).to receive(:update_user).and_raise(oauth_error) }
 
-      xit 'should display an error message' do
-        update_user
+      it 'should display an error message' do
+        update_registration
         expect(page).to have_content(error_message)
       end
 
-      xit 'should not update the email locally' do
-        update_user
+      it 'should not update the email locally' do
+        update_registration
         user.reload
         expect(user.email).to_not eq(email)
       end
@@ -90,18 +90,18 @@ describe 'Editing a user registration' do
     let(:error_message) { 'invalid_resource_owner' }
     before { allow(auth_client).to receive(:me).and_raise(oauth_error) }
 
-    xit 'should display an error message' do
-      update_user
+    it 'should display an error message' do
+      update_registration
       expect(page).to have_content('Current password is invalid')
     end
 
-    xit 'should not update the credentials on the auth server' do
+    it 'should not update the credentials on the auth server' do
       expect(auth_client).to_not receive(:update_user)
-      update_user
+      update_registration
     end
 
-    xit 'should not update the email locally' do
-      update_user
+    it 'should not update the email locally' do
+      update_registration
       user.reload
       expect(user.email).to_not eq(email)
     end

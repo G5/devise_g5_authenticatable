@@ -321,4 +321,202 @@ describe Devise::Models::G5Authenticatable do
       end
     end
   end
+
+  describe '.find_and_update_for_g5_oauth' do
+    subject(:find_and_update) { model_class.find_and_update_for_g5_oauth(auth_data) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new({
+        provider: 'g5',
+        uid: '123999',
+        info: {name: 'Foo Bar',
+               email: 'foo@bar.com'},
+        credentials: {token: 'abc123'}
+      })
+    end
+
+    context 'when model exists' do
+      let!(:model) do
+        create(:user, provider: auth_data['provider'],
+                      uid: auth_data['uid'],
+                      g5_access_token: 'old_token')
+      end
+
+      it 'should return the model' do
+        expect(find_and_update).to eq(model)
+      end
+
+      it 'should save the updated g5_access_token' do
+        find_and_update
+        model.reload
+        expect(model.g5_access_token).to eq(auth_data.credentials.token)
+      end
+    end
+
+    context 'when model does not exist' do
+      it 'should return nothing' do
+        expect(find_and_update).to be_nil
+      end
+    end
+  end
+
+  describe '.find_for_g5_oauth' do
+    subject(:find_for_g5_oauth) { model_class.find_for_g5_oauth(auth_data) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new({
+        provider: 'g5',
+        uid: '123999',
+        info: {name: 'Foo Bar',
+               email: 'foo@bar.com'},
+        credentials: {token: 'abc123'}
+      })
+    end
+
+    context 'when model exists' do
+      let!(:model) do
+        create(:user, provider: auth_data.provider,
+                      uid: auth_data.uid)
+      end
+
+      it 'should return the model' do
+        expect(find_for_g5_oauth).to eq(model)
+      end
+
+      it 'should not create any new models' do
+        expect { find_for_g5_oauth }.to_not change { model_class.count }
+      end
+    end
+
+    context 'when model does not exist' do
+      it 'should not return anything' do
+        expect(find_for_g5_oauth).to be_nil
+      end
+
+      it 'should not create any new models' do
+        expect { find_for_g5_oauth }.to_not change { model_class.count }
+      end
+    end
+  end
+
+  describe '#update_g5_credentials' do
+    subject(:update_g5_credentials) { model.update_g5_credentials(auth_data) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new({
+        provider: 'g5',
+        uid: '123999',
+        info: {name: 'Foo Bar',
+               email: 'foo@bar.com'},
+        credentials: {token: 'abc123'}
+      })
+    end
+
+    let(:model) do
+      create(:user, provider: auth_data['provider'],
+                    uid: auth_data['uid'],
+                    g5_access_token: 'old_token')
+    end
+
+    it 'should update the g5_access_token' do
+      expect { update_g5_credentials }.to change { model.g5_access_token }.to(auth_data.credentials.token)
+    end
+
+    it 'should not save the changes' do
+      update_g5_credentials
+      expect(model.g5_access_token_changed?).to be_true
+    end
+  end
+
+  describe '#revoke_g5_credentials!' do
+    subject(:revoke_g5_credentials!) { model.revoke_g5_credentials! }
+
+    let(:auth_updater) { double(:auth_user_updater, update: nil) }
+    before { allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_updater) }
+
+    let(:model) { create(:user, g5_access_token: g5_token) }
+    before { model.password = model.password_confirmation = nil }
+
+    context 'when there is a g5 token' do
+      let(:g5_token) { 'my_g5_token' }
+
+      it 'should reset the g5 token' do
+        revoke_g5_credentials!
+        expect(model.g5_access_token).to be_nil
+      end
+
+      it 'should save the changes' do
+        revoke_g5_credentials!
+        expect { model.reload }.to_not change { model.g5_access_token }
+      end
+    end
+
+    context 'when there is no g5 token' do
+      let(:g5_token) {}
+
+      it 'should not set the g5 token' do
+        revoke_g5_credentials!
+        expect(model.g5_access_token).to be_nil
+      end
+    end
+  end
+
+  describe '#new_with_session' do
+    subject(:new_with_session) { model_class.new_with_session(params, session) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new({
+        provider: 'g5',
+        uid: '123999',
+        info: {name: 'Foo Bar',
+               email: 'foo@bar.com'},
+        credentials: {token: 'abc123'}
+      })
+    end
+
+    context 'with params' do
+      let(:params) { {'email' => email_param} }
+      let(:email_param) { 'my.email.param@test.host' }
+
+      context 'with session data' do
+        let(:session) { {'omniauth.auth' => auth_data} }
+
+        it { should be_new_record }
+        its(:email) { should == email_param }
+        its(:provider) { should == auth_data.provider }
+        its(:uid) { should == auth_data.uid }
+      end
+
+      context 'without session data' do
+        let(:session) { Hash.new }
+
+        it { should be_new_record }
+        its(:email) { should == email_param }
+        its(:provider) { should be_nil }
+        its(:uid) { should be_nil }
+      end
+    end
+
+    context 'without params' do
+      let(:params) { Hash.new }
+
+      context 'with session data' do
+        let(:session) { {'omniauth.auth' => auth_data} }
+
+        it { should be_new_record }
+        its(:email) { should == auth_data.info[:email] }
+        its(:provider) { should == auth_data.provider }
+        its(:uid) { should == auth_data.uid }
+      end
+
+      context 'without session data' do
+        let(:session) { Hash.new }
+
+        it { should be_new_record }
+        its(:email) { should be_blank }
+        its(:provider) { should be_nil }
+        its(:uid) { should be_nil }
+      end
+    end
+  end
 end
