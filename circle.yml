@@ -1,3 +1,3 @@
 database:
   override:
-    - (cd spec/dummy; RAILS_ENV=test rake db:drop db:setup)
+    - rake app:db:setup app:db:test:prepare
