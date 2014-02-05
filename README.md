@@ -170,6 +170,21 @@ class Admins::SessionsController < DeviseG5Authenticatable::SessionsController
 end
 ```
 
+### Strong Parameters
+
+If installed in a Rails 4 application, this gem will automatically use
+[devise's parameter sanitizer](https://github.com/plataformatec/devise#strong-parameters)
+logic. Under Rails 3.2.x, it will make the appropriate calls to
+`attr_accessible` in the model.
+
+If you are using Rails 4 in conjunction with the
+[protected_attributes](https://github.com/rails/protected_attributes) gem, you
+will need to insert the following in your `config/initializers/devise.rb`:
+
+```ruby
+require 'devise_g5_authenticatable/models/protected_attributes'
+```
+
 ## Examples
 
 Currently, the best source of example code is in the [test Rails
