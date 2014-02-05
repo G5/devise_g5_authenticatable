@@ -10,14 +10,12 @@ G5 users.
 
 ## Current Version
 
-0.0.1 (unreleased)
+0.0.1
 
 ## Requirements
 
 * [Rails](https://github.com/rails/rails) >= 3.2
 * [Devise](https://github.com/plataformatec/devise) ~> 3.0
-* [G5 Authentication Client](https://github.com/g5search/g5_authentication_client)
-* [G5 OmniAuth Strategy](https://github.com/g5search/omniauth-g5)
 
 ## Installation
 
@@ -91,7 +89,60 @@ G5AuthenticationClient.configure do |defaults|
 end
 ```
 
-### Including the module
+### Controller filters and helpers
+
+To require authentication for a controller, use one of devise's generated
+before_filters. For example:
+
+```ruby
+before_filter :authenticate_user!
+```
+
+All of [devise's controller helpers](https://github.com/plataformatec/devise#controller-filters-and-helpers)
+are available inside a controller. To access the model for the signed-in user:
+
+```ruby
+current_user
+```
+
+To check if there is a user signed in:
+
+```ruby
+user_signed_in?
+```
+
+To access the scoped session:
+
+```ruby
+user_session
+```
+
+### Route helpers
+
+This gem will generate devise's usual route helpers for session management.
+For example, if you have configured devise with a `:user` scope, you will have
+the following helpers:
+
+```ruby
+new_user_session_path
+new_session_path(:user)
+
+destroy_user_session_path
+destroy_session_path(:user)
+```
+
+The gem also provides routes for OmniAuth's integration points, although you
+will rarely need to call these directly:
+
+```ruby
+user_g5_authorize_path
+g5_authorize_path(:user)
+
+user_g5_callback_path
+g5_callback_path(:user)
+```
+
+### Configuring the model
 
 In your User model (or whatever model you've configured for use with devise):
 
@@ -101,13 +152,22 @@ class User < ActiveRecord::Base
 end
 ```
 
-### Routing
+### Configuring a custom controller
 
-TODO
+You can use `devise_for` to hook in a custom controller in your routes,
+[the same way as devise](https://github.com/plataformatec/devise#configuring-controllers):
 
-### Helpers
+```ruby
+devise_for :admins, controllers: {sessions: 'admins/sessions'}
+```
 
-TODO
+If you need to override the sessions controller, remember to extend the correct
+base class:
+
+```ruby
+class Admins::SessionsController < DeviseG5Authenticatable::SessionsController
+end
+```
 
 ## Examples
 
