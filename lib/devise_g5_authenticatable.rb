@@ -13,4 +13,4 @@ Devise.add_module(:g5_authenticatable,
                   strategy: false,
                   route: {session: [nil, :new, :destroy]},
                   controller: :sessions,
-                  model: 'devise_g5_authenticatable/model')
+                  model: 'devise_g5_authenticatable/models/g5_authenticatable')
