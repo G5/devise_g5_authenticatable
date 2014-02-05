@@ -16,8 +16,6 @@ module Devise
       included do
         attr_accessor :password, :password_confirmation, :current_password,
                       :updated_by
-        attr_accessible :email, :password, :password_confirmation,
-                        :current_password, :provider, :uid, :updated_by
 
         before_save :auth_user
       end

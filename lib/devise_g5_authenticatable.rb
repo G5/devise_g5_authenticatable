@@ -14,3 +14,5 @@ Devise.add_module(:g5_authenticatable,
                   route: {session: [nil, :new, :destroy]},
                   controller: :sessions,
                   model: 'devise_g5_authenticatable/models/g5_authenticatable')
+
+require 'devise_g5_authenticatable/models/protected_attributes'
