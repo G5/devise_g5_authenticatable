@@ -70,6 +70,14 @@ describe Devise::Models::G5Authenticatable do
         end
       end
 
+      context 'when uid is an integer' do
+        let(:uid) { 42 }
+
+        it 'should not raise an error' do
+          expect { save }.to_not raise_error
+        end
+      end
+
       context 'when there is an error creating the auth user' do
         before do
           allow(auth_user_creator).to receive(:create).and_raise(error)
