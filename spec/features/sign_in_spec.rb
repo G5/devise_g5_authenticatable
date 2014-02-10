@@ -23,7 +23,7 @@ describe 'Signing in' do
       end
 
       context 'when user does not exist locally' do
-        let(:user) { build(:user) }
+        let(:user) { build(:user, uid: 42) }
 
         it 'should display an informative message' do
           expect(page).to have_content('You must sign up before continuing.')

@@ -7,7 +7,7 @@ gemspec
 # Dependencies for the dummy test app
 gem 'rails', '~> 3.2.15'
 gem 'jquery-rails'
-gem 'sqlite3'
+gem 'pg'
 
 group :test, :development do
   gem 'rspec-rails', '~> 2.14'

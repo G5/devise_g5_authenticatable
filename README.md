@@ -210,14 +210,15 @@ If you find bugs, have feature requests or questions, please
 ### Specs
 
 Before running the specs for the first time, you will need to initialize the
-database for the test Rails application.
+database for the test Rails application:
 
-    $ bundle exec rake app:db:setup
+    $ cp spec/dummy/config/database.yml.sample spec/dummy/config/database.yml
+    $ RAILS_ENV=test bundle exec rake app:db:setup
 
 
 To execute the entire test suite:
 
-    $ bundle exec rake
+    $ bundle exec rspec spec
 
 ## License
 

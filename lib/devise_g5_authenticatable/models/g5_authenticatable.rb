@@ -71,7 +71,7 @@ module Devise
 
       module ClassMethods
         def find_for_g5_oauth(oauth_data)
-          find_by_provider_and_uid(oauth_data.provider, oauth_data.uid)
+          find_by_provider_and_uid(oauth_data.provider.to_s, oauth_data.uid.to_s)
         end
 
         def find_and_update_for_g5_oauth(oauth_data)
