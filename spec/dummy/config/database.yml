@@ -3,9 +3,11 @@ development:
   encoding: unicode
   database: devise_g5_authenticatable_development
   pool: 5
+  username: vagrant
 
 test:
   adapter: postgresql
   encoding: unicode
   database: devise_g5_authenticatable_test
   pool: 5
+  username: vagrant
