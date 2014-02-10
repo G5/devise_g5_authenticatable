@@ -7,6 +7,7 @@ describe Devise::Models::G5Authenticatable do
   let(:model) { model_class.new(attributes) }
   let(:attributes) { Hash.new }
 
+
   describe '#save!' do
     subject(:save) { model.save! }
 
@@ -357,7 +358,7 @@ describe Devise::Models::G5Authenticatable do
     let(:auth_data) do
       OmniAuth::AuthHash.new({
         provider: 'g5',
-        uid: '123999',
+        uid: uid,
         info: {name: 'Foo Bar',
                email: 'foo@bar.com'},
         credentials: {token: 'abc123'}
@@ -367,19 +368,37 @@ describe Devise::Models::G5Authenticatable do
     context 'when model exists' do
       let!(:model) do
         create(:user, provider: auth_data.provider,
-                      uid: auth_data.uid)
+                      uid: uid.to_s)
       end
 
-      it 'should return the model' do
-        expect(find_for_g5_oauth).to eq(model)
+      context 'when auth data uid is an integer' do
+        let(:uid) { 42 }
+
+        it 'should return the model' do
+          expect(find_for_g5_oauth).to eq(model)
+        end
+
+        it 'should not create any new models' do
+          expect { find_for_g5_oauth }.to_not change { model_class.count }
+        end
       end
 
-      it 'should not create any new models' do
-        expect { find_for_g5_oauth }.to_not change { model_class.count }
+      context 'when auth data uid is a string' do
+        let(:uid) { 'some/crazy/string1234#id' }
+
+        it 'should return the model' do
+          expect(find_for_g5_oauth).to eq(model)
+        end
+
+        it 'should not create any new models' do
+          expect { find_for_g5_oauth }.to_not change { model_class.count }
+        end
       end
     end
 
     context 'when model does not exist' do
+      let(:uid) { '42' }
+
       it 'should not return anything' do
         expect(find_for_g5_oauth).to be_nil
       end
