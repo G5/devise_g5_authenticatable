@@ -52,7 +52,7 @@ module DeviseG5Authenticatable
     end
 
     def after_omniauth_failure_path_for(scope)
-      root_path
+      main_app.root_path
     end
   end
 end
