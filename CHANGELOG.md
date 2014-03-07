@@ -1,3 +1,13 @@
+## v0.0.5 (TBD)
+
+* Move `rake g5:export_users` from
+  [omniauth-g5](https://github.com/g5search/omniauth-g5)
+
+## v0.0.4 (2014-02-26)
+
+* Use the main app's root path (necessary when mounted inside another Rails
+  engine with `isolate_namespace`)
+
 ## v0.0.3 (2014-02-10)
 
 * Bug fix: fix type conversion errors against PostgreSQL. Assume that model
