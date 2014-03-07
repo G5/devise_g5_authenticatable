@@ -1,4 +1,4 @@
-require 'g5/user_exporter'
+require 'devise_g5_authenticatable/g5/user_exporter'
 
 namespace :g5 do
   desc "Create an auth user for each row in users table and dump id/password for update in auth server"

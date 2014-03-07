@@ -58,5 +58,4 @@ module G5
                                         authorization_code: @authorization_code)
     end
   end
-
 end
