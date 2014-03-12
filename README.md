@@ -10,7 +10,7 @@ G5 users.
 
 ## Current Version
 
-0.0.4
+0.1.0
 
 ## Requirements
 

@@ -1,7 +1,8 @@
-## v0.0.5 (TBD)
+## v0.1.0 (2014-03-12)
 
 * Move `rake g5:export_users` from
   [omniauth-g5](https://github.com/g5search/omniauth-g5)
+* First open source release to [RubyGems](https://rubygems.org)
 
 ## v0.0.4 (2014-02-26)
 
