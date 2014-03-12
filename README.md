@@ -2,7 +2,7 @@
 
 Devise G5 Authenticatable extends devise to provide an
 [OAuth 2.0](http://oauth.net/2)-based authentication strategy and remote 
-credential management via [G5 Auth](https://github.com/g5search/g5-authentication).
+credential management via the G5 Auth service.
 
 Devise G5 Authenticatable is intended as a drop-in replacement for the
 Database Authenticatable module, in order to support single sign-on for
@@ -36,14 +36,11 @@ Or install it yourself as:
 
 ### Registering your OAuth application
 
-1. Visit the auth server admin console:
-  * For development, visit https://dev-auth.g5search.com/admin
-  * For production, visit https://auth.g5search.com/admin
-2. Login as the default admin (for credentials, see
-   Brian Ricker or Chris Kraybill).
-3. Click "New Application"
-4. Enter a name that recognizably identifies your application.
-5. Enter the redirect URI where the auth server should redirect
+1. Visit the [auth server admin console](https://auth.g5search.com/admin)
+   and login.
+2. Click "New Application"
+3. Enter a name that recognizably identifies your application.
+4. Enter the redirect URI where the auth server should redirect
    after the user successfully authenticates. It will generally be
    of the form `http://<apphost>/<devise_path>/auth/g5/callback`.
 
@@ -52,10 +49,10 @@ Or install it yourself as:
    where you will be testing (so using something like
    http://localhost:3000/users/auth/g5/callback is fine if your browser
    and client application server are both local).
-6. For a trusted G5 application, check the "Auto-authorize?" checkbox. This
+5. For a trusted G5 application, check the "Auto-authorize?" checkbox. This
    skips the OAuth authorization step where the user is prompted to explicitly
    authorize the client application to access the user's data.
-7. Click "Submit" to obtain the client application's credentials.
+6. Click "Submit" to obtain the client application's credentials.
 
 ### Environment variables
 
@@ -205,7 +202,7 @@ application](spec/dummy) used for integration testing.
 7. Create new Pull Request
 
 If you find bugs, have feature requests or questions, please
-[file an issue](https://github.com/g5search/devise_g5_authenticatable/issues).
+[file an issue](https://github.com/G5/devise_g5_authenticatable/issues).
 
 ### Specs
 
