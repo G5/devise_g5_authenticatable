@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 # Dependencies for the dummy test app
-gem 'rails', '~> 3.2.15'
+gem 'rails', '4.0.8'
 gem 'jquery-rails'
 gem 'pg'
 
