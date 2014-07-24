@@ -19,6 +19,6 @@ group :test do
   gem 'simplecov'
   gem 'codeclimate-test-reporter'
   gem 'webmock'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 2.6'
   gem 'factory_girl_rails', '~> 4.3', require: false
 end
