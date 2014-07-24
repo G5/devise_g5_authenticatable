@@ -4,7 +4,4 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :registerable, :trackable, :validatable,
          :g5_authenticatable
-
-  # Setup accessible (or protected) attributes for your model
-  # attr_accessible :title, :body
 end
