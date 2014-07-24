@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 # Dependencies for the dummy test app
-gem 'rails', '4.0.8'
+gem 'rails', '4.1.4'
 gem 'jquery-rails'
 gem 'pg'
 gem 'protected_attributes'
