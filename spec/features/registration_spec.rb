@@ -76,7 +76,7 @@ describe 'User registration' do
     let(:password_confirmation) { 'something else entirely' }
 
     it_should_behave_like 'a registration validation error' do
-      let(:error_message) { "Password doesn't match confirmation" }
+      let(:error_message) { "Password confirmation doesn't match" }
     end
   end
 
