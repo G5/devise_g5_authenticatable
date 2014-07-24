@@ -7,6 +7,7 @@ gemspec
 gem 'rails', '4.0.8'
 gem 'jquery-rails'
 gem 'pg'
+gem 'protected_attributes'
 
 group :test, :development do
   gem 'rspec-rails', '~> 2.14'

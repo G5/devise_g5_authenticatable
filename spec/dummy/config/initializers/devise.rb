@@ -21,6 +21,10 @@ Devise.setup do |config|
   # available as additional gems.
   require 'devise/orm/active_record'
 
+  # Require optional support for protected_attributes in devise
+  # models
+  require 'devise_g5_authenticatable/models/protected_attributes'
+
   # ==> Configuration for any authentication mechanism
   # Configure which keys are used when authenticating a user. The default is
   # just :email. You can configure it to use [:username, :subdomain], so for
