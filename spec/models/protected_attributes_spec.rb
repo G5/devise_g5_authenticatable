@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe DeviseG5Authenticatable::Models::ProtectedAttributes do
+  before do
+    Dummy::Application.config.active_record.whitelist_attributes = true
+  end
+
+  after do
+    Dummy::Application.config.active_record.whitelist_attributes = false
+  end
+
   subject { model }
 
   let(:model_class) { User }

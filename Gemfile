@@ -4,9 +4,10 @@ source 'https://rubygems.org'
 gemspec
 
 # Dependencies for the dummy test app
-gem 'rails', '~> 3.2.15'
+gem 'rails', '4.1.4'
 gem 'jquery-rails'
 gem 'pg'
+gem 'protected_attributes'
 
 group :test, :development do
   gem 'rspec-rails', '~> 2.14'
@@ -18,6 +19,6 @@ group :test do
   gem 'simplecov'
   gem 'codeclimate-test-reporter'
   gem 'webmock'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 2.6'
   gem 'factory_girl_rails', '~> 4.3', require: false
 end
