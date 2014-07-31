@@ -1,3 +1,7 @@
+## v0.1.1 (2014-07-31)
+* Find a user by email when a duplicate email exception is returned from 
+  user creation.
+
 ## v0.1.0 (2014-03-12)
 
 * Move `rake g5:export_users` from
