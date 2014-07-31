@@ -15,9 +15,19 @@ module Devise
 
       private
       def create_auth_user
-        auth_user = auth_client.create_user(auth_user_args)
         set_auth_attributes(auth_user)
-        auth_user
+      end
+
+      def auth_user
+        begin
+          auth_client.create_user(auth_user_args)
+        rescue  StandardError => e
+          if e.message =~ /Email has already been taken/
+            auth_client.find_user_by_email(model.email)
+          else
+            raise e
+          end
+        end
       end
 
       def auth_user_exists?
@@ -42,6 +52,7 @@ module Devise
         model.provider = 'g5'
         model.uid = auth_user.id
         model.clean_up_passwords
+        model
       end
     end
   end

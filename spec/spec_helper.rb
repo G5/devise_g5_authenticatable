@@ -41,4 +41,6 @@ RSpec.configure do |config|
   # config.filter_run_excluding type: 'feature'
 
   config.after(:suite) { WebMock.disable! }
+
+  config.infer_spec_type_from_file_location!
 end
