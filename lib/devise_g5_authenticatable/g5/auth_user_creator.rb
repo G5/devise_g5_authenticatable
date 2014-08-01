@@ -23,11 +23,19 @@ module Devise
           auth_client.create_user(auth_user_args)
         rescue  StandardError => e
           if e.message =~ /Email has already been taken/
-            auth_client.find_user_by_email(model.email)
+            existing_auth_user
           else
             raise e
           end
         end
+      end
+
+      def existing_auth_user
+        user = auth_client.find_user_by_email(model.email)
+        user.password = model.password
+        user.password_confirmation = model.password
+        auth_client.update_user(user.to_hash)
+        user
       end
 
       def auth_user_exists?
