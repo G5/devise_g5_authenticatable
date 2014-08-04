@@ -15,9 +15,17 @@ describe Devise::G5::AuthUserCreator do
     let(:updated_by) {}
     let(:password) { 'new password' }
     let(:password_confirmation) { 'new password confirmation' }
+    let(:other_password) { 'blah' }
 
     let(:auth_client) { double(:g5_authentication_client) }
-    let(:auth_user) { double(:auth_user, id: uid, email: model.email, clean_up_passwords: nil) }
+
+    let(:auth_user) { double(:auth_user,
+                             id: uid,
+                             email: model.email,
+                             password: other_password,
+                             clean_up_passwords: nil,
+                             to_hash: {}) }
+
     let(:uid) { 'remote-auth-user-42' }
 
     before do
@@ -29,11 +37,19 @@ describe Devise::G5::AuthUserCreator do
         model.uid = nil
         allow(auth_client).to receive(:create_user).and_raise(StandardError.new('Email has already been taken'))
         allow(auth_client).to receive(:find_user_by_email).and_return(auth_user)
-        create
+        allow(auth_client).to receive(:update_user)
       end
 
       it 'should create the local user with the existing uid' do
-        expect(model.uid).to eq(uid)
+        allow(auth_user).to receive(:password=)
+        allow(auth_user).to receive(:password_confirmation=)
+        expect{ create }.to change(model, :uid).to uid
+      end
+
+      it 'should reset the password' do
+        expect(auth_user).to receive(:password=).with(password)
+        expect(auth_user).to receive(:password_confirmation=).with(password)
+        create
       end
     end
 
