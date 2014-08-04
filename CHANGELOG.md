@@ -1,3 +1,7 @@
+## v0.1.2 (2014-08-04)
+* Use existing user with updated password on duplicate user creation with
+  duplicate email.
+
 ## v0.1.1 (2014-07-31)
 * Find a user by email when a duplicate email exception is returned from 
   user creation.
