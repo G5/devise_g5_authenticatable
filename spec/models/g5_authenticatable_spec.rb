@@ -184,7 +184,7 @@ describe Devise::Models::G5Authenticatable do
 
       context 'with valid input' do
         it 'should return true' do
-          expect(update_with_password).to be_true
+          expect(update_with_password).to be_truthy
         end
 
         it 'should initialize the auth user updater' do
@@ -204,7 +204,7 @@ describe Devise::Models::G5Authenticatable do
         let(:updated_email) { '' }
 
         it 'should return false' do
-          expect(update_with_password).to be_false
+          expect(update_with_password).to be_falsey
         end
 
         it 'should not update the credentials on the auth server' do
@@ -226,7 +226,7 @@ describe Devise::Models::G5Authenticatable do
         let(:current_password) { '' }
 
         it 'should return false' do
-          expect(update_with_password).to be_false
+          expect(update_with_password).to be_falsey
         end
 
         it 'should set an error on the current_password attribute' do
@@ -242,7 +242,7 @@ describe Devise::Models::G5Authenticatable do
         let(:current_password) { 'something wrong' }
 
         it 'should return false' do
-          expect(update_with_password).to be_false
+          expect(update_with_password).to be_falsey
         end
 
         it 'should set an error on the current_password attribute' do
@@ -293,7 +293,7 @@ describe Devise::Models::G5Authenticatable do
       let(:valid) { true }
 
       it 'should return true' do
-        expect(valid_password?).to be_true
+        expect(valid_password?).to be_truthy
       end
 
       it 'should initialize the validator with the model' do
@@ -309,7 +309,7 @@ describe Devise::Models::G5Authenticatable do
       let(:valid) { false }
 
       it 'should return false' do
-        expect(valid_password?).to be_false
+        expect(valid_password?).to be_falsey
       end
 
       it 'should initialize the validator with the model' do
@@ -442,7 +442,7 @@ describe Devise::Models::G5Authenticatable do
 
     it 'should not save the changes' do
       update_g5_credentials
-      expect(model.g5_access_token_changed?).to be_true
+      expect(model.g5_access_token_changed?).to be_truthy
     end
   end
 
@@ -499,19 +499,37 @@ describe Devise::Models::G5Authenticatable do
       context 'with session data' do
         let(:session) { {'omniauth.auth' => auth_data} }
 
-        it { should be_new_record }
-        its(:email) { should == email_param }
-        its(:provider) { should == auth_data.provider }
-        its(:uid) { should == auth_data.uid }
+        it { is_expected.to be_new_record }
+
+        it 'should set the email from the params' do
+          expect(new_with_session.email).to eq(email_param)
+        end
+
+        it 'should set the provider from the session' do
+          expect(new_with_session.provider).to eq(auth_data.provider)
+        end
+
+        it 'should set the uid from the session' do
+          expect(new_with_session.uid).to eq(auth_data.uid)
+        end
       end
 
       context 'without session data' do
         let(:session) { Hash.new }
 
-        it { should be_new_record }
-        its(:email) { should == email_param }
-        its(:provider) { should be_nil }
-        its(:uid) { should be_nil }
+        it { is_expected.to be_new_record }
+
+        it 'should set the email from the params' do
+          expect(new_with_session.email).to eq(email_param)
+        end
+
+        it 'should not set the provider' do
+          expect(new_with_session.provider).to be_nil
+        end
+
+        it 'should not set the uid' do
+          expect(new_with_session.uid).to be_nil
+        end
       end
     end
 
@@ -521,19 +539,37 @@ describe Devise::Models::G5Authenticatable do
       context 'with session data' do
         let(:session) { {'omniauth.auth' => auth_data} }
 
-        it { should be_new_record }
-        its(:email) { should == auth_data.info[:email] }
-        its(:provider) { should == auth_data.provider }
-        its(:uid) { should == auth_data.uid }
+        it { is_expected.to be_new_record }
+
+        it 'should set the email from the session' do
+          expect(new_with_session.email).to eq(auth_data.info[:email])
+        end
+
+        it 'should set the provider from the session' do
+          expect(new_with_session.provider).to eq(auth_data.provider)
+        end
+
+        it 'should set the uid from the session' do
+          expect(new_with_session.uid).to eq(auth_data.uid)
+        end
       end
 
       context 'without session data' do
         let(:session) { Hash.new }
 
-        it { should be_new_record }
-        its(:email) { should be_blank }
-        its(:provider) { should be_nil }
-        its(:uid) { should be_nil }
+        it { is_expected.to be_new_record }
+
+        it 'should not set the email' do
+          expect(new_with_session.email).to be_blank
+        end
+
+        it 'should not set the provider' do
+          expect(new_with_session.provider).to be_nil
+        end
+
+        it 'should not set the uid' do
+          expect(new_with_session.uid).to be_nil
+        end
       end
     end
   end
