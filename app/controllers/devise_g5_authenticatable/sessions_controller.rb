@@ -16,7 +16,7 @@ module DeviseG5Authenticatable
     end
 
     def destroy
-      signed_in_resource.revoke_g5_credentials!
+      signed_in_resource.try(:revoke_g5_credentials!)
       local_sign_out
       remote_sign_out
     end

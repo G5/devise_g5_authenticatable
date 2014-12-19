@@ -39,7 +39,7 @@ describe Devise::G5::AuthPasswordValidator do
       end
 
       it 'should return true' do
-        expect(valid_password?).to be_true
+        expect(valid_password?).to be_truthy
       end
     end
 
@@ -52,7 +52,7 @@ describe Devise::G5::AuthPasswordValidator do
       end
 
       it 'should return false' do
-        expect(valid_password?).to be_false
+        expect(valid_password?).to be_falsey
       end
     end
 
@@ -61,7 +61,7 @@ describe Devise::G5::AuthPasswordValidator do
       let(:runtime_error) { RuntimeError.new('Insufficient credentials for access token. Supply a username/password or authentication code.') }
 
       it 'should return false' do
-        expect(valid_password?).to be_false
+        expect(valid_password?).to be_falsey
       end
     end
 
