@@ -1,3 +1,8 @@
+## v0.1.3 (2014-12-19)
+
+* Fix sign out when there isn't a locally authenticated user
+  ([#16](https://github.com/G5/devise_g5_authenticatable/pull/16)).
+
 ## v0.1.2 (2014-08-04)
 * Use existing user with updated password on duplicate user creation with
   duplicate email.
