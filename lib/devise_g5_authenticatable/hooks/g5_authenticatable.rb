@@ -9,6 +9,7 @@ Warden::Manager.after_set_user only: :fetch do |record, warden, options|
     rescue StandardError => error
       proxy = Devise::Hooks::Proxy.new(warden)
       proxy.sign_out(record)
+      record.revoke_g5_credentials!
       throw :warden, scope: scope
     end
   end
