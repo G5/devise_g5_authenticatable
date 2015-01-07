@@ -1,4 +1,5 @@
 require 'devise_g5_authenticatable/g5'
+require 'devise_g5_authenticatable/hooks/g5_authenticatable'
 
 module Devise
   module Models
