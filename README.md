@@ -66,7 +66,7 @@ environment variables for your client application:
 
 ### Configuration
 
-In `config/initializers/devise.rb`, add the following:
+In `config/initializers/devise.rb`, add the following to enable authentication:
 
 ```ruby
 Devise.setup do |config|
@@ -181,6 +181,29 @@ will need to insert the following in your `config/initializers/devise.rb`:
 ```ruby
 require 'devise_g5_authenticatable/models/protected_attributes'
 ```
+
+### Token validation
+
+After a user authenticates, their access token will be stored on the G5
+Authenticatable model. By default, this token will not be validated against
+the auth server again until the local session is destroyed, either because
+it times out, or because the user explicitly logs out of the local application.
+
+In order to implement single sign-out, you can enable strict token validation.
+This will validate the token against the auth server on every request, and
+automatically destroy the local session if the token is no longer valid.
+
+In your `config/initializers/devise.rb':
+
+```ruby
+Devise.setup do |config|
+  # ...
+  config.g5_strict_token_validation = true
+end
+```
+
+Note that strict token validation incurs a non-trivial amount of performance
+overhead, which is why it is disabled by default.
 
 ## Examples
 
