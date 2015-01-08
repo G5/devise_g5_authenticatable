@@ -1,3 +1,8 @@
+## v0.2.0 (2015-01-08)
+
+* Add support for strict token validation, disabled by default
+  ([#17](https://github.com/G5/devise_g5_authenticatable/pull/17))
+
 ## v0.1.3 (2014-12-19)
 
 * Fix sign out when there isn't a locally authenticated user
