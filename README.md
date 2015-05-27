@@ -16,7 +16,7 @@ G5 users.
 
 * [Ruby](https://github.com/ruby/ruby) >= 1.9.3
 * [Rails](https://github.com/rails/rails) >= 3.2
-* [Devise](https://github.com/plataformatec/devise) ~> 3.0
+* [Devise](https://github.com/plataformatec/devise) ~> 3.5
 
 ## Installation
 
