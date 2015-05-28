@@ -54,5 +54,9 @@ module DeviseG5Authenticatable
     def after_omniauth_failure_path_for(scope)
       main_app.root_path
     end
+
+    def translation_scope
+      'devise.sessions'
+    end
   end
 end

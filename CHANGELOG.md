@@ -1,3 +1,9 @@
+## v0.2.1 (TBD)
+
+* Fixes for compatibility with
+  [devise](https://github.com/plataformatec/devise) v3.5.1
+  ([#18](https://github.com/G5/devise_g5_authenticatable/issues/18))
+
 ## v0.2.0 (2015-01-08)
 
 * Add support for strict token validation, disabled by default
