@@ -276,6 +276,11 @@ describe DeviseG5Authenticatable::Helpers do
         self.resource = resource_class.new
         raise ActiveRecord::RecordNotSaved.new('my_error')
       end
+
+      # Expose protected resource helper for the purposes of this unit test
+      def resource
+        super
+      end
     end
 
     before { action_with_error }

@@ -1,3 +1,9 @@
+## v0.2.1 (2015-05-28)
+
+* Fixes for compatibility with
+  [devise](https://github.com/plataformatec/devise) v3.5.1
+  ([#18](https://github.com/G5/devise_g5_authenticatable/issues/18))
+
 ## v0.2.0 (2015-01-08)
 
 * Add support for strict token validation, disabled by default
@@ -9,10 +15,12 @@
   ([#16](https://github.com/G5/devise_g5_authenticatable/pull/16)).
 
 ## v0.1.2 (2014-08-04)
+
 * Use existing user with updated password on duplicate user creation with
   duplicate email.
 
 ## v0.1.1 (2014-07-31)
+
 * Find a user by email when a duplicate email exception is returned from 
   user creation.
 

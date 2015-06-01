@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1
+  - 2.2
+script:
+  - RAILS_ENV=test bundle exec rake app:db:setup
+  - bundle exec rspec spec
+before_script:
+  - cp spec/dummy/config/database.yml.ci spec/dummy/config/database.yml
+  - psql -c 'create database g5_authenticatable_test;' -U postgres
