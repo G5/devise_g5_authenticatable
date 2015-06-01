@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'devise', '~> 3.5'
-  spec.add_dependency 'g5_authentication_client', '~> 0.2'
-  spec.add_dependency 'omniauth-g5', '~> 0.1'
+  spec.add_dependency 'g5_authentication_client', '~> 0.5'
+  spec.add_dependency 'omniauth-g5', '~> 0.3'
 end
