@@ -6,30 +6,20 @@ describe 'g5:export_users' do
   let(:user_exporter) { double(:user_exporter, export: nil) }
   before { allow(G5::UserExporter).to receive(:new).and_return(user_exporter) }
 
-  let!(:old_client_id) { ENV['G5_AUTH_CLIENT_ID'] }
   let(:default_client_id) { 'default_client_id' }
-  before { ENV['G5_AUTH_CLIENT_ID'] = default_client_id }
-  after { ENV['G5_AUTH_CLIENT_ID'] = old_client_id }
+  before { stub_env_var('G5_AUTH_CLIENT_ID', default_client_id)}
 
-  let!(:old_client_secret) { ENV['G5_AUTH_CLIENT_SECRET'] }
   let(:default_client_secret) { 'default_client_secret' }
-  before { ENV['G5_AUTH_CLIENT_SECRET'] = default_client_secret }
-  after { ENV['G5_AUTH_CLIENT_SECRET'] = old_client_secret }
+  before { stub_env_var('G5_AUTH_CLIENT_SECRET', default_client_secret) }
 
-  let!(:old_redirect_uri) { ENV['G5_AUTH_REDIRECT_URI'] }
   let(:default_redirect_uri) { 'http://test.host/default' }
-  before { ENV['G5_AUTH_REDIRECT_URI'] = default_redirect_uri }
-  after { ENV['G5_AUTH_REDIRECT_URI'] = old_redirect_uri }
+  before { stub_env_var('G5_AUTH_REDIRECT_URI', default_redirect_uri) }
 
-  let!(:old_endpoint) { ENV['G5_AUTH_ENDPOINT'] }
   let(:default_endpoint) { 'https://my.g5auth.host' }
-  before { ENV['G5_AUTH_ENDPOINT'] = default_endpoint }
-  after { ENV['G5_AUTH_ENDPOINT'] = old_endpoint }
+  before { stub_env_var('G5_AUTH_ENDPOINT', default_endpoint) }
 
-  let!(:old_auth_code) { ENV['G5_AUTH_AUTHORIZATION_CODE'] }
   let(:default_auth_code) { 'default_auth_code' }
-  before { ENV['G5_AUTH_AUTHORIZATION_CODE'] = default_auth_code }
-  after { ENV['G5_AUTH_AUTHORIZATION_CODE'] = old_auth_code }
+  before { stub_env_var('G5_AUTH_AUTHORIZATION_CODE', default_auth_code) }
 
   def expect_init_user_exporter_with(option_name, expected_value)
     expect(G5::UserExporter).to receive(:new) do |args|
