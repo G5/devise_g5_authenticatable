@@ -7,19 +7,18 @@ describe Devise::Models::G5Authenticatable do
   let(:model) { model_class.new(attributes) }
   let(:attributes) { Hash.new }
 
-
   describe '#save!' do
     subject(:save) { model.save! }
 
     context 'when model is new' do
       let(:attributes) do
-        {email: email,
-         password: password,
-         password_confirmation: password_confirmation,
-         provider: provider,
-         uid: uid,
-         current_password: current_password,
-         updated_by: updated_by}
+        { email: email,
+          password: password,
+          password_confirmation: password_confirmation,
+          provider: provider,
+          uid: uid,
+          current_password: current_password,
+          updated_by: updated_by }
       end
 
       let(:email) { 'test.email@test.host' }
@@ -158,10 +157,10 @@ describe Devise::Models::G5Authenticatable do
     let(:model) { create(:user) }
 
     let(:params) do
-      {current_password: current_password,
-       password: updated_password,
-       password_confirmation: updated_password,
-       email: updated_email}
+      { current_password: current_password,
+        password: updated_password,
+        password_confirmation: updated_password,
+        email: updated_email }
     end
 
     let(:current_password) {}
@@ -173,8 +172,9 @@ describe Devise::Models::G5Authenticatable do
 
     let(:password_validator) { double(:auth_password_validator) }
     before do
-      allow(Devise::G5::AuthPasswordValidator).to receive(:new).
-        and_return(password_validator)
+      allow(Devise::G5::AuthPasswordValidator)
+        .to receive(:new)
+        .and_return(password_validator)
     end
 
     context 'with valid current password' do
@@ -266,13 +266,15 @@ describe Devise::Models::G5Authenticatable do
     let(:password) { 'foobarbaz' }
 
     it 'should change the password to nil' do
-      expect { clean_up_passwords }.to change { model.password }.
-        from(password).to(nil)
+      expect { clean_up_passwords }
+        .to change { model.password }
+        .from(password).to(nil)
     end
 
     it 'should change the password_confirmation to nil' do
-      expect { clean_up_passwords }.to change { model.password_confirmation }.
-        from(password).to(nil)
+      expect { clean_up_passwords }
+        .to change { model.password_confirmation }
+        .from(password).to(nil)
     end
   end
 
@@ -326,13 +328,10 @@ describe Devise::Models::G5Authenticatable do
     subject(:find_and_update) { model_class.find_and_update_for_g5_oauth(auth_data) }
 
     let(:auth_data) do
-      OmniAuth::AuthHash.new({
-        provider: 'g5',
-        uid: '123999',
-        info: {name: 'Foo Bar',
-               email: 'foo@bar.com'},
-        credentials: {token: 'abc123'}
-      })
+      OmniAuth::AuthHash.new(provider:    'g5',
+                             uid:         '123999',
+                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             credentials: { token: 'abc123' })
     end
 
     context 'when model exists' do
@@ -364,19 +363,17 @@ describe Devise::Models::G5Authenticatable do
     subject(:find_for_g5_oauth) { model_class.find_for_g5_oauth(auth_data) }
 
     let(:auth_data) do
-      OmniAuth::AuthHash.new({
-        provider: 'g5',
-        uid: uid,
-        info: {name: 'Foo Bar',
-               email: 'foo@bar.com'},
-        credentials: {token: 'abc123'}
-      })
+      OmniAuth::AuthHash.new(provider:    'g5',
+                             uid:         uid,
+                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             credentials: { token: 'abc123' })
     end
 
     context 'when model exists' do
       let!(:model) do
-        create(:user, provider: auth_data.provider,
-                      uid: uid.to_s)
+        create(:user, email:    'foo@bar.com',
+                      provider: auth_data.provider,
+                      uid:      uid.to_s)
       end
 
       context 'when auth data uid is an integer' do
@@ -404,6 +401,34 @@ describe Devise::Models::G5Authenticatable do
       end
     end
 
+    context 'given a model with invalid arguments' do
+      let(:uid) { 42 }
+
+      context 'having an un-existing uid' do
+        let!(:model) do
+          create(:user, email:    'foo@bar.com',
+                        provider: auth_data.provider,
+                        uid:      0)
+        end
+
+        it 'finds the record by email address' do
+          expect(find_for_g5_oauth).to eq(model)
+        end
+      end
+
+      context 'having an un-existing uid' do
+        let!(:model) do
+          create(:user, email:    'foo@bar.com',
+                        provider: auth_data.provider,
+                        uid:      0)
+        end
+
+        it 'finds the record by email address' do
+          expect(find_for_g5_oauth).to eq(model)
+        end
+      end
+    end
+
     context 'when model does not exist' do
       let(:uid) { '42' }
 
@@ -421,13 +446,10 @@ describe Devise::Models::G5Authenticatable do
     subject(:update_g5_credentials) { model.update_g5_credentials(auth_data) }
 
     let(:auth_data) do
-      OmniAuth::AuthHash.new({
-        provider: 'g5',
-        uid: '123999',
-        info: {name: 'Foo Bar',
-               email: 'foo@bar.com'},
-        credentials: {token: 'abc123'}
-      })
+      OmniAuth::AuthHash.new(provider:    'g5',
+                             uid:         '123999',
+                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             credentials: { token: 'abc123' })
     end
 
     let(:model) do
@@ -483,21 +505,20 @@ describe Devise::Models::G5Authenticatable do
     subject(:new_with_session) { model_class.new_with_session(params, session) }
 
     let(:auth_data) do
-      OmniAuth::AuthHash.new({
-        provider: 'g5',
-        uid: '123999',
-        info: {name: 'Foo Bar',
-               email: 'foo@bar.com'},
-        credentials: {token: 'abc123'}
-      })
+      OmniAuth::AuthHash.new(provider:    'g5',
+                             uid:         '123999',
+                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             credentials: { token: 'abc123' })
     end
 
     context 'with params' do
-      let(:params) { {'email' => email_param} }
+      let(:params) do
+        { 'email' => email_param }
+      end
       let(:email_param) { 'my.email.param@test.host' }
 
       context 'with session data' do
-        let(:session) { {'omniauth.auth' => auth_data} }
+        let(:session) { { 'omniauth.auth' => auth_data } }
 
         it { is_expected.to be_new_record }
 
@@ -537,7 +558,9 @@ describe Devise::Models::G5Authenticatable do
       let(:params) { Hash.new }
 
       context 'with session data' do
-        let(:session) { {'omniauth.auth' => auth_data} }
+        let(:session) do
+          { 'omniauth.auth' => auth_data }
+        end
 
         it { is_expected.to be_new_record }
 
