@@ -18,7 +18,12 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'devise', '~> 3.5'
+  # Pinned to version 3.5.1 due https://github.com/plataformatec/devise/issues/3705
+  # "`FailureApp`s `script_name: nil` breaks route generation within mounted engines #3705"
+  spec.add_dependency 'devise', '= 3.5.1'
   spec.add_dependency 'g5_authentication_client', '~> 0.5'
-  spec.add_dependency 'omniauth-g5', '~> 0.3'
+
+  # Pinned to version 0.3.1 due https://github.com/G5/omniauth-g5/pull/10
+  # Omniauth-auth2 removed 'callback_url' which broke our auth workflow
+  spec.add_dependency 'omniauth-g5', '= 0.3.1'
 end
