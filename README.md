@@ -1,7 +1,7 @@
 # Devise G5 Authenticatable
 
 Devise G5 Authenticatable extends devise to provide an
-[OAuth 2.0](http://oauth.net/2)-based authentication strategy and remote 
+[OAuth 2.0](http://oauth.net/2)-based authentication strategy and remote
 credential management via the G5 Auth service.
 
 Devise G5 Authenticatable is intended as a drop-in replacement for the
@@ -10,7 +10,7 @@ G5 users.
 
 ## Current Version
 
-0.2.1
+0.2.3
 
 ## Requirements
 

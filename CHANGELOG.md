@@ -1,3 +1,7 @@
+## v0.2.3 (2015-06-01)
+* Pins version of devise to 3.5.1 due - https://github.com/plataformatec/devise/issues/3705
+* Pins version of omniauth-g5 to v0.3.1 due - https://github.com/G5/omniauth-g5/pull/10
+
 ## v0.2.1 (2015-05-28)
 
 * Fixes for compatibility with
@@ -21,7 +25,7 @@
 
 ## v0.1.1 (2014-07-31)
 
-* Find a user by email when a duplicate email exception is returned from 
+* Find a user by email when a duplicate email exception is returned from
   user creation.
 
 ## v0.1.0 (2014-03-12)
