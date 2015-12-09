@@ -1,3 +1,6 @@
+## v0.2.4 (2015-12-09)
+* Same as v0.2.4.beta but not is a stable version!
+
 ## v0.2.4.beta (2015-12-03)
 * Enforces uniqueness of email address in when looking for an email without UID
 

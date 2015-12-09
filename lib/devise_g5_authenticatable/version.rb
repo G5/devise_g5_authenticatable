@@ -1,3 +1,3 @@
 module DeviseG5Authenticatable
-  VERSION = '0.2.4.beta'
+  VERSION = '0.2.4'
 end
