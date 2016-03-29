@@ -77,24 +77,38 @@ module Devise
           find_by_email_and_provider(oauth_data.info.email, oauth_data.provider.to_s)
         end
 
-        def find_and_update_for_g5_oauth(oauth_data)
-          resource = find_for_g5_oauth(oauth_data)
+        def find_and_update_for_g5_oauth(auth_data)
+          resource = find_for_g5_oauth(auth_data)
           if resource
-            resource.update_g5_credentials(oauth_data)
-            resource.save!
+            resource.assign_attributes(auth_attributes(auth_data))
+            resource.update_g5_credentials(auth_data)
+            without_auth_callback { resource.save! }
           end
           resource
         end
 
         def new_with_session(params, session)
-          defaults = ActiveSupport::HashWithIndifferentAccess.new
           if auth_data = session && session['omniauth.auth']
-            defaults[:email] = auth_data.info.email
-            defaults[:provider] = auth_data.provider
-            defaults[:uid] = auth_data.uid
+            defaults = auth_attributes(auth_data)
           end
+          defaults ||= {}
 
           new(defaults.merge(params))
+        end
+
+        def auth_attributes(auth_data)
+          {
+            uid: auth_data.uid,
+            provider: auth_data.provider,
+            email: auth_data.info.email
+          }.with_indifferent_access
+        end
+
+        private
+        def without_auth_callback
+          skip_callback :save, :before, :auth_user
+          yield
+          set_callback :save, :before, :auth_user
         end
       end
     end

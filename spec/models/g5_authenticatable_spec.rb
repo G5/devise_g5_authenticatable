@@ -350,6 +350,12 @@ describe Devise::Models::G5Authenticatable do
         model.reload
         expect(model.g5_access_token).to eq(auth_data.credentials.token)
       end
+
+      it 'should save the updated email' do
+        find_and_update
+        model.reload
+        expect(model.email).to eq(auth_data.info.email)
+      end
     end
 
     context 'when model does not exist' do
@@ -595,5 +601,37 @@ describe Devise::Models::G5Authenticatable do
         end
       end
     end
+  end
+
+  describe '.auth_attributes' do
+    subject(:auth_attributes) { model_class.auth_attributes(auth_data) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new(provider:    'g5',
+                             uid:         '123999',
+                             info:        { first_name: 'Foo',
+                                            last_name: 'Bar',
+                                            email: 'foo@bar.com',
+                                            phone: '123-555-1212 x42'},
+                             credentials: { token: 'abc123' },
+                             extra: { title: 'Minister of Funny Walks',
+                                      organization_name: 'Dept of Redundancy Dept' })
+    end
+
+    it 'has the correct uid' do
+      expect(auth_attributes[:uid]).to eq(auth_data.uid)
+    end
+
+    it 'has the correct provider' do
+      expect(auth_attributes[:provider]).to eq(auth_data.provider)
+    end
+
+    it 'has the correct email' do
+      expect(auth_attributes[:email]).to eq(auth_data.info.email)
+    end
+  end
+
+  describe '#update_roles_from_auth' do
+    # TODO
   end
 end
