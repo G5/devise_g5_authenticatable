@@ -356,11 +356,21 @@ describe Devise::Models::G5Authenticatable do
         model.reload
         expect(model.email).to eq(auth_data.info.email)
       end
+
+      it 'executes the callback to update role data' do
+        expect_any_instance_of(model_class).to receive(:update_roles_from_auth).with(auth_data)
+        find_and_update
+      end
     end
 
     context 'when model does not exist' do
       it 'should return nothing' do
         expect(find_and_update).to be_nil
+      end
+
+      it 'does not execute the callback to update role data' do
+        expect_any_instance_of(model_class).to_not receive(:update_roles_from_auth)
+        find_and_update
       end
     end
   end
@@ -517,6 +527,8 @@ describe Devise::Models::G5Authenticatable do
                              credentials: { token: 'abc123' })
     end
 
+    before { allow_any_instance_of(model_class).to receive(:update_roles_from_auth) }
+
     context 'with params' do
       let(:params) do
         { 'email' => email_param }
@@ -539,6 +551,10 @@ describe Devise::Models::G5Authenticatable do
         it 'should set the uid from the session' do
           expect(new_with_session.uid).to eq(auth_data.uid)
         end
+
+        it 'executes the callback to update role data' do
+          expect(new_with_session).to have_received(:update_roles_from_auth).with(auth_data)
+        end
       end
 
       context 'without session data' do
@@ -556,6 +572,11 @@ describe Devise::Models::G5Authenticatable do
 
         it 'should not set the uid' do
           expect(new_with_session.uid).to be_nil
+        end
+
+        it 'should not execute the callback to update role data' do
+          expect_any_instance_of(model_class).not_to receive(:update_roles_from_auth)
+          new_with_session
         end
       end
     end
@@ -581,6 +602,10 @@ describe Devise::Models::G5Authenticatable do
         it 'should set the uid from the session' do
           expect(new_with_session.uid).to eq(auth_data.uid)
         end
+
+        it 'executes the callback to update role data' do
+          expect(new_with_session).to have_received(:update_roles_from_auth).with(auth_data)
+        end
       end
 
       context 'without session data' do
@@ -598,6 +623,11 @@ describe Devise::Models::G5Authenticatable do
 
         it 'should not set the uid' do
           expect(new_with_session.uid).to be_nil
+        end
+
+        it 'does not execute the callback to update role data' do
+          expect_any_instance_of(model_class).not_to receive(:update_roles_from_auth)
+          new_with_session
         end
       end
     end
@@ -632,6 +662,18 @@ describe Devise::Models::G5Authenticatable do
   end
 
   describe '#update_roles_from_auth' do
-    # TODO
+    subject(:update_roles) { model.update_roles_from_auth(auth_data) }
+
+    let(:auth_data) do
+      OmniAuth::AuthHash.new(provider: 'g5',
+                             uid: '123456',
+                             extra: { roles: [
+                               { name: 'Admin', type: 'GLOBAL', urn: nil }
+                             ]})
+    end
+
+    it 'does not change anything on the model' do
+      expect { update_roles }.to_not change { model }
+    end
   end
 end

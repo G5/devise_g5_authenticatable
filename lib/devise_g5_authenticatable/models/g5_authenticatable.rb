@@ -70,6 +70,9 @@ module Devise
         save!
       end
 
+      def update_roles_from_auth(auth_data)
+      end
+
       module ClassMethods
         def find_for_g5_oauth(oauth_data)
           found_user = find_by_provider_and_uid(oauth_data.provider.to_s, oauth_data.uid.to_s)
@@ -82,18 +85,24 @@ module Devise
           if resource
             resource.assign_attributes(auth_attributes(auth_data))
             resource.update_g5_credentials(auth_data)
+            resource.update_roles_from_auth(auth_data)
             without_auth_callback { resource.save! }
           end
           resource
         end
 
         def new_with_session(params, session)
-          if auth_data = session && session['omniauth.auth']
-            defaults = auth_attributes(auth_data)
-          end
-          defaults ||= {}
+          new_attributes = params
 
-          new(defaults.merge(params))
+          auth_data = session && session['omniauth.auth']
+
+          if auth_data.present?
+            new_attributes = new_attributes.reverse_merge(auth_attributes(auth_data))
+          end
+
+          resource = new(new_attributes)
+          resource.update_roles_from_auth(auth_data) if auth_data.present?
+          resource
         end
 
         def auth_attributes(auth_data)
