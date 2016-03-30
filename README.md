@@ -150,6 +150,45 @@ class User < ActiveRecord::Base
 end
 ```
 
+Several callbacks are provided in order to hook in your application-specific
+logic for mapping the auth data to your User model. These methods will be
+executed whenever a user logs in.
+
+In order to set simple user attributes based on auth data, override the
+`attributes_from_auth` method. Call `super` when you do so in order to pick
+up the minimum set of required user attributes:
+
+```ruby
+class User < ActiveRecord::Base
+  devise :g5_authenticatable
+
+  def attributes_from_auth(auth_data)
+    super(auth_data).merge({
+      name: "#{auth_data.info.first_name} #{auth_data.info.last_name}"
+    })
+  end
+end
+```
+
+If you want to customize the logic for mapping auth role data (which is
+ignored by default), override the `update_roles_from_auth` method:
+
+```ruby
+class User < ActiveRecord::Base
+  devise :g5_authenticatable
+
+  def update_roles_from_auth(auth_data)
+    auth_data.extra.roles.each do |r|
+      # Your custom logic here, for example...
+      add_role(role.name, role.type, role.urn)
+    end
+  end
+end
+```
+
+See the [omniauth-g5 documentation](https://github.com/G5/omniauth-g5#auth-hash)
+for the structure of the auth data.
+
 ### Configuring a custom controller
 
 You can use `devise_for` to hook in a custom controller in your routes,
