@@ -633,8 +633,8 @@ describe Devise::Models::G5Authenticatable do
     end
   end
 
-  describe '.auth_attributes' do
-    subject(:auth_attributes) { model_class.auth_attributes(auth_data) }
+  describe '.attributes_from_auth' do
+    subject(:attributes_from_auth) { model_class.attributes_from_auth(auth_data) }
 
     let(:auth_data) do
       OmniAuth::AuthHash.new(provider:    'g5',
@@ -649,15 +649,15 @@ describe Devise::Models::G5Authenticatable do
     end
 
     it 'has the correct uid' do
-      expect(auth_attributes[:uid]).to eq(auth_data.uid)
+      expect(attributes_from_auth[:uid]).to eq(auth_data.uid)
     end
 
     it 'has the correct provider' do
-      expect(auth_attributes[:provider]).to eq(auth_data.provider)
+      expect(attributes_from_auth[:provider]).to eq(auth_data.provider)
     end
 
     it 'has the correct email' do
-      expect(auth_attributes[:email]).to eq(auth_data.info.email)
+      expect(attributes_from_auth[:email]).to eq(auth_data.info.email)
     end
   end
 

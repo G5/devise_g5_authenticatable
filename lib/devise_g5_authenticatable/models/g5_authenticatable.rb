@@ -83,7 +83,7 @@ module Devise
         def find_and_update_for_g5_oauth(auth_data)
           resource = find_for_g5_oauth(auth_data)
           if resource
-            resource.assign_attributes(auth_attributes(auth_data))
+            resource.assign_attributes(attributes_from_auth(auth_data))
             resource.update_g5_credentials(auth_data)
             resource.update_roles_from_auth(auth_data)
             without_auth_callback { resource.save! }
@@ -97,7 +97,7 @@ module Devise
           auth_data = session && session['omniauth.auth']
 
           if auth_data.present?
-            new_attributes = new_attributes.reverse_merge(auth_attributes(auth_data))
+            new_attributes = new_attributes.reverse_merge(attributes_from_auth(auth_data))
           end
 
           resource = new(new_attributes)
@@ -105,7 +105,7 @@ module Devise
           resource
         end
 
-        def auth_attributes(auth_data)
+        def attributes_from_auth(auth_data)
           {
             uid: auth_data.uid,
             provider: auth_data.provider,
