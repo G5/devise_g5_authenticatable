@@ -70,7 +70,21 @@ module Devise
         save!
       end
 
+      def attributes_from_auth(auth_data)
+        {
+          uid: auth_data.uid,
+          provider: auth_data.provider,
+          email: auth_data.info.email
+        }.with_indifferent_access
+      end
+
       def update_roles_from_auth(auth_data)
+      end
+
+      def update_from_auth(auth_data)
+        assign_attributes(attributes_from_auth(auth_data))
+        update_g5_credentials(auth_data)
+        update_roles_from_auth(auth_data)
       end
 
       module ClassMethods
@@ -83,34 +97,20 @@ module Devise
         def find_and_update_for_g5_oauth(auth_data)
           resource = find_for_g5_oauth(auth_data)
           if resource
-            resource.assign_attributes(attributes_from_auth(auth_data))
-            resource.update_g5_credentials(auth_data)
-            resource.update_roles_from_auth(auth_data)
+            resource.update_from_auth(auth_data)
             without_auth_callback { resource.save! }
           end
           resource
         end
 
         def new_with_session(params, session)
-          new_attributes = params
-
           auth_data = session && session['omniauth.auth']
 
-          if auth_data.present?
-            new_attributes = new_attributes.reverse_merge(attributes_from_auth(auth_data))
-          end
+          resource = new
+          resource.update_from_auth(auth_data) if auth_data.present?
+          resource.assign_attributes(params) unless params.empty?
 
-          resource = new(new_attributes)
-          resource.update_roles_from_auth(auth_data) if auth_data.present?
           resource
-        end
-
-        def attributes_from_auth(auth_data)
-          {
-            uid: auth_data.uid,
-            provider: auth_data.provider,
-            email: auth_data.info.email
-          }.with_indifferent_access
         end
 
         private

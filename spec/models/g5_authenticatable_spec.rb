@@ -633,8 +633,8 @@ describe Devise::Models::G5Authenticatable do
     end
   end
 
-  describe '.attributes_from_auth' do
-    subject(:attributes_from_auth) { model_class.attributes_from_auth(auth_data) }
+  describe '#attributes_from_auth' do
+    subject(:attributes_from_auth) { model.attributes_from_auth(auth_data) }
 
     let(:auth_data) do
       OmniAuth::AuthHash.new(provider:    'g5',
