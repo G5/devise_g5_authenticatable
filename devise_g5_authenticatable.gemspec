@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 
   # Pinned to version 3.5.1 due https://github.com/plataformatec/devise/issues/3705
   # "`FailureApp`s `script_name: nil` breaks route generation within mounted engines #3705"
-  spec.add_dependency 'devise', '= 3.5.1'
+  spec.add_dependency 'devise', '= 4.1.1'
   spec.add_dependency 'g5_authentication_client', '~> 0.5'
 
   # Pinned to version 0.3.1 due https://github.com/G5/omniauth-g5/pull/10
