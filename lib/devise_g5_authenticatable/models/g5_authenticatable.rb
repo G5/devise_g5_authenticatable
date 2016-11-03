@@ -70,6 +70,23 @@ module Devise
         save!
       end
 
+      def attributes_from_auth(auth_data)
+        {
+          uid: auth_data.uid,
+          provider: auth_data.provider,
+          email: auth_data.info.email
+        }.with_indifferent_access
+      end
+
+      def update_roles_from_auth(auth_data)
+      end
+
+      def update_from_auth(auth_data)
+        assign_attributes(attributes_from_auth(auth_data))
+        update_g5_credentials(auth_data)
+        update_roles_from_auth(auth_data)
+      end
+
       module ClassMethods
         def find_for_g5_oauth(oauth_data)
           found_user = find_by_provider_and_uid(oauth_data.provider.to_s, oauth_data.uid.to_s)
@@ -77,24 +94,30 @@ module Devise
           find_by_email_and_provider(oauth_data.info.email, oauth_data.provider.to_s)
         end
 
-        def find_and_update_for_g5_oauth(oauth_data)
-          resource = find_for_g5_oauth(oauth_data)
+        def find_and_update_for_g5_oauth(auth_data)
+          resource = find_for_g5_oauth(auth_data)
           if resource
-            resource.update_g5_credentials(oauth_data)
-            resource.save!
+            resource.update_from_auth(auth_data)
+            without_auth_callback { resource.save! }
           end
           resource
         end
 
         def new_with_session(params, session)
-          defaults = ActiveSupport::HashWithIndifferentAccess.new
-          if auth_data = session && session['omniauth.auth']
-            defaults[:email] = auth_data.info.email
-            defaults[:provider] = auth_data.provider
-            defaults[:uid] = auth_data.uid
-          end
+          auth_data = session && session['omniauth.auth']
 
-          new(defaults.merge(params))
+          resource = new
+          resource.update_from_auth(auth_data) if auth_data.present?
+          resource.assign_attributes(params) unless params.empty?
+
+          resource
+        end
+
+        private
+        def without_auth_callback
+          skip_callback :save, :before, :auth_user
+          yield
+          set_callback :save, :before, :auth_user
         end
       end
     end

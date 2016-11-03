@@ -12,7 +12,7 @@ gem 'protected_attributes'
 group :test, :development do
   gem 'rspec-rails', '~> 2.14'
   gem 'rspec-activemodel-mocks'
-  gem 'pry'
+  gem 'pry-byebug'
 end
 
 group :test do
