@@ -1,3 +1,9 @@
+## v0.3.0 (2016-11-03)
+
+* Exposes callbacks for more fine-grained control over mapping auth user
+  data and roles to local models
+  ([#25](https://github.com/G5/devise_g5_authenticatable/pull/25))
+
 ## v0.2.4 (2015-12-09)
 * Same as v0.2.4.beta but not is a stable version!
 
