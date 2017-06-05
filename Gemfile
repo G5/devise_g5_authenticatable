@@ -4,22 +4,23 @@ source 'https://rubygems.org'
 gemspec
 
 # Dependencies for the dummy test app
-gem 'rails', '4.1.4'
 gem 'jquery-rails'
 gem 'pg'
 gem 'protected_attributes'
+gem 'rails', '4.1.4'
+gem 'rake', '> 11.0.1', '< 12'
 
 group :test, :development do
-  gem 'rspec-rails', '~> 2.14'
-  gem 'rspec-activemodel-mocks'
   gem 'pry-byebug'
+  gem 'rspec-activemodel-mocks'
+  gem 'rspec-rails', '~> 2.14'
 end
 
 group :test do
   gem 'capybara'
-  gem 'simplecov'
   gem 'codeclimate-test-reporter'
-  gem 'webmock'
-  gem 'shoulda-matchers', '~> 2.6'
   gem 'factory_girl_rails', '~> 4.3', require: false
+  gem 'shoulda-matchers', '~> 2.6'
+  gem 'simplecov'
+  gem 'webmock'
 end
