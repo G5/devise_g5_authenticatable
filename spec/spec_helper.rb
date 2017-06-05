@@ -3,9 +3,6 @@
 require 'simplecov'
 SimpleCov.start 'test_frameworks'
 
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start
-
 require 'pry'
 
 # Load rails dummy application
