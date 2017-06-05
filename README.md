@@ -14,8 +14,8 @@ G5 users.
 
 ## Requirements
 
-* [Ruby](https://github.com/ruby/ruby) >= 2.0.0
-* [Rails](https://github.com/rails/rails) >= 3.2
+* [Ruby](https://github.com/ruby/ruby) >= 2.3
+* [Rails](https://github.com/rails/rails) >= 4.1
 * [Devise](https://github.com/plataformatec/devise) ~> 3.5
 
 ## Installation
