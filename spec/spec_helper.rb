@@ -1,7 +1,16 @@
+# frozen_string_literal: true
+
 # Setup for test coverage instrumentation (e.g. simplecov, codeclimate)
 # MUST happen before any other code is loaded
 require 'simplecov'
-SimpleCov.start 'test_frameworks'
+
+# save to CircleCI's artifacts directory if we're on CircleCI
+if ENV['CIRCLE_ARTIFACTS']
+  dir = File.join(ENV['CIRCLE_ARTIFACTS'], 'coverage')
+  SimpleCov.coverage_dir(dir)
+end
+
+SimpleCov.start('rails')
 
 require 'pry'
 
