@@ -1,14 +1,16 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe G5::UserExporter do
+require 'rails_helper'
+
+RSpec.describe G5::UserExporter do
   let(:exporter) { G5::UserExporter.new(options) }
 
   let(:options) do
-    {client_id: 'my_client_id',
-     client_secret: 'soopersekrit',
-     redirect_uri: 'https://app.host/my/callback',
-     endpoint: 'https://auth.host',
-     authorization_code: 'abc123'}
+    { client_id: 'my_client_id',
+      client_secret: 'soopersekrit',
+      redirect_uri: 'https://app.host/my/callback',
+      endpoint: 'https://auth.host',
+      authorization_code: 'abc123' }
   end
 
   describe '#export' do
@@ -31,55 +33,56 @@ describe G5::UserExporter do
     let(:auth_user) { double(:auth_user, id: uid, email: email) }
     let(:auth_client) { double(:auth_client, create_user: auth_user) }
     before do
-      allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
+      allow(G5AuthenticationClient::Client).to receive(:new)
+        .and_return(auth_client)
     end
 
     it 'should initialize the auth client with the correct client_id' do
-      expect(G5AuthenticationClient::Client).to receive(:new).
-        with(hash_including(client_id: options[:client_id])).
-        and_return(auth_client)
+      expect(G5AuthenticationClient::Client).to receive(:new)
+        .with(hash_including(client_id: options[:client_id]))
+        .and_return(auth_client)
       export
     end
 
     it 'should initialize the auth client with the correct client_secret' do
-      expect(G5AuthenticationClient::Client).to receive(:new).
-        with(hash_including(client_secret: options[:client_secret])).
-        and_return(auth_client)
+      expect(G5AuthenticationClient::Client).to receive(:new)
+        .with(hash_including(client_secret: options[:client_secret]))
+        .and_return(auth_client)
       export
     end
 
     it 'should initialize the auth client with the correct redirect_uri' do
-      expect(G5AuthenticationClient::Client).to receive(:new).
-        with(hash_including(redirect_uri: options[:redirect_uri])).
-        and_return(auth_client)
+      expect(G5AuthenticationClient::Client).to receive(:new)
+        .with(hash_including(redirect_uri: options[:redirect_uri]))
+        .and_return(auth_client)
       export
     end
 
     it 'should initialize the auth client with the correct endpoint' do
-      expect(G5AuthenticationClient::Client).to receive(:new).
-        with(hash_including(endpoint: options[:endpoint])).
-        and_return(auth_client)
+      expect(G5AuthenticationClient::Client).to receive(:new)
+        .with(hash_including(endpoint: options[:endpoint]))
+        .and_return(auth_client)
       export
     end
 
-    it 'should initialize the auth client with the correct authorization code' do
-      expect(G5AuthenticationClient::Client).to receive(:new).
-        with(hash_including(authorization_code: options[:authorization_code])).
-        and_return(auth_client)
+    it 'initializes the auth client with the correct authorization code' do
+      expect(G5AuthenticationClient::Client).to receive(:new)
+        .with(hash_including(authorization_code: options[:authorization_code]))
+        .and_return(auth_client)
       export
     end
 
     it 'should create the auth user with the correct email' do
-      expect(auth_client).to receive(:create_user).
-        with(hash_including(email: email)).
-        and_return(auth_user)
+      expect(auth_client).to receive(:create_user)
+        .with(hash_including(email: email))
+        .and_return(auth_user)
       export
     end
 
     it 'should create the auth user with the correct default password' do
-      expect(auth_client).to receive(:create_user).
-        with(hash_including(password: encrypted_password)).
-        and_return(auth_user)
+      expect(auth_client).to receive(:create_user)
+        .with(hash_including(password: encrypted_password))
+        .and_return(auth_user)
       export
     end
 
@@ -99,7 +102,9 @@ describe G5::UserExporter do
     end
 
     it 'should return the SQL update statement with the encrypted password' do
-      expect(export).to match(/update users set encrypted_password='#{encrypted_password}' where id=#{uid};/i)
+      expect(export).to match(
+        /update users set encrypted_password='#{encrypted_password}' where id=#{uid};/i
+      )
     end
   end
 end

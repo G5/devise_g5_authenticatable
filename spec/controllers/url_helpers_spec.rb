@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe DeviseG5Authenticatable::UrlHelpers do
+RSpec.describe DeviseG5Authenticatable::UrlHelpers do
   controller(ActionController::Base) do
     include DeviseG5Authenticatable::UrlHelpers
   end

@@ -1,6 +1,8 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe DeviseG5Authenticatable::Models::ProtectedAttributes do
+require 'rails_helper'
+
+RSpec.describe DeviseG5Authenticatable::Models::ProtectedAttributes do
   before do
     Dummy::Application.config.active_record.whitelist_attributes = true
   end

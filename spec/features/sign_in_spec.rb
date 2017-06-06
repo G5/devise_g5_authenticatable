@@ -1,6 +1,8 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'Signing in' do
+require 'rails_helper'
+
+RSpec.describe 'Signing in' do
   context 'when visiting a protected page' do
     let(:protected_path) { edit_user_registration_path }
 

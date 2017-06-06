@@ -1,36 +1,44 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'Sessions controller' do
+require 'rails_helper'
+
+RSpec.describe 'Sessions controller' do
   describe 'routing' do
     context 'with user scope' do
       it 'should route GET /users/sign_in' do
-        expect(get '/users/sign_in').to route_to(controller: 'devise_g5_authenticatable/sessions',
-                                                 action: 'new')
+        expect(get('/users/sign_in'))
+          .to route_to(controller: 'devise_g5_authenticatable/sessions',
+                       action: 'new')
       end
 
       it 'should route DELETE /users/sign_out' do
-        expect(delete '/users/sign_out').to route_to(controller: 'devise_g5_authenticatable/sessions',
-                                                     action: 'destroy')
+        expect(delete('/users/sign_out'))
+          .to route_to(controller: 'devise_g5_authenticatable/sessions',
+                       action: 'destroy')
       end
 
       it 'should route GET /users/auth/g5' do
-        expect(get '/users/auth/g5').to route_to(controller: 'devise_g5_authenticatable/sessions',
-                                                 action: 'omniauth_passthru')
+        expect(get('/users/auth/g5'))
+          .to route_to(controller: 'devise_g5_authenticatable/sessions',
+                       action: 'omniauth_passthru')
       end
 
       it 'should route POST /users/auth/g5' do
-        expect(post '/users/auth/g5').to route_to(controller: 'devise_g5_authenticatable/sessions',
-                                                  action: 'omniauth_passthru')
+        expect(post('/users/auth/g5'))
+          .to route_to(controller: 'devise_g5_authenticatable/sessions',
+                       action: 'omniauth_passthru')
       end
 
       it 'should route GET /users/auth/g5/callback' do
-        expect(get '/users/auth/g5/callback').to route_to(controller: 'devise_g5_authenticatable/sessions',
-                                                          action: 'create')
+        expect(get('/users/auth/g5/callback'))
+          .to route_to(controller: 'devise_g5_authenticatable/sessions',
+                       action: 'create')
       end
 
       it 'should route POST /users/auth/g5/callback' do
-        expect(post '/users/auth/g5/callback').to route_to(controller: 'devise_g5_authenticatable/sessions',
-                                                           action: 'create')
+        expect(post('/users/auth/g5/callback'))
+          .to route_to(controller: 'devise_g5_authenticatable/sessions',
+                       action: 'create')
       end
 
       it 'should set the OmniAuth path prefix' do
@@ -40,33 +48,39 @@ describe 'Sessions controller' do
 
     context 'with admin scope' do
       it 'should route GET /registered/admins/custom_sign_in' do
-        expect(get '/registered/admins/custom_sign_in').to route_to(controller: 'custom_sessions',
-                                                      action: 'new')
+        expect(get('/registered/admins/custom_sign_in'))
+          .to route_to(controller: 'custom_sessions',
+                       action: 'new')
       end
 
       it 'should route DELETE /registered/admins/custom_sign_out' do
-        expect(delete '/registered/admins/custom_sign_out').to route_to(controller: 'custom_sessions',
-                                                          action: 'destroy')
+        expect(delete('/registered/admins/custom_sign_out'))
+          .to route_to(controller: 'custom_sessions',
+                       action: 'destroy')
       end
 
       it 'should route GET /registered/admins/auth/g5' do
-        expect(get '/registered/admins/auth/g5').to route_to(controller: 'custom_sessions',
-                                                             action: 'omniauth_passthru')
+        expect(get('/registered/admins/auth/g5'))
+          .to route_to(controller: 'custom_sessions',
+                       action: 'omniauth_passthru')
       end
 
       it 'should route POST /registered/admins/auth/g5' do
-        expect(post '/registered/admins/auth/g5').to route_to(controller: 'custom_sessions',
-                                                             action: 'omniauth_passthru')
+        expect(post('/registered/admins/auth/g5'))
+          .to route_to(controller: 'custom_sessions',
+                       action: 'omniauth_passthru')
       end
 
       it 'should route GET /registered/admins/auth/g5/callback' do
-        expect(get '/registered/admins/auth/g5/callback').to route_to(controller: 'custom_sessions',
-                                                                      action: 'create')
+        expect(get('/registered/admins/auth/g5/callback'))
+          .to route_to(controller: 'custom_sessions',
+                       action: 'create')
       end
 
       it 'should route POST /registered/admins/auth/g5/callback' do
-        expect(post '/registered/admins/auth/g5/callback').to route_to(controller: 'custom_sessions',
-                                                                       action: 'create')
+        expect(post('/registered/admins/auth/g5/callback'))
+          .to route_to(controller: 'custom_sessions',
+                       action: 'create')
       end
     end
   end
@@ -92,11 +106,13 @@ describe 'Sessions controller' do
 
     context 'with admin scope' do
       it 'should route new_admin_session_path' do
-        expect(new_admin_session_path).to eq('/registered/admins/custom_sign_in')
+        expect(new_admin_session_path)
+          .to eq('/registered/admins/custom_sign_in')
       end
 
       it 'should route destroy_admin_session_path' do
-        expect(destroy_admin_session_path).to eq('/registered/admins/custom_sign_out')
+        expect(destroy_admin_session_path)
+          .to eq('/registered/admins/custom_sign_out')
       end
 
       it 'should generate admin_g5_authorize_path' do
@@ -104,7 +120,8 @@ describe 'Sessions controller' do
       end
 
       it 'should generate admin_g5_callback_path' do
-        expect(admin_g5_callback_path).to eq('/registered/admins/auth/g5/callback')
+        expect(admin_g5_callback_path)
+          .to eq('/registered/admins/auth/g5/callback')
       end
     end
   end

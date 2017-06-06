@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe DeviseG5Authenticatable::SessionsController do
+RSpec.describe DeviseG5Authenticatable::SessionsController do
   before { request.env['devise.mapping'] = Devise.mappings[scope] }
   let(:scope) { :user }
 

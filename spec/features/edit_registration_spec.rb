@@ -1,15 +1,20 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'Editing a user registration' do
+require 'rails_helper'
+
+RSpec.describe 'Editing a user registration' do
   subject(:update_registration) { click_button 'Update' }
 
   let(:user) { create(:user) }
 
-  let(:auth_client) { double(:auth_client, update_user: auth_user, me: auth_user) }
+  let(:auth_client) do
+    double(:auth_client, update_user: auth_user, me: auth_user)
+  end
 
   let(:auth_user) { double(:auth_user, id: user.uid, email: user.email) }
   before do
-    allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
+    allow(G5AuthenticationClient::Client).to receive(:new)
+      .and_return(auth_client)
   end
 
   before do
@@ -34,10 +39,11 @@ describe 'Editing a user registration' do
       end
 
       it 'should update the email on the auth server' do
-        expect(auth_client).to receive(:update_user).with({id: user.uid,
-                                                           email: email,
-                                                           password: nil,
-                                                           password_confirmation: nil})
+        expect(auth_client).to receive(:update_user)
+          .with(id: user.uid,
+                email: email,
+                password: nil,
+                password_confirmation: nil)
         update_registration
       end
     end
@@ -46,10 +52,11 @@ describe 'Editing a user registration' do
       let(:password) { 'a brand new password' }
 
       it 'should update the password on the auth server' do
-        expect(auth_client).to receive(:update_user).with({id: user.uid,
-                                                           email: email,
-                                                           password: password,
-                                                           password_confirmation: password_confirmation})
+        expect(auth_client).to receive(:update_user)
+          .with(id: user.uid,
+                email: email,
+                password: password,
+                password_confirmation: password_confirmation)
         update_registration
       end
     end
@@ -70,7 +77,9 @@ describe 'Editing a user registration' do
 
     context 'when the auth server returns an error' do
       include_context 'OAuth2::Error'
-      before { allow(auth_client).to receive(:update_user).and_raise(oauth_error) }
+      before do
+        allow(auth_client).to receive(:update_user).and_raise(oauth_error)
+      end
 
       it 'should display an error message' do
         update_registration

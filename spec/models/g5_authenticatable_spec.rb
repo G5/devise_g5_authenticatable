@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Devise::Models::G5Authenticatable do
+RSpec.describe Devise::Models::G5Authenticatable do
   subject { model }
 
   let(:model_class) { User }

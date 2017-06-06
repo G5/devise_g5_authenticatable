@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Devise::G5::AuthUserUpdater do
+RSpec.describe Devise::G5::AuthUserUpdater do
   let(:updater) { described_class.new(model) }
 
   let(:auth_client) do

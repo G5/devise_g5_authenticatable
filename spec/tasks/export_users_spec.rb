@@ -1,6 +1,8 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'g5:export_users' do
+require 'rails_helper'
+
+RSpec.describe 'g5:export_users' do
   include_context 'rake'
 
   let(:user_exporter) { double(:user_exporter, export: nil) }
@@ -43,7 +45,7 @@ describe 'g5:export_users' do
     task.invoke
   end
 
-  it 'should allow the default authorization code to be overridden by an argument' do
+  it 'allows the default authorization code to be overridden by an argument' do
     auth_code_arg = 'some new auth code'
     expect_init_user_exporter_with(:authorization_code, auth_code_arg)
     task.invoke(auth_code_arg)
