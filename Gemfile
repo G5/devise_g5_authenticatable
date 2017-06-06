@@ -14,15 +14,15 @@ gem 'rake', '> 11.0.1', '< 12'
 
 group :test, :development do
   gem 'pry-byebug'
-  gem 'rspec-activemodel-mocks'
   gem 'rspec-rails', '~> 3.6'
 end
 
 group :test do
   gem 'capybara'
   gem 'codeclimate-test-reporter'
-  gem 'factory_girl_rails', '~> 4.3', require: false
-  gem 'shoulda-matchers', '~> 2.6'
+  gem 'factory_girl_rails', '~> 4.8', require: false
+  gem 'rspec-activemodel-mocks'
+  gem 'shoulda-matchers', '~> 3.1'
   gem 'simplecov'
   gem 'webmock'
 end
