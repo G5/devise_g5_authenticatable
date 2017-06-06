@@ -9,8 +9,7 @@ gemspec
 gem 'jquery-rails'
 gem 'pg'
 gem 'protected_attributes'
-gem 'rails', '4.1.4'
-gem 'rake', '> 11.0.1', '< 12'
+gem 'rails', '~> 4.1.16'
 
 group :test, :development do
   gem 'pry-byebug'
