@@ -15,7 +15,7 @@ gem 'rake', '> 11.0.1', '< 12'
 group :test, :development do
   gem 'pry-byebug'
   gem 'rspec-activemodel-mocks'
-  gem 'rspec-rails', '~> 2.14'
+  gem 'rspec-rails', '~> 3.6'
 end
 
 group :test do

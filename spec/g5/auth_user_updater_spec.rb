@@ -1,12 +1,17 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Devise::G5::AuthUserUpdater do
   let(:updater) { described_class.new(model) }
 
-  let(:auth_client) { double(:g5_authentication_client, update_user: auth_user) }
+  let(:auth_client) do
+    double(:g5_authentication_client, update_user: auth_user)
+  end
   let(:auth_user) { double(:auth_user, id: model.uid, email: model.email) }
   before do
-    allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
+    allow(G5AuthenticationClient::Client).to receive(:new)
+      .and_return(auth_client)
   end
 
   let(:model) { create(:user, updated_by: updated_by) }
@@ -28,7 +33,6 @@ describe Devise::G5::AuthUserUpdater do
       before { model.email = updated_email }
       let(:updated_email) { 'updated.email@test.host' }
 
-
       context 'when user has been updated by another user' do
         let(:updated_by) { create(:user) }
 
@@ -36,13 +40,13 @@ describe Devise::G5::AuthUserUpdater do
           before { update }
 
           it 'should use the token for updated_by to call g5 auth' do
-            expect(G5AuthenticationClient::Client).to have_received(:new).
-              with(access_token: updated_by.g5_access_token)
+            expect(G5AuthenticationClient::Client).to have_received(:new)
+              .with(access_token: updated_by.g5_access_token)
           end
 
           it 'should update the email' do
-            expect(auth_client).to have_received(:update_user).
-              with(hash_including(email: updated_email))
+            expect(auth_client).to have_received(:update_user)
+              .with(hash_including(email: updated_email))
           end
 
           it 'should reset the password' do
@@ -64,7 +68,7 @@ describe Devise::G5::AuthUserUpdater do
           end
 
           it 'should raise an exception' do
-            expect { update }.to raise_error
+            expect { update }.to raise_error('Error!')
           end
         end
       end
@@ -73,8 +77,8 @@ describe Devise::G5::AuthUserUpdater do
         before { update }
 
         it 'should use the user token to call g5 auth' do
-          expect(G5AuthenticationClient::Client).to have_received(:new).
-            with(access_token: model.g5_access_token)
+          expect(G5AuthenticationClient::Client).to have_received(:new)
+            .with(access_token: model.g5_access_token)
         end
       end
     end
@@ -91,14 +95,17 @@ describe Devise::G5::AuthUserUpdater do
       before { update }
 
       it 'should update the password' do
-        expect(auth_client).to have_received(:update_user).
-          with(hash_including(password: updated_password))
+        expect(auth_client).to have_received(:update_user)
+          .with(hash_including(password: updated_password))
         update
       end
 
       it 'should update the password_confirmation' do
-        expect(auth_client).to have_received(:update_user).
-          with(hash_including(password_confirmation: updated_password_confirmation))
+        updated_attribute = {
+          password_confirmation: updated_password_confirmation
+        }
+        expect(auth_client).to have_received(:update_user)
+          .with(hash_including(updated_attribute))
       end
 
       it 'should reset the password' do
