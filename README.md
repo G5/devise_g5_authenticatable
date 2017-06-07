@@ -10,13 +10,13 @@ G5 users.
 
 ## Current Version
 
-0.3.0
+1.0.0.pre.1
 
 ## Requirements
 
 * [Ruby](https://github.com/ruby/ruby) >= 2.3
 * [Rails](https://github.com/rails/rails) >= 4.1
-* [Devise](https://github.com/plataformatec/devise) ~> 3.5
+* [Devise](https://github.com/plataformatec/devise) ~> 4.3
 
 ## Installation
 

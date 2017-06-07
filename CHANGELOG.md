@@ -1,3 +1,16 @@
+## v1.0.0.pre.1 (TBD)
+
+* **Backwards incompatible changes**
+  * Dropped support for rails 3.2 and 4.0
+  * Dropped support for ruby 2.0 and 2.1
+* Enhancements
+  * Added support for ruby 2.3
+* Bug fixes
+  * Upgraded devise to ~> 4.3, which picks up a number of bug fixes, most
+  notably for the `FailureApp` nil `script_name` issue introduced in devise
+  3.5.2 that broke route generation within mounted engines (see
+  [plataformatec/devise#3705](https://github.com/plataformatec/devise/issues/3705))
+
 ## v0.3.0 (2016-11-03)
 
 * Exposes callbacks for more fine-grained control over mapping auth user
