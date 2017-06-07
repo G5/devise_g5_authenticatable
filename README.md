@@ -90,10 +90,10 @@ end
 ### Controller filters and helpers
 
 To require authentication for a controller, use one of devise's generated
-before_filters. For example:
+before_actions. For example:
 
 ```ruby
-before_filter :authenticate_user!
+before_action :authenticate_user!
 ```
 
 All of [devise's controller helpers](https://github.com/plataformatec/devise#controller-filters-and-helpers)

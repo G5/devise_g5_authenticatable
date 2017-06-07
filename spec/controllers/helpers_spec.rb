@@ -13,10 +13,10 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
     before { clear_passwords }
 
     controller do
-      before_filter :clear_blank_passwords, only: :index
+      before_action :clear_blank_passwords, only: :index
 
       def index
-        render status: 200, text: 'Index'
+        render status: 200, plain: 'Index'
       end
     end
 
@@ -208,10 +208,10 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       define_helpers(:user)
       define_helpers(:admin)
 
-      before_filter :set_updated_by_user, only: :create
+      before_action :set_updated_by_user, only: :create
 
       def create
-        render status: 200, text: 'Create'
+        render status: 200, plain: 'Create'
       end
     end
 
@@ -244,10 +244,10 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       define_helpers(:user)
       define_helpers(:admin)
 
-      before_filter :set_updated_by_admin, only: :create
+      before_action :set_updated_by_admin, only: :create
 
       def create
-        render status: 200, text: 'Create'
+        render status: 200, plain: 'Create'
       end
     end
 
