@@ -8,8 +8,9 @@ gemspec
 # Dependencies for the dummy test app
 gem 'jquery-rails'
 gem 'pg'
-gem 'protected_attributes'
-gem 'rails', '~> 4.1.16'
+
+# See the Appraisals file for all supported rails versions
+gem 'rails', '~> 5.0.3'
 
 group :test, :development do
   gem 'appraisal'

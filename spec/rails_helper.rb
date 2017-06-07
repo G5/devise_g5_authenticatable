@@ -30,7 +30,7 @@ RSpec.configure do |config|
   # config.filter_run_excluding type: 'feature'
 
   # Filter lines from Rails gems in backtraces
-  config.filter_rails_from_backtrace!
+  # config.filter_rails_from_backtrace!
 
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace('gem name')

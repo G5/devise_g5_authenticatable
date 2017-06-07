@@ -4,8 +4,8 @@ source "https://rubygems.org"
 
 gem "jquery-rails"
 gem "pg"
-gem "rails", "~> 4.1.16"
-gem "protected_attributes"
+gem "rails", "~> 5.0.3"
+gem "rails-controller-testing", group: :test
 
 group :test, :development do
   gem "appraisal"

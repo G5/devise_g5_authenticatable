@@ -301,9 +301,5 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
     it 'should set the base error on the resource' do
       expect(controller.resource.errors[:base]).to eq(['my_error'])
     end
-
-    it 'should render the model creation form' do
-      expect(response).to render_template('devise/new')
-    end
   end
 end
