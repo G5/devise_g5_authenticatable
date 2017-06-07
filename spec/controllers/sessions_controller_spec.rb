@@ -169,7 +169,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
       let(:scope) { :user }
 
       context 'when there is a current user' do
-        before { sign_in(scope, model) }
+        before { sign_in(model, scope: scope) }
 
         it 'should sign out the user locally' do
           expect { destroy_session }.to change { controller.current_user }
@@ -203,7 +203,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
     context 'with admin scope' do
       let(:scope) { :admin }
 
-      before { sign_in(scope, model) }
+      before { sign_in(model, scope: scope) }
 
       it 'should sign out the admin locally' do
         expect { destroy_session }.to change { controller.current_admin }

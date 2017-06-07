@@ -215,7 +215,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       end
     end
 
-    before { sign_in :user, current_user }
+    before { sign_in(current_user, scope: :user) }
     let(:current_user) { create(:user) }
 
     before { set_updated_by_user }
@@ -251,7 +251,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       end
     end
 
-    before { sign_in :admin, current_admin }
+    before { sign_in(current_admin, scope: :admin) }
     let(:current_admin) { create(:admin) }
 
     before { set_updated_by_admin }
