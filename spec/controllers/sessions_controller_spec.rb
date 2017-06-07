@@ -222,7 +222,9 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
       # We need some trickery here because the failure action is actually rack
       # rather than rails
       rack_response = described_class.action(:failure).call(request.env)
-      @response = ActionDispatch::TestResponse.from_response(rack_response.last)
+      @response = ActionDispatch::TestResponse.new(rack_response[0],
+                                                   rack_response[1],
+                                                   rack_response[2].body)
     end
 
     before do
