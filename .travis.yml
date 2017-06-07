@@ -1,17 +1,13 @@
 language: ruby
 rvm:
 - 2.3.4
+gemfile:
+  - gemfiles/rails_4.1.gemfile
 before_install:
 - gem update bundler
 script:
 - RAILS_ENV=test bundle exec rake app:db:setup
 - bundle exec rspec
-after_success:
-- bundle exec codeclimate-test-reporter
 before_script:
 - cp spec/dummy/config/database.yml.ci spec/dummy/config/database.yml
 - psql -c 'create database g5_authenticatable_test;' -U postgres
-addons:
-  code_climate:
-    repo_token:
-      secure: "LwaIAfkJC3OmDuvYdWUDp85FpToTr+qUZUjeHKAgcAqOMpNKfxKXEwCKU2rYKByBKsGn0o7thg5DTO4Du+eQ2C2qCaSSwGNzwW3NqOHGXl2VvicE+ldTSR0ImL/AKiiFEgoomGrh4e/YURQRovM/Rt+CDJKQMweUDCuSgYcoLkg="

@@ -8,6 +8,7 @@ require 'devise_g5_authenticatable/version'
 Gem::Specification.new do |spec|
   spec.name          = 'devise_g5_authenticatable'
   spec.version       = DeviseG5Authenticatable::VERSION
+  spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Maeve Revels']
   spec.email         = ['maeve.revels@getg5.com']
   spec.description   = 'Devise extension for the G5 Auth service'
@@ -19,6 +20,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
+
+  spec.required_ruby_version = '~> 2.3'
 
   spec.add_dependency 'devise', '~> 4.3'
   spec.add_dependency 'g5_authentication_client', '~> 0.5', '>= 0.5.4'

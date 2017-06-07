@@ -12,6 +12,7 @@ gem 'protected_attributes'
 gem 'rails', '~> 4.1.16'
 
 group :test, :development do
+  gem 'appraisal'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.6'
 end
