@@ -1,4 +1,6 @@
-class AddProviderAndUidToAdmins < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class AddProviderAndUidToAdmins < ActiveRecord::Migration[4.2]
   def change
     add_column :admins, :provider, :string
     add_column :admins, :uid, :string

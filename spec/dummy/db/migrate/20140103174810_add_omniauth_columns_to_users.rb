@@ -1,4 +1,6 @@
-class AddOmniauthColumnsToUsers < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class AddOmniauthColumnsToUsers < ActiveRecord::Migration[4.2]
   def up
     change_table(:users) do |t|
       t.string :uid

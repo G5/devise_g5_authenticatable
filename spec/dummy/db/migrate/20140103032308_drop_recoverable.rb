@@ -1,4 +1,6 @@
-class DropRecoverable < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class DropRecoverable < ActiveRecord::Migration[4.2]
   def up
     change_table(:users) do |t|
       t.remove :reset_password_token
