@@ -7,7 +7,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
   let(:scope) { :user }
 
   describe '#new' do
-    subject(:new_session) { get :new }
+    subject(:new_session) { get(:new) }
 
     context 'with user scope' do
       it 'should redirect to the scoped authorize path' do
@@ -25,7 +25,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
   end
 
   describe '#omniauth_passthru' do
-    subject(:passthru) { get :omniauth_passthru }
+    subject(:passthru) { get(:omniauth_passthru) }
 
     it 'should return a 404' do
       expect(passthru).to be_not_found
@@ -33,7 +33,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
   end
 
   describe '#create' do
-    subject(:create_session) { post :create }
+    subject(:create_session) { post(:create) }
 
     let(:auth_hash) do
       OmniAuth::AuthHash.new(
@@ -151,7 +151,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
   end
 
   describe '#destroy' do
-    subject(:destroy_session) { delete :destroy }
+    subject(:destroy_session) { delete(:destroy) }
 
     let(:auth_client) { double(:auth_client, sign_out_url: auth_sign_out_url) }
     let(:auth_sign_out_url) do

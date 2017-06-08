@@ -9,7 +9,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
   end
 
   describe '#clear_blank_passwords' do
-    subject(:clear_passwords) { get :index, password_params }
+    subject(:clear_passwords) { get(:index, build_params(password_params)) }
     before { clear_passwords }
 
     controller do
@@ -202,7 +202,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
   end
 
   describe '#set_updated_by_user' do
-    subject(:set_updated_by_user) { post :create, user_params }
+    subject(:set_updated_by_user) { post(:create, build_params(user_params)) }
 
     controller do
       define_helpers(:user)
@@ -238,7 +238,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
   end
 
   describe '#set_updated_by_admin' do
-    subject(:set_updated_by_admin) { post :create, admin_params }
+    subject(:set_updated_by_admin) { post(:create, build_params(admin_params)) }
 
     controller do
       define_helpers(:user)
@@ -274,7 +274,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
   end
 
   describe '#handle_resource_error' do
-    subject(:action_with_error) { post :create }
+    subject(:action_with_error) { post(:create) }
 
     before { request.env['devise.mapping'] = Devise.mappings[:user] }
 
