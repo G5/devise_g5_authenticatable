@@ -2,7 +2,7 @@
 
 * **Backwards incompatible changes**
   * Dropped support for rails < 4.1
-  * Dropped support for ruby < 2.3 (older versions *may* continue to work for
+  * Dropped support for ruby < 2.2 (older versions *may* continue to work for
   now, but there are no guarantees)
   * Dropped support for devise < 4.3. The breaking change most likely to affect
   users of this gem is the removal of omniauth route helpers with a wildcard
@@ -11,7 +11,8 @@
   valid, but you can still use `user_g5_omniauth_authorize_path` (preferred)
   or `omniauth_authorize_path(:user, :g5)`
 * Enhancements
-  * Added support for ruby 2.3
+  * Added support for ruby 2.3 and 2.4
+  * Added support for rails 5.0 and 5.1
 * Bug fixes
   * The devise upgrade picked up a number of bug fixes, most notably the
   `FailureApp` nil `script_name` issue introduced in devise 3.5.2, which broke
