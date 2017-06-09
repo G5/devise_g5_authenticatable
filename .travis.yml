@@ -17,6 +17,7 @@ matrix:
 before_install:
   - gem update bundler
 before_script:
+  - cp spec/dummy/config/database.yml.ci spec/dummy/config/database.yml
   - RAILS_ENV=test bundle exec rake app:db:create app:db:migrate
 script:
   - bundle exec rspec
