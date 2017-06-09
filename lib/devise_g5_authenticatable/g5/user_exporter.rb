@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'g5_authentication_client'
 
 module G5
@@ -11,7 +13,7 @@ module G5
     # @option options [String] :redirect_uri the redirect URI registered with G5
     # @option options [String] :endpoint the endpoint for the G5 Auth server
     # @option options [String] :authorization_code the G5 authorization code to obtain an access token
-    def initialize(options={})
+    def initialize(options = {})
       @client_id = options[:client_id]
       @client_secret = options[:client_secret]
       @redirect_uri = options[:redirect_uri]
@@ -40,6 +42,7 @@ module G5
     end
 
     private
+
     def update_local_user(local_user, auth_user)
       local_user.uid = auth_user.id
       local_user.provider = 'g5'
@@ -51,11 +54,13 @@ module G5
     end
 
     def auth_client
-      @oauth_client ||= G5AuthenticationClient::Client.new(client_id: @client_id,
-                                        client_secret: @client_secret,
-                                        redirect_uri: @redirect_uri,
-                                        endpoint: @endpoint,
-                                        authorization_code: @authorization_code)
+      @oauth_client ||= G5AuthenticationClient::Client.new(
+        client_id: @client_id,
+        client_secret: @client_secret,
+        redirect_uri: @redirect_uri,
+        endpoint: @endpoint,
+        authorization_code: @authorization_code
+      )
     end
   end
 end

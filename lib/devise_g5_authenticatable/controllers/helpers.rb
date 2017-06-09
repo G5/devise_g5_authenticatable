@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module DeviseG5Authenticatable
+  # Utility helper methods to mixin to controllers
   module Helpers
     extend ActiveSupport::Concern
 
@@ -23,6 +26,8 @@ module DeviseG5Authenticatable
       respond_with(resource)
     end
 
+    # Dynamically generate helper methods with devise resource name
+    # e.g. `set_updated_by_user` or `set_updated_by_admin`
     module ClassMethods
       def define_helpers(mapping)
         class_eval <<-METHODS, __FILE__, __LINE__ + 1

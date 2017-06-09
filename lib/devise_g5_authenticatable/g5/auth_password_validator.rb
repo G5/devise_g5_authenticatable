@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'g5_authentication_client'
 
 module Devise
   module G5
+    # Validate a user's G5 Auth credentials
     class AuthPasswordValidator
       attr_reader :model
 
@@ -22,8 +25,10 @@ module Devise
       end
 
       private
+
       def auth_client(password)
-        G5AuthenticationClient::Client.new(username: model.email, password: password)
+        G5AuthenticationClient::Client.new(username: model.email,
+                                           password: password)
       end
     end
   end

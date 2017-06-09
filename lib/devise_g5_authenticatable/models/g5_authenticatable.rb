@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'devise_g5_authenticatable/g5'
 require 'devise_g5_authenticatable/hooks/g5_authenticatable'
 
@@ -22,19 +24,13 @@ module Devise
       end
 
       def auth_user
-        begin
-          if new_record?
-            G5::AuthUserCreator.new(self).create
-          else
-            G5::AuthUserUpdater.new(self).update
-          end
-        rescue OAuth2::Error => e
-          logger.error("Couldn't save user credentials because: #{e}")
-          raise ActiveRecord::RecordNotSaved.new(e.code)
-        rescue StandardError => e
-          logger.error("Couldn't save user credentials because: #{e}")
-          raise ActiveRecord::RecordNotSaved.new(e.message)
-        end
+        sync_auth_data
+      rescue OAuth2::Error => e
+        logger.error("Couldn't save user credentials because: #{e}")
+        raise ActiveRecord::RecordNotSaved, e.code
+      rescue StandardError => e
+        logger.error("Couldn't save user credentials because: #{e}")
+        raise ActiveRecord::RecordNotSaved, e.message
       end
 
       def clean_up_passwords
@@ -47,18 +43,14 @@ module Devise
       end
 
       def update_with_password(params)
-        updated_attributes = params.reject { |k,v| k =~ /password/ && v.blank? }
+        updated_attributes = params.reject do |k, v|
+          k =~ /password/ && v.blank?
+        end
         current_password = updated_attributes.delete(:current_password)
 
-        if valid = valid_password?(current_password)
-          valid = update_attributes(updated_attributes)
-        elsif current_password.blank?
-          errors.add(:current_password, :blank)
-        else
-          errors.add(:current_password, :invalid)
+        if valid_current_password?(current_password)
+          update_attributes(updated_attributes)
         end
-
-        valid
       end
 
       def update_g5_credentials(oauth_data)
@@ -78,8 +70,7 @@ module Devise
         }.with_indifferent_access
       end
 
-      def update_roles_from_auth(auth_data)
-      end
+      def update_roles_from_auth(auth_data); end
 
       def update_from_auth(auth_data)
         assign_attributes(attributes_from_auth(auth_data))
@@ -87,11 +78,31 @@ module Devise
         update_roles_from_auth(auth_data)
       end
 
+      private
+
+      def sync_auth_data
+        if new_record?
+          G5::AuthUserCreator.new(self).create
+        else
+          G5::AuthUserUpdater.new(self).update
+        end
+      end
+
+      def valid_current_password?(current_password)
+        return true if valid_password?(current_password)
+        error = current_password.blank? ? :blank : :invalid
+        errors.add(:current_password, error)
+        false
+      end
+
+      # Finders and creation methods based on auth user data
       module ClassMethods
         def find_for_g5_oauth(oauth_data)
-          found_user = find_by_provider_and_uid(oauth_data.provider.to_s, oauth_data.uid.to_s)
+          found_user = find_by_provider_and_uid(oauth_data.provider.to_s,
+                                                oauth_data.uid.to_s)
           return found_user if found_user.present?
-          find_by_email_and_provider(oauth_data.info.email, oauth_data.provider.to_s)
+          find_by_email_and_provider(oauth_data.info.email,
+                                     oauth_data.provider.to_s)
         end
 
         def find_and_update_for_g5_oauth(auth_data)
@@ -114,6 +125,7 @@ module Devise
         end
 
         private
+
         def without_auth_callback
           skip_callback :save, :before, :auth_user
           yield

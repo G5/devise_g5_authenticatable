@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'g5_authentication_client'
 
 module Devise
   module G5
+    # Update user data on G5 Auth server
     class AuthUserUpdater
       attr_reader :model
 
@@ -14,6 +17,7 @@ module Devise
       end
 
       private
+
       def update_auth_user
         auth_user = auth_client.update_user(auth_user_args)
         model.clean_up_passwords
@@ -25,7 +29,9 @@ module Devise
       end
 
       def auth_client
-        G5AuthenticationClient::Client.new(access_token: updated_by.g5_access_token)
+        G5AuthenticationClient::Client.new(
+          access_token: updated_by.g5_access_token
+        )
       end
 
       def updated_by
@@ -33,10 +39,10 @@ module Devise
       end
 
       def auth_user_args
-        {id: model.uid,
-         email: model.email,
-         password: model.password,
-         password_confirmation: model.password_confirmation}
+        { id: model.uid,
+          email: model.email,
+          password: model.password,
+          password_confirmation: model.password_confirmation }
       end
     end
   end
