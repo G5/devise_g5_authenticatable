@@ -20,7 +20,7 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'codeclimate-test-reporter'
+  gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'factory_girl_rails', '~> 4.8', require: false
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers', '~> 3.1'

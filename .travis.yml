@@ -22,4 +22,8 @@ before_script:
 script:
   - bundle exec rspec
 after_script:
-  - RAILS_ENV=test bundle exec rake app:db:drop
+  - bundle exec codeclimate-test-reporter
+addons:
+  code_climate:
+    repo_token:
+      secure: "jbxU8cHiS9V0vEndXRhMmteIYSyy2oq/V6S0HEqezA5nrAAnOPcLHaVhEM2Ji81G5V/k/Wda3xJ+4mXG2VU71RWCpMkWuB4M/KzAozmvxUxM7YwSfZvdYDL4AsWO+2Nvz7jDLiSTYYLigSAF5tQiD8Q6/KywcBJsXTuC5b9PTgg="
