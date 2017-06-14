@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'devise', '~> 4.3'
-  spec.add_dependency 'g5_authentication_client', '1.0.0.pre.3'
+  spec.add_dependency 'g5_authentication_client', '1.0.0.pre.4'
 
   # Pinned to version 0.3.1 due https://github.com/G5/omniauth-g5/pull/10
   # Omniauth-auth2 removed 'callback_url' which broke our auth workflow
