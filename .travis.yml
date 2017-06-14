@@ -14,6 +14,12 @@ matrix:
   exclude:
     - rvm: 2.4.1
       gemfile: gemfiles/rails_4.1.gemfile
+  allow_failures:
+    - rvm: 2.4.1
+dist: trusty
+sudo: false
+cache:
+  bundler: true
 before_install:
   - gem update bundler
 before_script:
