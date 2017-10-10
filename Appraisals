@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+appraise 'rails-3.1' do
+  gem 'devise', '= 1.5.4'
+  gem 'rails', '~> 3.1.12'
+end
+
+appraise 'rails-3.2' do
+  gem 'devise', '= 1.5.4'
+  gem 'rails', '~> 3.2', '>= 3.2.22.5'
+end
+
 appraise 'rails-4.1' do
   gem 'protected_attributes'
   gem 'rails', '~> 4.1.16'

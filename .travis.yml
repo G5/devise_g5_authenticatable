@@ -2,16 +2,25 @@ language: ruby
 cache:
   bundler: true
 rvm:
+  - 1.9.3
   - 2.2.7
   - 2.3.4
   - 2.4.1
 gemfile:
+  - gemfiles/rails_3.1.gemfile
+  - gemfiles/rails_3.2.gemfile
   - gemfiles/rails_4.1.gemfile
   - gemfiles/rails_4.2.gemfile
   - gemfiles/rails_5.0.gemfile
   - gemfiles/rails_5.1.gemfile
 matrix:
   exclude:
+    - rvm: 1.9.3
+      gemfile:
+        - gemfiles/rails_4.1.gemfile
+        - gemfiles/rails_4.2.gemfile
+        - gemfiles/rails_5.0.gemfile
+        - gemfiles/rails_5.1.gemfile
     - rvm: 2.4.1
       gemfile: gemfiles/rails_4.1.gemfile
   allow_failures:

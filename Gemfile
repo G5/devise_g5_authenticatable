@@ -10,11 +10,14 @@ gem 'jquery-rails'
 gem 'pg'
 
 # See the Appraisals file for all supported rails versions
-gem 'rails', '~> 5.1.1'
+gem 'rails', '~> 3.1.12'
+gem 'devise', '1.5.4'
 
 group :test, :development do
   gem 'appraisal'
-  gem 'pry-byebug'
+  gem 'pry'
+  gem 'pry-byebug', platforms: [:ruby_20, :ruby_21, :ruby_22,
+                                :ruby_23, :ruby_24, :ruby_25]
   gem 'rspec-rails', '~> 3.6'
 end
 
@@ -23,7 +26,7 @@ group :test do
   gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'factory_girl_rails', '~> 4.8', require: false
   gem 'rspec-activemodel-mocks'
-  gem 'shoulda-matchers', '~> 3.1'
+  gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'webmock'
 end
