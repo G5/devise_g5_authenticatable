@@ -3,7 +3,7 @@
 module DeviseG5Authenticatable
   # Custom sessions controller to require sign-in through the G5 auth server
   class SessionsController < Devise::OmniauthCallbacksController
-    prepend_before_action :require_no_authentication, only: %i[new create]
+    prepend_before_action :require_no_authentication, only: [:new, :create]
 
     def new
       redirect_to g5_authorize_path(resource_name)

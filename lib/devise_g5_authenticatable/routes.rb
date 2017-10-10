@@ -59,12 +59,12 @@ module ActionDispatch
         match 'auth/g5', controller: controllers[:sessions],
                          action: 'omniauth_passthru',
                          as: :g5_authorize,
-                         via: %i[get post]
+                         via: [:get, :post]
 
         match 'auth/g5/callback', controller: controllers[:sessions],
                                   action: 'create',
                                   as: :g5_callback,
-                                  via: %i[get post]
+                                  via: [:get, :post]
       end
     end
   end
