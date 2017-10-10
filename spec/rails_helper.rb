@@ -16,7 +16,7 @@ require 'factory_girl_rails'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 # Checks for pending migration and applies them before tests are run
-ActiveRecord::Migration.maintain_test_schema!
+ActiveRecord::Migration.maintain_test_schema! unless Rails.version.starts_with?('3')
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
@@ -36,11 +36,4 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace('gem name')
 
   config.after(:suite) { WebMock.disable! }
-end
-
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-    with.library :rails
-  end
 end

@@ -13,7 +13,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
     before { clear_passwords }
 
     controller do
-      before_action :clear_blank_passwords, only: :index
+      set_callback :process_action, :before, :clear_blank_passwords, only: :index
 
       def index
         render status: 200, plain: 'Index'
@@ -208,7 +208,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       define_helpers(:user)
       define_helpers(:admin)
 
-      before_action :set_updated_by_user, only: :create
+      set_callback :process_action, :before, :set_updated_by_user, only: :create
 
       def create
         render status: 200, plain: 'Create'
@@ -244,7 +244,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       define_helpers(:user)
       define_helpers(:admin)
 
-      before_action :set_updated_by_admin, only: :create
+      set_callback :process_action, :before, :set_updated_by_admin, only: :create
 
       def create
         render status: 200, plain: 'Create'
@@ -278,7 +278,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
 
     before { request.env['devise.mapping'] = Devise.mappings[:user] }
 
-    controller(DeviseController) do
+    controller do
       rescue_from ActiveRecord::RecordNotSaved, with: :handle_resource_error
 
       def create

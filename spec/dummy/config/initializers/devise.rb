@@ -6,7 +6,9 @@ Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
-  config.secret_key = 'f5b6baba242e8cbaf513b5f1faff360d67fe115383f1d23b268ddf158ed9e479458737e13e7a14beda1304c4d82c57c9bc841cb12f85008244819964330caf7c'
+  if config.respond_to?(:secret_key=) # Introduced in devise 3
+    config.secret_key = 'f5b6baba242e8cbaf513b5f1faff360d67fe115383f1d23b268ddf158ed9e479458737e13e7a14beda1304c4d82c57c9bc841cb12f85008244819964330caf7c'
+  end
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
@@ -88,7 +90,9 @@ Devise.setup do |config|
   # Notice that if you are skipping storage for all authentication paths, you
   # may want to disable generating routes to Devise's sessions controller by
   # passing :skip => :sessions to `devise_for` in your config/routes.rb
-  config.skip_session_storage = [:http_auth]
+  if config.respond_to?(:skip_session_storage=) # introduced in devise 2
+    config.skip_session_storage = [:http_auth]
+  end
 
   # By default, Devise cleans up the CSRF token on authentication to
   # avoid CSRF token fixation attacks. This means that, when using AJAX
@@ -128,7 +132,11 @@ Devise.setup do |config|
   # initial account confirmation) to be applied. Requires additional unconfirmed_email
   # db field (see migrations). Until confirmed new email is stored in
   # unconfirmed email column, and copied to email column on successful confirmation.
-  config.reconfirmable = true
+  if config.respond_to?(:reconfirmable=) # devise 2+
+    config.reconfirmable = true
+  elsif config.respond_to?(:confirmation_on_email_change=) # devise 1.5
+    config.confirmation_on_email_change = true
+  end
 
   # Defines which key will be used when confirming an account
   # config.confirmation_keys = [ :email ]

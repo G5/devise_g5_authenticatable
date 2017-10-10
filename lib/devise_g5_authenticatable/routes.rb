@@ -37,9 +37,9 @@ module ActionDispatch
 
       def setup_omniauth_path_prefix(mapping)
         return if ::OmniAuth.config.path_prefix.present?
-        path_prefix = Devise.omniauth_path_prefix ||
-                      "/#{mapping.fullpath}/auth".squeeze('/')
-        set_omniauth_path_prefix!(path_prefix)
+        path_prefix = Devise.omniauth_path_prefix if Devise.respond_to?(:omniauth_path_prefix)
+        path_prefix ||= "/#{mapping.fullpath}/auth".squeeze('/')
+        ::OmniAuth.config.path_prefix = path_prefix
       end
 
       def build_session_routes(mapping, controllers)
