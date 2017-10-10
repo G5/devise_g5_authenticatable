@@ -27,7 +27,7 @@ Devise.setup do |config|
 
   # Require optional support for protected_attributes in devise
   # models
-  if Rails.version.starts_with?('4')
+  unless Rails.version.starts_with?('5')
     require 'devise_g5_authenticatable/models/protected_attributes'
   end
 

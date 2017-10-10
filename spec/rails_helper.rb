@@ -16,7 +16,9 @@ require 'factory_girl_rails'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 # Checks for pending migration and applies them before tests are run
-ActiveRecord::Migration.maintain_test_schema! unless Rails.version.starts_with?('3')
+if ActiveRecord::Migration.respond_to?(:maintain_test_schema!) # rails 4+
+  ActiveRecord::Migration.maintain_test_schema!
+end
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

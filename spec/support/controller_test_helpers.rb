@@ -2,11 +2,7 @@
 
 module ControllerTestHelpers
   def build_params(hash)
-    if Rails.version.starts_with?('4')
-      hash
-    else
-      { params: hash }
-    end
+    Rails.version.starts_with?('5') ? { params: hash } : hash
   end
 end
 

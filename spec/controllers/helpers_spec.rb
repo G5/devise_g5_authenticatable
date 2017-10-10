@@ -279,6 +279,8 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
     before { request.env['devise.mapping'] = Devise.mappings[:user] }
 
     controller do
+      include Devise::Controllers::InternalHelpers
+
       rescue_from ActiveRecord::RecordNotSaved, with: :handle_resource_error
 
       def create

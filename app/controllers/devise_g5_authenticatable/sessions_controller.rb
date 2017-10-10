@@ -6,7 +6,9 @@ module DeviseG5Authenticatable
     # Using underlying ActiveSupport::Callbacks API for compatibility with
     # rails 3 (which does not support *_action callbacks) and
     # rails 5 (which does not support *_filter callbacks)
-    set_callback :process_action, :prepend_before, :require_no_authentication, only: [:new, :create]
+    set_callback :process_action, :before, :require_no_authentication,
+                 only: [:new, :create],
+                 prepend: true
 
     def new
       redirect_to g5_authorize_path(resource_name)

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Protected attributes are not supported by rails 5
-if Rails.version.starts_with?('4')
+unless Rails.version.starts_with?('5')
   RSpec.describe DeviseG5Authenticatable::Models::ProtectedAttributes do
     before do
       Dummy::Application.config.active_record.whitelist_attributes = true
