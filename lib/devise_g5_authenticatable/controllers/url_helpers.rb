@@ -15,6 +15,7 @@ module DeviseG5Authenticatable
 
     private
 
+    # Introduced in devise 2
     define_method(:_devise_route_context) do
       @_devise_route_context ||= send(:main_app)
     end unless method_defined?(:_devise_route_context)
