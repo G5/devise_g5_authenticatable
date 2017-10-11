@@ -10,6 +10,8 @@ Dummy::Application.routes.draw do
                           sign_up: 'custom_sign_up',
                           cancel: 'custom_cancel'}
 
+  match 'home/protected_action' => 'home#protected_action', as: :protected_action
+
   root to: 'home#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.
