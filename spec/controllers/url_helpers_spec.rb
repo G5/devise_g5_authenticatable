@@ -1,6 +1,8 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe DeviseG5Authenticatable::UrlHelpers do
+require 'rails_helper'
+
+RSpec.describe DeviseG5Authenticatable::UrlHelpers do
   controller(ActionController::Base) do
     include DeviseG5Authenticatable::UrlHelpers
   end
@@ -12,60 +14,59 @@ describe DeviseG5Authenticatable::UrlHelpers do
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == user_g5_authorize_path }
+        it { is_expected.to eq(user_g5_authorize_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == admin_g5_authorize_path }
+        it { is_expected.to eq(admin_g5_authorize_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == user_g5_authorize_path }
+        it { is_expected.to eq(user_g5_authorize_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == admin_g5_authorize_path}
+        it { is_expected.to eq(admin_g5_authorize_path) }
       end
     end
 
     context 'with custom router' do
-      before { Devise.router_name = :my_engine }
-      after { Devise.router_name = nil }
-
-      let(:custom_router) do
-        double(:my_engine_router, user_g5_authorize_path: 'foo',
-                                  admin_g5_authorize_path: 'bar')
+      include_context 'custom router'
+      before do
+        allow(custom_router).to receive(:user_g5_authorize_path)
+          .and_return('foo')
+        allow(custom_router).to receive(:admin_g5_authorize_path)
+          .and_return('bar')
       end
-      before { controller.stub(my_engine: custom_router) }
 
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == custom_router.user_g5_authorize_path }
+        it { is_expected.to eq(custom_router.user_g5_authorize_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == custom_router.admin_g5_authorize_path }
+        it { is_expected.to eq(custom_router.admin_g5_authorize_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == custom_router.user_g5_authorize_path }
+        it { is_expected.to eq(custom_router.user_g5_authorize_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == custom_router.admin_g5_authorize_path}
+        it { is_expected.to eq(custom_router.admin_g5_authorize_path) }
       end
     end
   end
@@ -77,190 +78,191 @@ describe DeviseG5Authenticatable::UrlHelpers do
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == user_g5_callback_path }
+        it { is_expected.to eq(user_g5_callback_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == admin_g5_callback_path }
+        it { is_expected.to eq(admin_g5_callback_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == user_g5_callback_path }
+        it { is_expected.to eq(user_g5_callback_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == admin_g5_callback_path }
+        it { is_expected.to eq(admin_g5_callback_path) }
       end
     end
 
     context 'with custom router' do
-      before { Devise.router_name = :my_engine }
-      after { Devise.router_name = nil }
-
-      let(:custom_router) do
-        double(:my_engine_router, user_g5_callback_path: 'foo_callback',
-                                  admin_g5_callback_path: 'bar_callback')
+      include_context 'custom router'
+      before do
+        allow(custom_router).to receive(:user_g5_callback_path)
+          .and_return('foo_callback')
+        allow(custom_router).to receive(:admin_g5_callback_path)
+          .and_return('bar_callback')
       end
-      before { controller.stub(my_engine: custom_router) }
 
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == custom_router.user_g5_callback_path }
+        it { is_expected.to eq(custom_router.user_g5_callback_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == custom_router.admin_g5_callback_path }
+        it { is_expected.to eq(custom_router.admin_g5_callback_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == custom_router.user_g5_callback_path }
+        it { is_expected.to eq(custom_router.user_g5_callback_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == custom_router.admin_g5_callback_path}
+        it { is_expected.to eq(custom_router.admin_g5_callback_path) }
       end
     end
   end
 
   describe '#new_session_path' do
-    subject(:new_session_path) { controller.new_session_path(resource_or_scope) }
+    subject(:new_session_path) do
+      controller.new_session_path(resource_or_scope)
+    end
 
     context 'with main_app router' do
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == new_user_session_path }
+        it { is_expected.to eq(new_user_session_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == new_admin_session_path }
+        it { is_expected.to eq(new_admin_session_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == new_user_session_path }
+        it { is_expected.to eq(new_user_session_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == new_admin_session_path }
+        it { is_expected.to eq(new_admin_session_path) }
       end
     end
 
     context 'with custom router' do
-      before { Devise.router_name = :my_engine }
-      after { Devise.router_name = nil }
-
-      let(:custom_router) do
-        double(:my_engine_router, new_user_session_path: 'foo',
-                                  new_admin_session_path: 'bar')
+      include_context 'custom router'
+      before do
+        allow(custom_router).to receive(:new_user_session_path)
+          .and_return('foo')
+        allow(custom_router).to receive(:new_admin_session_path)
+          .and_return('bar')
       end
-      before { controller.stub(my_engine: custom_router) }
 
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == custom_router.new_user_session_path }
+        it { is_expected.to eq(custom_router.new_user_session_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == custom_router.new_admin_session_path }
+        it { is_expected.to eq(custom_router.new_admin_session_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == custom_router.new_user_session_path }
+        it { is_expected.to eq(custom_router.new_user_session_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == custom_router.new_admin_session_path}
+        it { is_expected.to eq(custom_router.new_admin_session_path) }
       end
     end
   end
 
   describe '#destroy_session_path' do
-    subject(:destroy_session_path) { controller.destroy_session_path(resource_or_scope) }
+    subject(:destroy_session_path) do
+      controller.destroy_session_path(resource_or_scope)
+    end
 
     context 'with main_app router' do
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == destroy_user_session_path }
+        it { is_expected.to eq(destroy_user_session_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == destroy_admin_session_path }
+        it { is_expected.to eq(destroy_admin_session_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == destroy_user_session_path }
+        it { is_expected.to eq(destroy_user_session_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == destroy_admin_session_path }
+        it { is_expected.to eq(destroy_admin_session_path) }
       end
     end
 
     context 'with custom router' do
-      before { Devise.router_name = :my_engine }
-      after { Devise.router_name = nil }
-
-      let(:custom_router) do
-        double(:my_engine_router, destroy_user_session_path: 'foo',
-                                  destroy_admin_session_path: 'bar')
+      include_context 'custom router'
+      before do
+        allow(custom_router).to receive(:destroy_user_session_path)
+          .and_return('foo')
+        allow(custom_router).to receive(:destroy_admin_session_path)
+          .and_return('bar')
       end
-      before { controller.stub(my_engine: custom_router) }
 
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == custom_router.destroy_user_session_path }
+        it { is_expected.to eq(custom_router.destroy_user_session_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == custom_router.destroy_admin_session_path }
+        it { is_expected.to eq(custom_router.destroy_admin_session_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == custom_router.destroy_user_session_path }
+        it { is_expected.to eq(custom_router.destroy_user_session_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == custom_router.destroy_admin_session_path}
+        it { is_expected.to eq(custom_router.destroy_admin_session_path) }
       end
     end
   end
@@ -272,60 +274,58 @@ describe DeviseG5Authenticatable::UrlHelpers do
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == user_session_path }
+        it { is_expected.to eq(user_session_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == admin_session_path }
+        it { is_expected.to eq(admin_session_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == user_session_path }
+        it { is_expected.to eq(user_session_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == admin_session_path }
+        it { is_expected.to eq(admin_session_path) }
       end
     end
 
     context 'with custom router' do
-      before { Devise.router_name = :my_engine }
-      after { Devise.router_name = nil }
+      include_context 'custom router'
 
-      let(:custom_router) do
-        double(:my_engine_router, user_session_path: 'foo',
-                                  admin_session_path: 'bar')
+      before do
+        allow(custom_router).to receive(:user_session_path).and_return('foo')
+        allow(custom_router).to receive(:admin_session_path).and_return('bar')
       end
-      before { controller.stub(my_engine: custom_router) }
 
       context 'with user resource' do
         let(:resource_or_scope) { build_stubbed(:user) }
 
-        it { should == custom_router.user_session_path }
+        it { is_expected.to eq(custom_router.user_session_path) }
       end
 
       context 'with admin resource' do
         let(:resource_or_scope) { build_stubbed(:admin) }
 
-        it { should == custom_router.admin_session_path }
+        it { is_expected.to eq(custom_router.admin_session_path) }
       end
 
       context 'with user scope' do
         let(:resource_or_scope) { :user }
 
-        it { should == custom_router.user_session_path }
+        it { is_expected.to eq(custom_router.user_session_path) }
       end
 
       context 'with admin scope' do
         let(:resource_or_scope) { :admin }
 
-        it { should == custom_router.admin_session_path}
+        it { is_expected.to eq(custom_router.admin_session_path) }
       end
     end
   end

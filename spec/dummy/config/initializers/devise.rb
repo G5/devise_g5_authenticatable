@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
@@ -23,7 +25,9 @@ Devise.setup do |config|
 
   # Require optional support for protected_attributes in devise
   # models
-  require 'devise_g5_authenticatable/models/protected_attributes'
+  if Rails.version.starts_with?('4')
+    require 'devise_g5_authenticatable/models/protected_attributes'
+  end
 
   # ==> Configuration for any authentication mechanism
   # Configure which keys are used when authenticating a user. The default is

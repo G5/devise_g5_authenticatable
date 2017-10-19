@@ -1,11 +1,13 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe DeviseG5Authenticatable::SessionsController do
+require 'rails_helper'
+
+RSpec.describe DeviseG5Authenticatable::SessionsController do
   before { request.env['devise.mapping'] = Devise.mappings[scope] }
   let(:scope) { :user }
 
   describe '#new' do
-    subject(:new_session) { get :new }
+    subject(:new_session) { get(:new) }
 
     context 'with user scope' do
       it 'should redirect to the scoped authorize path' do
@@ -23,7 +25,7 @@ describe DeviseG5Authenticatable::SessionsController do
   end
 
   describe '#omniauth_passthru' do
-    subject(:passthru) { get :omniauth_passthru }
+    subject(:passthru) { get(:omniauth_passthru) }
 
     it 'should return a 404' do
       expect(passthru).to be_not_found
@@ -31,38 +33,43 @@ describe DeviseG5Authenticatable::SessionsController do
   end
 
   describe '#create' do
-    subject(:create_session) { post :create }
+    subject(:create_session) { post(:create) }
 
     let(:auth_hash) do
-      OmniAuth::AuthHash.new({
+      OmniAuth::AuthHash.new(
         provider: 'g5',
         uid: '45',
-        info: {name: 'Foo Bar',
-               email: 'foo@bar.com'},
-        credentials: {token: 'abc123'}
-      })
+        info: { name: 'Foo Bar',
+                email: 'foo@bar.com' },
+        credentials: { token: 'abc123' }
+      )
     end
     before { request.env['omniauth.auth'] = auth_hash }
 
     context 'when local model exists' do
       let(:model) do
-        stub_model(model_class, provider: auth_hash.provider,
-                         uid: auth_hash.uid,
-                         email: auth_hash.email,
-                         g5_access_token: auth_hash.credentials.token,
-                         save!: true,
-                         update_g5_credentials: true,
-                         email_changed?: false)
+        stub_model(model_class,
+                   provider: auth_hash.provider,
+                   uid: auth_hash.uid,
+                   email: auth_hash.email,
+                   g5_access_token: auth_hash.credentials.token,
+                   save!: true,
+                   update_g5_credentials: true,
+                   email_changed?: false)
       end
-      before { model_class.stub(find_and_update_for_g5_oauth: model) }
+      before do
+        allow(model_class).to receive(:find_and_update_for_g5_oauth)
+          .and_return(model)
+      end
 
       context 'with user scope' do
         let(:model_class) { User }
         let(:scope) { :user }
 
         it 'should find the user and update the oauth credentials' do
-          User.should_receive(:find_and_update_for_g5_oauth).with(auth_hash).and_return(model)
           create_session
+          expect(User).to have_received(:find_and_update_for_g5_oauth)
+            .with(auth_hash)
         end
 
         it 'should set the flash message' do
@@ -71,7 +78,8 @@ describe DeviseG5Authenticatable::SessionsController do
         end
 
         it 'should sign in the user' do
-          expect { create_session }.to change { controller.current_user }.from(nil).to(model)
+          expect { create_session }.to change { controller.current_user }
+            .from(nil).to(model)
         end
 
         it 'should redirect the user' do
@@ -85,18 +93,23 @@ describe DeviseG5Authenticatable::SessionsController do
         let(:scope) { :admin }
 
         it 'should find the admin and update the oauth credentials' do
-          Admin.should_receive(:find_and_update_for_g5_oauth).with(auth_hash).and_return(model)
           create_session
+          expect(Admin).to have_received(:find_and_update_for_g5_oauth)
+            .with(auth_hash)
         end
 
         it 'should sign in the admin' do
-          expect { create_session }.to change { controller.current_admin }.from(nil).to(model)
+          expect { create_session }.to change { controller.current_admin }
+            .from(nil).to(model)
         end
       end
     end
 
     context 'when local model does not exist' do
-      before { model_class.stub(find_and_update_for_g5_oauth: nil) }
+      before do
+        allow(model_class).to receive(:find_and_update_for_g5_oauth)
+          .and_return(nil)
+      end
 
       context 'with user scope' do
         let(:scope) { :user }
@@ -116,7 +129,8 @@ describe DeviseG5Authenticatable::SessionsController do
         end
 
         it 'should set the auth data on the session' do
-          expect { create_session }.to change { session['omniauth.auth'] }.to(auth_hash)
+          expect { create_session }.to change { session['omniauth.auth'] }
+            .to(auth_hash)
         end
       end
 
@@ -129,19 +143,23 @@ describe DeviseG5Authenticatable::SessionsController do
         end
 
         it 'should set the auth data on the session' do
-          expect { create_session }.to change { session['omniauth.auth'] }.to(auth_hash)
+          expect { create_session }.to change { session['omniauth.auth'] }
+            .to(auth_hash)
         end
       end
     end
   end
 
   describe '#destroy' do
-    subject(:destroy_session) { delete :destroy }
+    subject(:destroy_session) { delete(:destroy) }
 
     let(:auth_client) { double(:auth_client, sign_out_url: auth_sign_out_url) }
-    let(:auth_sign_out_url) { 'https://auth.test.host/sign_out?redirect_url=http%3A%2F%2Ftest.host%2F' }
+    let(:auth_sign_out_url) do
+      'https://auth.test.host/sign_out?redirect_url=http%3A%2F%2Ftest.host%2F'
+    end
     before do
-      allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
+      allow(G5AuthenticationClient::Client).to receive(:new)
+        .and_return(auth_client)
     end
 
     let(:model) { create(scope) }
@@ -151,16 +169,17 @@ describe DeviseG5Authenticatable::SessionsController do
       let(:scope) { :user }
 
       context 'when there is a current user' do
-        before { sign_in(scope, model) }
+        before { sign_in(model, scope: scope) }
 
         it 'should sign out the user locally' do
-          expect { destroy_session }.to change { controller.current_user }.to(nil)
+          expect { destroy_session }.to change { controller.current_user }
+            .to(nil)
         end
 
         it 'should construct the sign out URL with the correct redirect URL' do
-          expect(auth_client).to receive(:sign_out_url).
-            with(root_url).
-            and_return(auth_sign_out_url)
+          expect(auth_client).to receive(:sign_out_url)
+            .with(root_url)
+            .and_return(auth_sign_out_url)
           destroy_session
         end
 
@@ -184,10 +203,11 @@ describe DeviseG5Authenticatable::SessionsController do
     context 'with admin scope' do
       let(:scope) { :admin }
 
-      before { sign_in(scope, model) }
+      before { sign_in(model, scope: scope) }
 
       it 'should sign out the admin locally' do
-        expect { destroy_session }.to change { controller.current_admin }.to(nil)
+        expect { destroy_session }.to change { controller.current_admin }
+          .to(nil)
       end
 
       it 'should revoke the g5 access token' do
@@ -202,7 +222,9 @@ describe DeviseG5Authenticatable::SessionsController do
       # We need some trickery here because the failure action is actually rack
       # rather than rails
       rack_response = described_class.action(:failure).call(request.env)
-      @response = ActionDispatch::TestResponse.from_response(rack_response.last)
+      @response = ActionDispatch::TestResponse.new(rack_response[0],
+                                                   rack_response[1],
+                                                   rack_response[2].body)
     end
 
     before do
@@ -218,7 +240,9 @@ describe DeviseG5Authenticatable::SessionsController do
 
       it 'should set the flash message' do
         failure
-        expect(flash[:alert]).to eq("Could not authenticate you from G5 because \"#{reason}\".")
+        expect(flash[:alert]).to eq(
+          "Could not authenticate you from G5 because \"#{reason}\"."
+        )
       end
 
       it 'should be a redirect' do
@@ -238,7 +262,9 @@ describe DeviseG5Authenticatable::SessionsController do
 
       it 'should set the flash message' do
         failure
-        expect(flash[:alert]).to eq("Could not authenticate you from G5 because \"#{message}\".")
+        expect(flash[:alert]).to eq(
+          "Could not authenticate you from G5 because \"#{message}\"."
+        )
       end
 
       it 'should redirect to the root path' do
@@ -253,7 +279,9 @@ describe DeviseG5Authenticatable::SessionsController do
 
       it 'should set the flash message' do
         failure
-        expect(flash[:alert]).to eq("Could not authenticate you from G5 because \"#{humanized_type}\".")
+        expect(flash[:alert]).to eq(
+          "Could not authenticate you from G5 because \"#{humanized_type}\"."
+        )
       end
 
       it 'should redirect to the root path' do

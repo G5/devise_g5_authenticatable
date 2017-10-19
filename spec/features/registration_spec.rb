@@ -1,12 +1,15 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'User registration' do
+require 'rails_helper'
+
+RSpec.describe 'User registration' do
   subject(:register_user) { click_button 'Sign up' }
 
   let(:auth_client) { double(:auth_client, create_user: auth_user) }
   let(:auth_user) { double(:auth_user, id: uid, email: email) }
   before do
-    allow(G5AuthenticationClient::Client).to receive(:new).and_return(auth_client)
+    allow(G5AuthenticationClient::Client).to receive(:new)
+      .and_return(auth_client)
   end
 
   before do
@@ -32,11 +35,11 @@ describe 'User registration' do
     end
 
     it 'should create the user on the auth server' do
-      expect(auth_client).to receive(:create_user).
-        with({email: email,
+      expect(auth_client).to receive(:create_user)
+        .with(email: email,
               password: password,
-              password_confirmation: password_confirmation}).
-        and_return(auth_user)
+              password_confirmation: password_confirmation)
+        .and_return(auth_user)
       register_user
     end
 
@@ -52,7 +55,9 @@ describe 'User registration' do
 
   context 'when there is an error on the auth server' do
     include_context 'OAuth2::Error'
-    before { allow(auth_client).to receive(:create_user).and_raise(oauth_error) }
+    before do
+      allow(auth_client).to receive(:create_user).and_raise(oauth_error)
+    end
 
     it 'should display an error message' do
       register_user

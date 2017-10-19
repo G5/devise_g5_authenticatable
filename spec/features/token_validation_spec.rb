@@ -1,14 +1,18 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'Token validation per request' do
+require 'rails_helper'
+
+RSpec.describe 'Token validation per request' do
   let(:user) { create(:user) }
   let(:protected_path) { edit_user_registration_path }
   let(:token_info_url) { 'http://auth.g5search.com/oauth/token/info' }
 
+  let(:auth_header) { { 'Authorization' => "Bearer #{user.g5_access_token}" } }
+
   before do
-    stub_request(:get, token_info_url).
-      with(headers: {'Authorization'=>"Bearer #{user.g5_access_token}"}).
-      to_return(status: 200, body: '', headers: {})
+    stub_request(:get, token_info_url)
+      .with(headers: auth_header)
+      .to_return(status: 200, body: '', headers: {})
   end
 
   before do
@@ -42,8 +46,8 @@ describe 'Token validation per request' do
       before { visit protected_path }
 
       it 'should validate the token against the auth server' do
-        expect(a_request(:get, token_info_url).
-               with(headers: {'Authorization' => "Bearer #{user.g5_access_token}"})).to have_been_made
+        expect(a_request(:get, token_info_url).with(headers: auth_header))
+          .to have_been_made
       end
 
       it 'should allow the user to access the protected page' do
@@ -53,13 +57,19 @@ describe 'Token validation per request' do
 
     context 'when the access_token has been invalidated' do
       before do
-        stub_request(:get, token_info_url).
-          with(headers: {'Authorization'=>"Bearer #{user.g5_access_token}"}).
-          to_return(status: 401,
-                    headers: {'Content-Type' => 'application/json; charset=utf-8',
-                              'Cache-Control' => 'no-cache'},
-                    body: {'error' => 'invalid_token',
-                           'error_description' => 'The access token expired'}.to_json)
+        response_headers = {
+          'Content-Type' => 'application/json; charset=utf-8',
+          'Cache-Control' => 'no-cache'
+        }
+        response_body = {
+          'error' => 'invalid_token',
+          'error_description' => 'The access token expired'
+        }
+        stub_request(:get, token_info_url)
+          .with(headers: auth_header)
+          .to_return(status: 401,
+                     headers: response_headers,
+                     body: response_body.to_json)
         visit protected_path
       end
 

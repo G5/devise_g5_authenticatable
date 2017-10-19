@@ -1,25 +1,30 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe DeviseG5Authenticatable::Models::ProtectedAttributes do
-  before do
-    Dummy::Application.config.active_record.whitelist_attributes = true
+require 'rails_helper'
+
+# Protected attributes are not supported by rails 5
+if Rails.version.starts_with?('4')
+  RSpec.describe DeviseG5Authenticatable::Models::ProtectedAttributes do
+    before do
+      Dummy::Application.config.active_record.whitelist_attributes = true
+    end
+
+    after do
+      Dummy::Application.config.active_record.whitelist_attributes = false
+    end
+
+    subject { model }
+
+    let(:model_class) { User }
+    let(:model) { model_class.new }
+
+    it { is_expected.to allow_mass_assignment_of(:email) }
+    it { is_expected.to allow_mass_assignment_of(:password) }
+    it { is_expected.to allow_mass_assignment_of(:password_confirmation) }
+    it { is_expected.to allow_mass_assignment_of(:provider) }
+    it { is_expected.to allow_mass_assignment_of(:uid) }
+    it { is_expected.not_to allow_mass_assignment_of(:g5_access_token) }
+    it { is_expected.to allow_mass_assignment_of(:current_password) }
+    it { is_expected.to allow_mass_assignment_of(:updated_by) }
   end
-
-  after do
-    Dummy::Application.config.active_record.whitelist_attributes = false
-  end
-
-  subject { model }
-
-  let(:model_class) { User }
-  let(:model) { model_class.new }
-
-  it { should allow_mass_assignment_of(:email) }
-  it { should allow_mass_assignment_of(:password) }
-  it { should allow_mass_assignment_of(:password_confirmation) }
-  it { should allow_mass_assignment_of(:provider) }
-  it { should allow_mass_assignment_of(:uid) }
-  it { should_not allow_mass_assignment_of(:g5_access_token) }
-  it { should allow_mass_assignment_of(:current_password) }
-  it { should allow_mass_assignment_of(:updated_by) }
 end

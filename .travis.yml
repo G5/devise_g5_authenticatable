@@ -1,13 +1,35 @@
 language: ruby
+cache:
+  bundler: true
 rvm:
-  - 2.0.0
-  - 2.1
-  - 2.2
+  - 2.2.7
+  - 2.3.4
+  - 2.4.1
+gemfile:
+  - gemfiles/rails_4.1.gemfile
+  - gemfiles/rails_4.2.gemfile
+  - gemfiles/rails_5.0.gemfile
+  - gemfiles/rails_5.1.gemfile
+matrix:
+  exclude:
+    - rvm: 2.4.1
+      gemfile: gemfiles/rails_4.1.gemfile
+  allow_failures:
+    - rvm: 2.4.1
+dist: trusty
+sudo: false
+cache:
+  bundler: true
 before_install:
   - gem update bundler
-script:
-  - RAILS_ENV=test bundle exec rake app:db:setup
-  - bundle exec rspec spec
 before_script:
   - cp spec/dummy/config/database.yml.ci spec/dummy/config/database.yml
-  - psql -c 'create database g5_authenticatable_test;' -U postgres
+  - RAILS_ENV=test bundle exec rake app:db:create app:db:migrate
+script:
+  - bundle exec rspec
+after_script:
+  - bundle exec codeclimate-test-reporter
+addons:
+  code_climate:
+    repo_token:
+      secure: "jbxU8cHiS9V0vEndXRhMmteIYSyy2oq/V6S0HEqezA5nrAAnOPcLHaVhEM2Ji81G5V/k/Wda3xJ+4mXG2VU71RWCpMkWuB4M/KzAozmvxUxM7YwSfZvdYDL4AsWO+2Nvz7jDLiSTYYLigSAF5tQiD8Q6/KywcBJsXTuC5b9PTgg="

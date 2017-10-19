@@ -1,13 +1,16 @@
+# frozen_string_literal: true
+
 module DeviseG5Authenticatable
+  # Custom sessions controller to require sign-in through the G5 auth server
   class SessionsController < Devise::OmniauthCallbacksController
-    prepend_before_filter :require_no_authentication, only: [:new, :create]
+    prepend_before_action :require_no_authentication, only: %i[new create]
 
     def new
       redirect_to g5_authorize_path(resource_name)
     end
 
     def omniauth_passthru
-      render status: 404, text: 'Authentication passthru.'
+      render status: 404, plain: 'Authentication passthru.'
     end
 
     def create
@@ -22,6 +25,7 @@ module DeviseG5Authenticatable
     end
 
     protected
+
     def auth_data
       @auth_data ||= request.env['omniauth.auth']
       session['omniauth.auth'] = @auth_data
@@ -42,8 +46,8 @@ module DeviseG5Authenticatable
     end
 
     def remote_sign_out
-      redirect_url =  URI.join(request.base_url,
-                               after_sign_out_path_for(resource_name))
+      redirect_url = URI.join(request.base_url,
+                              after_sign_out_path_for(resource_name))
       redirect_to auth_client.sign_out_url(redirect_url.to_s)
     end
 
@@ -51,7 +55,7 @@ module DeviseG5Authenticatable
       G5AuthenticationClient::Client.new
     end
 
-    def after_omniauth_failure_path_for(scope)
+    def after_omniauth_failure_path_for(_scope)
       main_app.root_path
     end
 

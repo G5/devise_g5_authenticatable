@@ -1,4 +1,6 @@
-class DropRememberable < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class DropRememberable < ActiveRecord::Migration[4.2]
   def up
     change_table(:users) do |t|
       t.remove :remember_created_at

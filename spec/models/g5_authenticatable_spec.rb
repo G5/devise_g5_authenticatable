@@ -1,11 +1,13 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe Devise::Models::G5Authenticatable do
+require 'rails_helper'
+
+RSpec.describe Devise::Models::G5Authenticatable do
   subject { model }
 
   let(:model_class) { User }
   let(:model) { model_class.new(attributes) }
-  let(:attributes) { Hash.new }
+  let(:attributes) { {} }
 
   describe '#save!' do
     subject(:save) { model.save! }
@@ -34,7 +36,8 @@ describe Devise::Models::G5Authenticatable do
       let(:auth_id) { 1 }
 
       before do
-        allow(Devise::G5::AuthUserCreator).to receive(:new).and_return(auth_user_creator)
+        allow(Devise::G5::AuthUserCreator).to receive(:new)
+          .and_return(auth_user_creator)
       end
 
       context 'when model is valid' do
@@ -100,7 +103,8 @@ describe Devise::Models::G5Authenticatable do
           let(:error_body) { 'problems' }
 
           it 'should raise a RecordNotSaved error with the OAuth error code' do
-            expect { save }. to raise_error(ActiveRecord::RecordNotSaved, error_code)
+            expect { save }.to raise_error(ActiveRecord::RecordNotSaved,
+                                           error_code)
           end
         end
 
@@ -109,7 +113,8 @@ describe Devise::Models::G5Authenticatable do
           let(:error_message) { 'problems' }
 
           it 'should raise a RecordNotSaved error' do
-            expect { save }.to raise_error(ActiveRecord::RecordNotSaved, error_message)
+            expect { save }.to raise_error(ActiveRecord::RecordNotSaved,
+                                           error_message)
           end
         end
       end
@@ -122,7 +127,8 @@ describe Devise::Models::G5Authenticatable do
       let(:auth_user) { double(:auth_user, id: auth_id) }
       let(:auth_id) { 'remote-auth-id-42' }
       before do
-        allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_user_updater)
+        allow(Devise::G5::AuthUserUpdater).to receive(:new)
+          .and_return(auth_user_updater)
       end
 
       context 'with successful auth user update' do
@@ -144,7 +150,7 @@ describe Devise::Models::G5Authenticatable do
         let(:error_message) { 'problems' }
 
         it 'should raise an error' do
-          expect { save }.to raise_error
+          expect { save }.to raise_error(error_message)
         end
       end
     end
@@ -168,7 +174,10 @@ describe Devise::Models::G5Authenticatable do
     let(:updated_email) { 'update@email.com' }
 
     let(:auth_updater) { double(:auth_user_updater, update: true) }
-    before { allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_updater) }
+    before do
+      allow(Devise::G5::AuthUserUpdater).to receive(:new)
+        .and_return(auth_updater)
+    end
 
     let(:password_validator) { double(:auth_password_validator) }
     before do
@@ -178,7 +187,9 @@ describe Devise::Models::G5Authenticatable do
     end
 
     context 'with valid current password' do
-      before { allow(password_validator).to receive(:valid_password?).and_return(true) }
+      before do
+        allow(password_validator).to receive(:valid_password?).and_return(true)
+      end
 
       before { update_with_password }
 
@@ -218,7 +229,9 @@ describe Devise::Models::G5Authenticatable do
     end
 
     context 'with invalid current password' do
-      before { allow(password_validator).to receive(:valid_password?).and_return(false) }
+      before do
+        allow(password_validator).to receive(:valid_password?).and_return(false)
+      end
 
       before { update_with_password }
 
@@ -284,9 +297,12 @@ describe Devise::Models::G5Authenticatable do
     let(:model) { create(:user) }
     let(:password) { 'foobarbaz' }
 
-    let(:password_validator) { double(:password_validator, valid_password?: valid) }
+    let(:password_validator) do
+      double(:password_validator, valid_password?: valid)
+    end
     before do
-      allow(Devise::G5::AuthPasswordValidator).to receive(:new).and_return(password_validator)
+      allow(Devise::G5::AuthPasswordValidator).to receive(:new)
+        .and_return(password_validator)
     end
 
     before { valid_password? }
@@ -299,11 +315,13 @@ describe Devise::Models::G5Authenticatable do
       end
 
       it 'should initialize the validator with the model' do
-        expect(Devise::G5::AuthPasswordValidator).to have_received(:new).with(model)
+        expect(Devise::G5::AuthPasswordValidator).to have_received(:new)
+          .with(model)
       end
 
       it 'should check the password against the auth server' do
-        expect(password_validator).to have_received(:valid_password?).with(password)
+        expect(password_validator).to have_received(:valid_password?)
+          .with(password)
       end
     end
 
@@ -315,22 +333,27 @@ describe Devise::Models::G5Authenticatable do
       end
 
       it 'should initialize the validator with the model' do
-        expect(Devise::G5::AuthPasswordValidator).to have_received(:new).with(model)
+        expect(Devise::G5::AuthPasswordValidator).to have_received(:new)
+          .with(model)
       end
 
       it 'should check the password against the auth server' do
-        expect(password_validator).to have_received(:valid_password?).with(password)
+        expect(password_validator).to have_received(:valid_password?)
+          .with(password)
       end
     end
   end
 
   describe '.find_and_update_for_g5_oauth' do
-    subject(:find_and_update) { model_class.find_and_update_for_g5_oauth(auth_data) }
+    subject(:find_and_update) do
+      model_class.find_and_update_for_g5_oauth(auth_data)
+    end
 
     let(:auth_data) do
       OmniAuth::AuthHash.new(provider:    'g5',
                              uid:         '123999',
-                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             info:        { name: 'Foo Bar',
+                                            email: 'foo@bar.com' },
                              credentials: { token: 'abc123' })
     end
 
@@ -358,7 +381,8 @@ describe Devise::Models::G5Authenticatable do
       end
 
       it 'executes the callback to update role data' do
-        expect_any_instance_of(model_class).to receive(:update_roles_from_auth).with(auth_data)
+        expect_any_instance_of(model_class).to receive(:update_roles_from_auth)
+          .with(auth_data)
         find_and_update
       end
     end
@@ -369,7 +393,8 @@ describe Devise::Models::G5Authenticatable do
       end
 
       it 'does not execute the callback to update role data' do
-        expect_any_instance_of(model_class).to_not receive(:update_roles_from_auth)
+        expect_any_instance_of(model_class)
+          .to_not receive(:update_roles_from_auth)
         find_and_update
       end
     end
@@ -381,7 +406,8 @@ describe Devise::Models::G5Authenticatable do
     let(:auth_data) do
       OmniAuth::AuthHash.new(provider:    'g5',
                              uid:         uid,
-                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             info:        { name: 'Foo Bar',
+                                            email: 'foo@bar.com' },
                              credentials: { token: 'abc123' })
     end
 
@@ -464,7 +490,8 @@ describe Devise::Models::G5Authenticatable do
     let(:auth_data) do
       OmniAuth::AuthHash.new(provider:    'g5',
                              uid:         '123999',
-                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             info:        { name: 'Foo Bar',
+                                            email: 'foo@bar.com' },
                              credentials: { token: 'abc123' })
     end
 
@@ -475,7 +502,8 @@ describe Devise::Models::G5Authenticatable do
     end
 
     it 'should update the g5_access_token' do
-      expect { update_g5_credentials }.to change { model.g5_access_token }.to(auth_data.credentials.token)
+      expect { update_g5_credentials }.to change { model.g5_access_token }
+        .to(auth_data.credentials.token)
     end
 
     it 'should not save the changes' do
@@ -488,7 +516,10 @@ describe Devise::Models::G5Authenticatable do
     subject(:revoke_g5_credentials!) { model.revoke_g5_credentials! }
 
     let(:auth_updater) { double(:auth_user_updater, update: nil) }
-    before { allow(Devise::G5::AuthUserUpdater).to receive(:new).and_return(auth_updater) }
+    before do
+      allow(Devise::G5::AuthUserUpdater).to receive(:new)
+        .and_return(auth_updater)
+    end
 
     let(:model) { create(:user, g5_access_token: g5_token) }
     before { model.password = model.password_confirmation = nil }
@@ -523,11 +554,14 @@ describe Devise::Models::G5Authenticatable do
     let(:auth_data) do
       OmniAuth::AuthHash.new(provider:    'g5',
                              uid:         '123999',
-                             info:        { name: 'Foo Bar', email: 'foo@bar.com' },
+                             info:        { name: 'Foo Bar',
+                                            email: 'foo@bar.com' },
                              credentials: { token: 'abc123' })
     end
 
-    before { allow_any_instance_of(model_class).to receive(:update_roles_from_auth) }
+    before do
+      allow_any_instance_of(model_class).to receive(:update_roles_from_auth)
+    end
 
     context 'with params' do
       let(:params) do
@@ -553,12 +587,13 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'executes the callback to update role data' do
-          expect(new_with_session).to have_received(:update_roles_from_auth).with(auth_data)
+          expect(new_with_session).to have_received(:update_roles_from_auth)
+            .with(auth_data)
         end
       end
 
       context 'without session data' do
-        let(:session) { Hash.new }
+        let(:session) { {} }
 
         it { is_expected.to be_new_record }
 
@@ -575,14 +610,15 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'should not execute the callback to update role data' do
-          expect_any_instance_of(model_class).not_to receive(:update_roles_from_auth)
+          expect_any_instance_of(model_class)
+            .not_to receive(:update_roles_from_auth)
           new_with_session
         end
       end
     end
 
     context 'without params' do
-      let(:params) { Hash.new }
+      let(:params) { {} }
 
       context 'with session data' do
         let(:session) do
@@ -604,12 +640,13 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'executes the callback to update role data' do
-          expect(new_with_session).to have_received(:update_roles_from_auth).with(auth_data)
+          expect(new_with_session).to have_received(:update_roles_from_auth)
+            .with(auth_data)
         end
       end
 
       context 'without session data' do
-        let(:session) { Hash.new }
+        let(:session) { {} }
 
         it { is_expected.to be_new_record }
 
@@ -626,7 +663,8 @@ describe Devise::Models::G5Authenticatable do
         end
 
         it 'does not execute the callback to update role data' do
-          expect_any_instance_of(model_class).not_to receive(:update_roles_from_auth)
+          expect_any_instance_of(model_class)
+            .not_to receive(:update_roles_from_auth)
           new_with_session
         end
       end
@@ -642,10 +680,10 @@ describe Devise::Models::G5Authenticatable do
                              info:        { first_name: 'Foo',
                                             last_name: 'Bar',
                                             email: 'foo@bar.com',
-                                            phone: '123-555-1212 x42'},
+                                            phone: '123-555-1212 x42' },
                              credentials: { token: 'abc123' },
                              extra: { title: 'Minister of Funny Walks',
-                                      organization_name: 'Dept of Redundancy Dept' })
+                                      organization_name: 'Sales' })
     end
 
     it 'has the correct uid' do
@@ -668,8 +706,10 @@ describe Devise::Models::G5Authenticatable do
       OmniAuth::AuthHash.new(provider: 'g5',
                              uid: '123456',
                              extra: { roles: [
-                               { name: 'Admin', type: 'GLOBAL', urn: nil }
-                             ]})
+                               { name: 'Admin',
+                                 type: 'GLOBAL',
+                                 urn: nil }
+                             ] })
     end
 
     it 'does not change anything on the model' do

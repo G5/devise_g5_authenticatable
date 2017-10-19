@@ -1,6 +1,8 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe Devise::G5::AuthPasswordValidator do
+require 'rails_helper'
+
+RSpec.describe Devise::G5::AuthPasswordValidator do
   let(:validator) { described_class.new(model) }
 
   let(:model) { build_stubbed(:user) }
@@ -14,24 +16,26 @@ describe Devise::G5::AuthPasswordValidator do
     let(:auth_user) { double(:auth_user, uid: model.uid, email: model.email) }
 
     let(:oauth_error) { OAuth2::Error.new(response) }
-    let(:response) { double(:oauth_response, parsed: oauth_error_hash).as_null_object }
+    let(:response) do
+      double(:oauth_response, parsed: oauth_error_hash).as_null_object
+    end
 
     before do
-      allow(G5AuthenticationClient::Client).to receive(:new).
-        and_return(auth_client)
+      allow(G5AuthenticationClient::Client).to receive(:new)
+        .and_return(auth_client)
     end
 
     context 'with valid password' do
       before { valid_password? }
 
       it 'should initialize auth client with the username' do
-        expect(G5AuthenticationClient::Client).to have_received(:new).
-          with(hash_including(username: model.email))
+        expect(G5AuthenticationClient::Client).to have_received(:new)
+          .with(hash_including(username: model.email))
       end
 
       it 'should initialize auth client with the password' do
-        expect(G5AuthenticationClient::Client).to have_received(:new).
-          with(hash_including(password: password))
+        expect(G5AuthenticationClient::Client).to have_received(:new)
+          .with(hash_including(password: password))
       end
 
       it 'should retrieve the auth user associated with these credentials' do
@@ -47,8 +51,10 @@ describe Devise::G5::AuthPasswordValidator do
       before { allow(auth_client).to receive(:me).and_raise(oauth_error) }
 
       let(:oauth_error_hash) do
-        {'error' => 'invalid_resource_owner',
-         'error_description' => 'The provided resource owner credentials are not valid, or resource owner cannot be found.'}
+        { 'error' => 'invalid_resource_owner',
+          'error_description' => 'The provided resource owner credentials are' \
+                                 ' not valid, or resource owner cannot be' \
+                                 ' found.' }
       end
 
       it 'should return false' do
@@ -57,8 +63,14 @@ describe Devise::G5::AuthPasswordValidator do
     end
 
     context 'with blank password' do
-      before { allow(auth_client).to receive(:me).and_raise(runtime_error) }
-      let(:runtime_error) { RuntimeError.new('Insufficient credentials for access token. Supply a username/password or authentication code.') }
+      before do
+        allow(auth_client).to receive(:me)
+          .and_raise(RuntimeError, runtime_error)
+      end
+      let(:runtime_error) do
+        'Insufficient credentials for access token. Supply a' \
+        ' username/password or authentication code.'
+      end
 
       it 'should return false' do
         expect(valid_password?).to be_falsey
@@ -69,8 +81,9 @@ describe Devise::G5::AuthPasswordValidator do
       before { allow(auth_client).to receive(:me).and_raise(oauth_error) }
 
       let(:oauth_error_hash) do
-        {'error' => 'unauthorized_client',
-         'error_description' => 'The client is not authorized to perform this request using this method.'}
+        { 'error' => 'unauthorized_client',
+          'error_description' => 'The client is not authorized to perform' \
+                                 ' this request using this method.' }
       end
 
       it 'should re-raise the error' do

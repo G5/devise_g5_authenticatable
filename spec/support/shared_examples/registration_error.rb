@@ -1,4 +1,6 @@
-shared_examples_for 'a registration validation error' do
+# frozen_string_literal: true
+
+RSpec.shared_examples_for 'a registration validation error' do
   it 'should not create a user' do
     expect { subject }.to_not change { User.count }
   end

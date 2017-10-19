@@ -1,68 +1,82 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe 'Registrations controller' do
+require 'rails_helper'
+
+RSpec.describe 'Registrations controller' do
   describe 'routing' do
     context 'with user scope' do
       it 'should route GET /users/sign_up' do
-        expect(get '/users/sign_up').to route_to(controller: 'devise_g5_authenticatable/registrations',
-                                             action: 'new')
+        expect(get('/users/sign_up'))
+          .to route_to(controller: 'devise_g5_authenticatable/registrations',
+                       action: 'new')
       end
 
       it 'should route POST /users' do
-        expect(post '/users').to route_to(controller: 'devise_g5_authenticatable/registrations',
-                                          action: 'create')
+        expect(post('/users'))
+          .to route_to(controller: 'devise_g5_authenticatable/registrations',
+                       action: 'create')
       end
 
       it 'should route GET /users/edit' do
-        expect(get '/users/edit').to route_to(controller: 'devise_g5_authenticatable/registrations',
-                                              action: 'edit')
+        expect(get('/users/edit'))
+          .to route_to(controller: 'devise_g5_authenticatable/registrations',
+                       action: 'edit')
       end
 
       it 'should route PUT /users' do
-        expect(put '/users').to route_to(controller: 'devise_g5_authenticatable/registrations',
+        expect(put('/users'))
+          .to route_to(controller: 'devise_g5_authenticatable/registrations',
                                          action: 'update')
       end
 
       it 'should route DELETE /users' do
-        expect(delete '/users').to route_to(controller: 'devise_g5_authenticatable/registrations',
-                                            action: 'destroy')
+        expect(delete('/users'))
+          .to route_to(controller: 'devise_g5_authenticatable/registrations',
+                       action: 'destroy')
       end
 
       it 'should route GET /users/cancel' do
-        expect(get '/users/cancel').to route_to(controller: 'devise_g5_authenticatable/registrations',
-                                                action: 'cancel')
+        expect(get('/users/cancel'))
+          .to route_to(controller: 'devise_g5_authenticatable/registrations',
+                       action: 'cancel')
       end
     end
 
     context 'with admin scope' do
       it 'should route GET /registered/admins/custom_sign_up' do
-        expect(get '/registered/admins/custom_sign_up').to route_to(controller: 'custom_registrations',
-                                                                    action: 'new')
+        expect(get('/registered/admins/custom_sign_up'))
+          .to route_to(controller: 'custom_registrations',
+                       action: 'new')
       end
 
       it 'should route POST /registered/admins' do
-        expect(post '/registered/admins').to route_to(controller: 'custom_registrations',
-                                                      action: 'create')
+        expect(post('/registered/admins'))
+          .to route_to(controller: 'custom_registrations',
+                       action: 'create')
       end
 
       it 'should route GET /registered/admins/edit' do
-        expect(get '/registered/admins/edit').to route_to(controller: 'custom_registrations',
-                                              action: 'edit')
+        expect(get('/registered/admins/edit'))
+          .to route_to(controller: 'custom_registrations',
+                       action: 'edit')
       end
 
       it 'should route PUT /registered/admins' do
-        expect(put '/registered/admins').to route_to(controller: 'custom_registrations',
-                                         action: 'update')
+        expect(put('/registered/admins'))
+          .to route_to(controller: 'custom_registrations',
+                       action: 'update')
       end
 
       it 'should route DELETE /registered/admins' do
-        expect(delete '/registered/admins').to route_to(controller: 'custom_registrations',
-                                                        action: 'destroy')
+        expect(delete('/registered/admins'))
+          .to route_to(controller: 'custom_registrations',
+                       action: 'destroy')
       end
 
       it 'should route GET /registered/admins/custom_cancel' do
-        expect(get '/registered/admins/custom_cancel').to route_to(controller: 'custom_registrations',
-                                                                   action: 'cancel')
+        expect(get('/registered/admins/custom_cancel'))
+          .to route_to(controller: 'custom_registrations',
+                       action: 'cancel')
       end
     end
   end
@@ -88,7 +102,8 @@ describe 'Registrations controller' do
 
     context 'with admin scope' do
       it 'should generate new_admin_registration_path' do
-        expect(new_admin_registration_path).to eq('/registered/admins/custom_sign_up')
+        expect(new_admin_registration_path)
+          .to eq('/registered/admins/custom_sign_up')
       end
 
       it 'should generate admin_registration_path' do
@@ -100,7 +115,8 @@ describe 'Registrations controller' do
       end
 
       it 'should generate cancel_admin_registration_path' do
-        expect(cancel_admin_registration_path).to eq('/registered/admins/custom_cancel')
+        expect(cancel_admin_registration_path)
+          .to eq('/registered/admins/custom_cancel')
       end
     end
   end

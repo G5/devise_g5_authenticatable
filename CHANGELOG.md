@@ -1,3 +1,24 @@
+## v1.0.0 (2017-10-19)
+
+* **Backwards incompatible changes**
+  * Dropped support for rails < 4.1
+  * Dropped support for ruby < 2.2 (older versions *may* continue to work for
+  now, but there are no guarantees)
+  * Dropped support for devise < 4.3. The breaking change most likely to affect
+  users of this gem is the removal of omniauth route helpers with a wildcard
+  `:provider` parameter. However, the other forms of omniauth route helpers
+  still work. For example, `user_omniauth_authorize_path(:g5)` is no longer
+  valid, but you can still use `user_g5_omniauth_authorize_path` (preferred)
+  or `omniauth_authorize_path(:user, :g5)`
+* Enhancements
+  * Added support for ruby 2.3 and 2.4
+  * Added support for rails 5.0 and 5.1
+* Bug fixes
+  * The devise upgrade picked up a number of bug fixes, most notably the
+  `FailureApp` nil `script_name` issue introduced in devise 3.5.2, which broke
+  route generation within mounted engines (see
+  [plataformatec/devise#3705](https://github.com/plataformatec/devise/issues/3705))
+
 ## v0.3.0 (2016-11-03)
 
 * Exposes callbacks for more fine-grained control over mapping auth user
@@ -5,12 +26,15 @@
   ([#25](https://github.com/G5/devise_g5_authenticatable/pull/25))
 
 ## v0.2.4 (2015-12-09)
+
 * Same as v0.2.4.beta but not is a stable version!
 
 ## v0.2.4.beta (2015-12-03)
+
 * Enforces uniqueness of email address in when looking for an email without UID
 
 ## v0.2.3 (2015-11-30)
+
 * Pins version of devise to 3.5.1 due - https://github.com/plataformatec/devise/issues/3705
 * Pins version of omniauth-g5 to v0.3.1 due - https://github.com/G5/omniauth-g5/pull/10
 
