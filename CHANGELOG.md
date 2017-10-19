@@ -1,4 +1,4 @@
-## v1.0.0.pre.1 (TBD)
+## v1.0.0 (2017-10-19)
 
 * **Backwards incompatible changes**
   * Dropped support for rails < 4.1
