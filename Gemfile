@@ -10,7 +10,7 @@ gem 'jquery-rails'
 gem 'pg'
 
 # See the Appraisals file for all supported rails versions
-gem 'rails', '~> 3.1.12'
+gem 'rails', '~> 3.2.22'
 gem 'devise', '1.5.4'
 
 group :test, :development do
