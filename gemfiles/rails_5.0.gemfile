@@ -5,11 +5,13 @@ source "https://rubygems.org"
 gem "jquery-rails"
 gem "pg"
 gem "rails", "~> 5.0.3"
+gem "devise", "1.5.4"
 gem "rails-controller-testing", group: :test
 
 group :test, :development do
   gem "appraisal"
-  gem "pry-byebug"
+  gem "pry"
+  gem "pry-byebug", platforms: [:ruby_20, :ruby_21, :ruby_22, :ruby_23, :ruby_24, :ruby_25]
   gem "rspec-rails", "~> 3.6"
 end
 
