@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'devise', '>= 1.5', '< 5'
+  spec.add_dependency 'devise', '>= 2.0', '< 5'
   spec.add_dependency 'g5_authentication_client', '1.0.1.pre.1'
 
   # Pinned to version 0.3.1 due https://github.com/G5/omniauth-g5/pull/10

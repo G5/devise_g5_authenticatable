@@ -11,7 +11,7 @@ gem 'pg'
 
 # See the Appraisals file for all supported rails versions
 gem 'rails', '~> 3.2.22'
-gem 'devise', '1.5.4'
+gem 'devise', '2.2.8'
 
 group :test, :development do
   gem 'appraisal'

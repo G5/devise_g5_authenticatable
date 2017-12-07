@@ -5,7 +5,7 @@ source "https://rubygems.org"
 gem "jquery-rails"
 gem "pg"
 gem "rails", "~> 4.2.8"
-gem "devise", "1.5.4"
+gem "devise", "~> 3.5"
 gem "protected_attributes"
 
 group :test, :development do
