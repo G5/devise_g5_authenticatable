@@ -3,8 +3,6 @@
 module DeviseG5Authenticatable
   # Custom sessions controller to require sign-in through the G5 auth server
   class SessionsController < Devise::OmniauthCallbacksController
-    include DeviseG5Authenticatable::ScopedViews
-
     # Using underlying ActiveSupport::Callbacks API for compatibility with
     # rails 3 (which does not support *_action callbacks) and
     # rails 5 (which does not support *_filter callbacks)

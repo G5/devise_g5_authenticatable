@@ -12,10 +12,8 @@ Warden::Manager.after_set_user only: :fetch do |record, warden, options|
     begin
       auth_client.token_info
     rescue StandardError
-      warden.logout(record)
-      # this is how to do it in devise 2+
-      #proxy = Devise::Hooks::Proxy.new(warden)
-      #proxy.sign_out(record)
+      proxy = Devise::Hooks::Proxy.new(warden)
+      proxy.sign_out(record)
       record.revoke_g5_credentials!
       throw :warden, scope: scope
     end

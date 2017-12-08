@@ -12,12 +12,5 @@ module DeviseG5Authenticatable
       scope = Devise::Mapping.find_scope!(resource_or_scope)
       _devise_route_context.send("#{scope}_g5_callback_path", *args)
     end
-
-    private
-
-    # Introduced in devise 2
-    define_method(:_devise_route_context) do
-      @_devise_route_context ||= send(:main_app)
-    end unless method_defined?(:_devise_route_context)
   end
 end
