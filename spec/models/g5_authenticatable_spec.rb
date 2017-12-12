@@ -163,10 +163,10 @@ RSpec.describe Devise::Models::G5Authenticatable do
     let(:model) { create(:user) }
 
     let(:params) do
-      { current_password: current_password,
-        password: updated_password,
-        password_confirmation: updated_password,
-        email: updated_email }
+      { 'current_password' => current_password,
+        'password' => updated_password,
+        'password_confirmation' => updated_password,
+        'email' => updated_email }
     end
 
     let(:current_password) {}

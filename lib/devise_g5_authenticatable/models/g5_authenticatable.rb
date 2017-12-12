@@ -43,9 +43,8 @@ module Devise
       end
 
       def update_with_password(params)
-        updated_attributes = params.reject do |k, v|
-          k =~ /password/ && v.blank?
-        end
+        updated_attributes = params.with_indifferent_access
+        updated_attributes.delete_if { |k, v| k =~ /password/ && v.blank? }
         current_password = updated_attributes.delete(:current_password)
 
         if valid_current_password?(current_password)
