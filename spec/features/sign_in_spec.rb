@@ -72,22 +72,4 @@ RSpec.describe 'Signing in' do
       expect(current_path).to eq(root_path)
     end
   end
-
-  context 'when clicking a login link after signing in' do
-    before do
-      visit_path_and_login_with(edit_user_registration_path, user)
-      visit root_path
-      click_link 'Login'
-    end
-
-    let(:user) { create(:user) }
-
-    it 'should warn the user that they are currently signed in' do
-      expect(page).to have_content('You are already signed in.')
-    end
-
-    it 'should redirect the user to the root path' do
-      expect(current_path).to eq(root_path)
-    end
-  end
 end

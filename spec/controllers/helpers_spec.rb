@@ -13,7 +13,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
     before { clear_passwords }
 
     controller do
-      set_callback :process_action, :before, :clear_blank_passwords, only: :index
+      set_callback :process_action, :before, :clear_blank_passwords
 
       def index
         render status: 200, text: 'Index'
@@ -208,7 +208,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       define_helpers(:user)
       define_helpers(:admin)
 
-      set_callback :process_action, :before, :set_updated_by_user, only: :create
+      set_callback :process_action, :before, :set_updated_by_user
 
       def create
         render status: 200, text: 'Create'
@@ -244,7 +244,7 @@ RSpec.describe DeviseG5Authenticatable::Helpers do
       define_helpers(:user)
       define_helpers(:admin)
 
-      set_callback :process_action, :before, :set_updated_by_admin, only: :create
+      set_callback :process_action, :before, :set_updated_by_admin
 
       def create
         render status: 200, text: 'Create'

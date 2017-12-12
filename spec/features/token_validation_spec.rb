@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Token validation per request' do
   let(:user) { create(:user) }
-  let(:protected_path) { edit_user_registration_path }
+  let(:protected_path) { protected_action_path }
   let(:token_info_url) { 'http://auth.g5search.com/oauth/token/info' }
 
   let(:auth_header) { { 'Authorization' => "Bearer #{user.g5_access_token}" } }

@@ -7,7 +7,7 @@ module DeviseG5Authenticatable
     # rails 3 (which does not support *_action callbacks) and
     # rails 5 (which does not support *_filter callbacks)
     set_callback :process_action, :before, :require_no_authentication,
-                 only: [:new, :create],
+                 if: ->(c) { [:new, :create].include?(c.action_name) },
                  prepend: true
 
     def new
