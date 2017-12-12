@@ -15,7 +15,7 @@ module DeviseG5Authenticatable
     end
 
     def omniauth_passthru
-      render status: 404, text: 'Authentication passthru.'
+      head :not_found
     end
 
     def create
