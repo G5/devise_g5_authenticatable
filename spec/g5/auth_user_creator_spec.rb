@@ -81,26 +81,52 @@ RSpec.describe Devise::G5::AuthUserCreator do
               .with(hash_including(email: model.email))
           end
 
-          it 'should create a new auth user with the correct password' do
-            expect(auth_client).to have_received(:create_user)
-              .with(hash_including(password: password))
+          context 'when password is set on model' do
+            it 'should create a new auth user with the correct password' do
+              expect(auth_client).to have_received(:create_user)
+                .with(hash_including(password: password))
+            end
+
+            it 'creates a new auth user with the correct password confirmation' do
+              expect(auth_client).to have_received(:create_user)
+                .with(
+                  hash_including(password_confirmation: password_confirmation)
+                )
+            end
+
+            it 'should reset the password' do
+              expect(model.password).to be_nil
+            end
+
+            it 'should reset the password_confirmation' do
+              expect(model.password_confirmation).to be_nil
+            end
           end
 
-          it 'creates a new auth user with the correct password confirmation' do
-            expect(auth_client).to have_received(:create_user)
-              .with(
-                hash_including(password_confirmation: password_confirmation)
-              )
-          end
+          context 'when password is not set on model' do
+            let(:password) { '' }
+            let(:password_confirmation) { '' }
 
-          it 'should reset the password' do
-            expect(model.password).to be_nil
-          end
+            it 'creates a new auth user with randomly generated non-blank password' do
+              expect(auth_client).to have_received(:create_user)
+                .with(hash_including(password: /\w+/))
+            end
 
-          it 'should reset the password_confirmation' do
-            expect(model.password_confirmation).to be_nil
+            it 'creates a new auth user with non-blank password_confirmation' do
+              expect(auth_client).to have_received(:create_user)
+                .with(hash_including(password: /\w+/))
+            end
+
+            it 'resets the password' do
+              expect(model.password).to be_nil
+            end
+
+            it 'resets the password_confirmation' do
+              expect(model.password_confirmation).to be_nil
+            end
           end
         end
+
 
         context 'when auth service returns an error' do
           before do

@@ -52,9 +52,17 @@ module Devise
       end
 
       def auth_user_args
-        { email: model.email,
-          password: model.password,
-          password_confirmation: model.password_confirmation }
+        args = { email: model.email,
+                 password: model.password,
+                 password_confirmation: model.password_confirmation }
+
+        # We have to set a non-blank password for security reasons, but the user is
+        # going to select a new one during account confirmation
+        if args[:password].blank? && args[:password_confirmation].blank?
+          args[:password_confirmation] = args[:password] = SecureRandom.base64
+        end
+
+        args
       end
 
       def update_auth_attributes(auth_user)
