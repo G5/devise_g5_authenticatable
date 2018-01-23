@@ -3,7 +3,6 @@
 appraise 'rails-3.2' do
   gem 'devise', '2.2.8'
   gem 'rails', '~> 3.2', '>= 3.2.22.5'
-  gem 'test-unit', '~> 3.0', group: [:test, :development] # required for ruby >= 2.2
 end
 
 appraise 'rails-4.1' do

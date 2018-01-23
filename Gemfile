@@ -7,7 +7,7 @@ gemspec
 
 # Dependencies for the dummy test app
 gem 'jquery-rails'
-gem 'pg'
+gem 'pg', '~> 0.21'
 
 # See the Appraisals file for all supported rails versions
 gem 'rails', '~> 3.2.22'
@@ -19,6 +19,7 @@ group :test, :development do
   gem 'pry-byebug', platforms: [:ruby_20, :ruby_21, :ruby_22,
                                 :ruby_23, :ruby_24, :ruby_25]
   gem 'rspec-rails', '~> 3.6'
+  gem 'test-unit', '~> 3.0' # required for ruby >= 2.2
 end
 
 group :test do

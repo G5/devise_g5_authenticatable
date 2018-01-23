@@ -3,16 +3,16 @@
 source "https://rubygems.org"
 
 gem "jquery-rails"
-gem "pg"
+gem "pg", "~> 0.21"
 gem "rails", "~> 3.2", ">= 3.2.22.5"
 gem "devise", "2.2.8"
-gem "test-unit", "~> 3.0", group: [:test, :development]
 
 group :test, :development do
   gem "appraisal"
   gem "pry"
   gem "pry-byebug", platforms: [:ruby_20, :ruby_21, :ruby_22, :ruby_23, :ruby_24, :ruby_25]
   gem "rspec-rails", "~> 3.6"
+  gem "test-unit", "~> 3.0"
 end
 
 group :test do
