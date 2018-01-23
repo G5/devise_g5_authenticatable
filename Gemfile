@@ -7,7 +7,7 @@ gemspec
 
 # Dependencies for the dummy test app
 gem 'jquery-rails'
-gem 'pg', '~> 0.21'
+gem 'pg', '~> 0.11'
 
 # See the Appraisals file for all supported rails versions
 gem 'rails', '~> 3.2.22'
