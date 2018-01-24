@@ -3,9 +3,12 @@
 source "https://rubygems.org"
 
 gem "jquery-rails"
-gem "pg", "~> 0.11"
+gem "pg", "0.18"
 gem "rails", "~> 4.2.8"
 gem "devise", "~> 3.5"
+gem "rake", "< 12.3", platforms: [:ruby_19]
+gem "public_suffix", "~> 1.4.0", platforms: [:ruby_19, :ruby_20]
+gem "nokogiri", "~> 1.6.0", platforms: [:ruby_19, :ruby_20, :ruby_21]
 gem "protected_attributes"
 
 group :test, :development do
@@ -23,7 +26,7 @@ group :test do
   gem "rspec-activemodel-mocks"
   gem "shoulda-matchers"
   gem "simplecov"
-  gem "webmock"
+  gem "webmock", "~> 2.0"
 end
 
 gemspec path: "../"

@@ -7,12 +7,17 @@ gemspec
 
 # Dependencies for the dummy test app
 gem 'jquery-rails'
-gem 'pg', '~> 0.11'
-gem 'rake', '< 12.3'
+gem 'pg', '0.18'
 
 # See the Appraisals file for all supported rails versions
 gem 'rails', '~> 3.2.22'
 gem 'devise', '~> 2.2'
+
+# Bundler won't respect required_ruby_version without a ruby
+# directive in the Gemfile, which breaks our build matrix
+gem 'rake', '< 12.3', platforms: [:ruby_19]
+gem 'public_suffix', '~> 1.4.0', platforms: [:ruby_19, :ruby_20]
+gem 'nokogiri', '~> 1.6.0', platforms: [:ruby_19, :ruby_20, :ruby_21]
 
 group :test, :development do
   gem 'appraisal'
@@ -30,5 +35,5 @@ group :test do
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers'
   gem 'simplecov'
-  gem 'webmock'
+  gem 'webmock', '~> 2.0' # for ruby 1.9.3 compatibility
 end
