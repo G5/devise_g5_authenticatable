@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Devise::Models::G5Authenticatable do
@@ -121,36 +119,58 @@ RSpec.describe Devise::Models::G5Authenticatable do
     end
 
     context 'when model is updated' do
-      let(:model) { create(:user) }
-
-      let(:auth_user_updater) { double(:user_updater, update: auth_user) }
       let(:auth_user) { double(:auth_user, id: auth_id) }
       let(:auth_id) { 'remote-auth-id-42' }
-      before do
-        allow(Devise::G5::AuthUserUpdater).to receive(:new)
-          .and_return(auth_user_updater)
-      end
 
-      context 'with successful auth user update' do
-        before { save }
-
-        it 'should initialize the auth user updater' do
-          expect(Devise::G5::AuthUserUpdater).to have_received(:new).with(model)
-        end
-
-        it 'should update the auth user' do
-          expect(auth_user_updater).to have_received(:update)
-        end
-      end
-
-      context 'with unsuccessful auth user update' do
+      context 'when auth user does not exist' do
+        let(:model) { create(:user) }
+        before { model.uid = nil }
+        let(:auth_user_creator) { double(:auth_user_creator, create: auth_user) }
         before do
-          allow(auth_user_updater).to receive(:update).and_raise(error_message)
+          allow(Devise::G5::AuthUserCreator).to receive(:new)
+            .and_return(auth_user_creator)
         end
-        let(:error_message) { 'problems' }
 
-        it 'should raise an error' do
-          expect { save }.to raise_error(error_message)
+        it 'initializes the auth user creator' do
+          save
+          expect(Devise::G5::AuthUserCreator).to have_received(:new).with(model)
+        end
+
+        it 'runs the auth user creation logic' do
+          save
+          expect(auth_user_creator).to have_received(:create)
+        end
+      end
+
+      context 'when auth user exists' do
+        let(:model) { create(:user) }
+        let(:auth_user_updater) { double(:user_updater, update: auth_user) }
+        before do
+          allow(Devise::G5::AuthUserUpdater).to receive(:new)
+            .and_return(auth_user_updater)
+        end
+
+        context 'with successful auth user update' do
+          before { save }
+
+          it 'should initialize the auth user updater' do
+            expect(Devise::G5::AuthUserUpdater).to have_received(:new).with(model)
+          end
+
+          it 'should update the auth user' do
+            expect(auth_user_updater).to have_received(:update)
+          end
+        end
+
+        context 'with unsuccessful auth user update' do
+          before do
+            allow(auth_user_updater).to receive(:update).and_raise(error_message)
+          end
+          let(:error_message) { 'problems' }
+
+          it 'should raise an error' do
+            expect { save }.to raise_error(error_message)
+          end
         end
       end
     end

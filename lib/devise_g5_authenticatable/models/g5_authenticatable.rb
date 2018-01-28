@@ -80,7 +80,7 @@ module Devise
       private
 
       def sync_auth_data
-        if new_record?
+        if new_record? || uid.blank?
           G5::AuthUserCreator.new(self).create
         else
           G5::AuthUserUpdater.new(self).update
