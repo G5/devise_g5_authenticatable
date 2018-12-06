@@ -127,7 +127,7 @@ module Devise
         private
 
         def without_auth_callback
-          skip_callback :save, :before, :auth_user
+          skip_callback :save, :before, :auth_user, raise: false
           yield
           set_callback :save, :before, :auth_user
         end
