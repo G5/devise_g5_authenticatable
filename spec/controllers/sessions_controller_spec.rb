@@ -154,6 +154,48 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
         end
       end
     end
+
+    context 'when user does not have access to application' do
+      let(:auth_hash) do
+        OmniAuth::AuthHash.new(
+          provider: 'g5',
+          uid: '45',
+          info: { name: 'Foo Bar',
+                  email: 'foo@bar.com' },
+          credentials: { token: 'abc123' },
+          extra: {
+            raw_info: {
+              accessible_applications: [],
+              restricted_application_redirect_url: 'https://imc.com'
+            }
+          }
+        )
+      end
+
+      let(:model) do
+        stub_model(model_class,
+                   provider: auth_hash.provider,
+                   uid: auth_hash.uid,
+                   email: auth_hash.email,
+                   g5_access_token: auth_hash.credentials.token,
+                   save!: true,
+                   update_g5_credentials: true,
+                   email_changed?: false)
+      end
+
+      before do
+        allow(model_class).to receive(:find_and_update_for_g5_oauth)
+          .and_return(model)
+      end
+
+      let(:model_class) { User }
+      let(:scope) { :user }
+
+      it 'should redirect the user' do
+        create_session
+        expect(subject).to redirect_to(auth_hash.extra.raw_info.restricted_application_redirect_url)
+      end
+    end
   end
 
   describe '#destroy' do
