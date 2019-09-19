@@ -191,9 +191,13 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
       let(:model_class) { User }
       let(:scope) { :user }
 
-      it 'should redirect the user' do
+      it 'should redirect the user to the restricted_application_redirect_url' do
         create_session
         expect(subject).to redirect_to(auth_hash.extra.raw_info.restricted_application_redirect_url)
+      end
+
+      it 'should not sign in a user' do
+        expect { create_session }.to_not change { controller.current_user }
       end
     end
   end
