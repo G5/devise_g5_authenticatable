@@ -41,7 +41,13 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
         uid: '45',
         info: { name: 'Foo Bar',
                 email: 'foo@bar.com' },
-        credentials: { token: 'abc123' }
+        credentials: { token: 'abc123' },
+        extra: {
+          raw_info: {
+            accessible_applications: ['global'],
+            restricted_application_redirect_url: 'https://imc.com'
+          }
+        }
       )
     end
     before { request.env['omniauth.auth'] = auth_hash }

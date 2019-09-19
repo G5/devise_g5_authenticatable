@@ -6,7 +6,13 @@ module UserOmniauthMethods
       uid: user.uid,
       provider: 'g5',
       info: { email: user.email },
-      credentials: { token: user.g5_access_token }
+      credentials: { token: user.g5_access_token },
+      extra: {
+        raw_info: {
+          accessible_applications: ['global'],
+          restricted_application_redirect_url: 'https://imc.com'
+        }
+      }
     }.merge(options))
   end
 
