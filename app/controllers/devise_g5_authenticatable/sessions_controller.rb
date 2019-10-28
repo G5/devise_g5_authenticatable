@@ -17,7 +17,7 @@ module DeviseG5Authenticatable
       if authorized?
         sign_in_or_register
       else
-        redirect_to restricted_application_redirect_url
+        redirect_to(restricted_application_redirect_url)
       end
     end
 
@@ -30,7 +30,7 @@ module DeviseG5Authenticatable
     protected
 
     def authorized?
-      accessible_applications.include?(request.base_url) || accessible_applications.include?('global')
+      accessible_applications.map(&:url).include?(request.base_url) || accessible_applications.include?('global')
     end
 
     def accessible_applications
