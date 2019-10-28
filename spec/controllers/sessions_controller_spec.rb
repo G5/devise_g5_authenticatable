@@ -44,7 +44,7 @@ RSpec.describe DeviseG5Authenticatable::SessionsController do
         credentials: { token: 'abc123' },
         extra: {
           raw_info: {
-            accessible_applications: ['global'],
+            accessible_applications: [{ url: 'global' }],
             restricted_application_redirect_url: 'https://imc.com'
           }
         }

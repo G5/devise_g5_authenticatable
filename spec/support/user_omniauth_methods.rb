@@ -9,7 +9,7 @@ module UserOmniauthMethods
       credentials: { token: user.g5_access_token },
       extra: {
         raw_info: {
-          accessible_applications: ['global'],
+          accessible_applications: [{ url: 'global' }],
           restricted_application_redirect_url: 'https://imc.com'
         }
       }

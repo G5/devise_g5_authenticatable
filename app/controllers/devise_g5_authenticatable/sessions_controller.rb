@@ -30,7 +30,7 @@ module DeviseG5Authenticatable
     protected
 
     def authorized?
-      accessible_applications.map(&:url).include?(request.base_url) || accessible_applications.include?('global')
+      accessible_applications.map(&:url).include?(request.base_url) || accessible_applications.map(&:url).include?('global')
     end
 
     def accessible_applications
