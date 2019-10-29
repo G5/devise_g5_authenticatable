@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module DeviseG5Authenticatable
-  VERSION = '1.0.0'
+  VERSION = 'v1.0-beta.1'
 end
