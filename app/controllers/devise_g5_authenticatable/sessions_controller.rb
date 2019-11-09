@@ -17,7 +17,8 @@ module DeviseG5Authenticatable
       if authorized?
         sign_in_or_register
       else
-        redirect_to(restricted_application_redirect_url)
+        params = { restricted: base_url }
+        redirect_to(restricted_application_redirect_url + params.to_query)
       end
     end
 
@@ -30,7 +31,11 @@ module DeviseG5Authenticatable
     protected
 
     def authorized?
-      accessible_applications.map(&:url).include?(request.base_url) || accessible_applications.map(&:url).include?('global')
+      accessible_applications.map(&:url).include?(base_url) || accessible_applications.map(&:url).include?('global')
+    end
+
+    def base_url
+      request.base_url
     end
 
     def accessible_applications
@@ -66,7 +71,7 @@ module DeviseG5Authenticatable
     end
 
     def remote_sign_out
-      redirect_url = URI.join(request.base_url,
+      redirect_url = URI.join(base_url,
                               after_sign_out_path_for(resource_name))
       redirect_to auth_client.sign_out_url(redirect_url.to_s)
     end
