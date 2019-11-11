@@ -18,7 +18,7 @@ module DeviseG5Authenticatable
         sign_in_or_register
       else
         params = { restricted: base_url }
-        redirect_to(restricted_application_redirect_url + params.to_query)
+        redirect_to(restricted_application_redirect_url + '?' + params.to_query)
       end
     end
 
