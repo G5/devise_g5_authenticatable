@@ -14,8 +14,12 @@ module DeviseG5Authenticatable
     end
 
     def create
-      self.resource = resource_class.find_and_update_for_g5_oauth(auth_data)
-      resource ? sign_in_resource : register_resource
+      if authorized?
+        sign_in_or_register
+      else
+        params = { restricted: base_url }
+        redirect_to(restricted_application_redirect_url + '?' + params.to_query)
+      end
     end
 
     def destroy
@@ -25,6 +29,27 @@ module DeviseG5Authenticatable
     end
 
     protected
+
+    def authorized?
+      accessible_applications.map(&:url).include?(base_url) || accessible_applications.map(&:url).include?('global')
+    end
+
+    def base_url
+      request.base_url
+    end
+
+    def accessible_applications
+      auth_data.extra.raw_info.accessible_applications
+    end
+
+    def restricted_application_redirect_url
+      auth_data.extra.raw_info.restricted_application_redirect_url
+    end
+
+    def sign_in_or_register
+      self.resource = resource_class.find_and_update_for_g5_oauth(auth_data)
+      resource ? sign_in_resource : register_resource
+    end
 
     def auth_data
       @auth_data ||= request.env['omniauth.auth']
@@ -46,7 +71,7 @@ module DeviseG5Authenticatable
     end
 
     def remote_sign_out
-      redirect_url = URI.join(request.base_url,
+      redirect_url = URI.join(base_url,
                               after_sign_out_path_for(resource_name))
       redirect_to auth_client.sign_out_url(redirect_url.to_s)
     end
